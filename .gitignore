@@ -1,0 +1,17 @@
+# Binaries
+**/bin/
+!vendor/premake/bin/
+bin-int/
+
+# PhysiXal files
+*.log
+
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+
+# Directories
+PhysiXal/thirdparty/Vulkan
