@@ -1,6 +1,6 @@
 # Binaries
 **/bin/
-!vendor/premake/bin/
+!vendor/bin/premake/
 bin-int/
 
 # PhysiXal files
@@ -14,5 +14,3 @@ bin-int/
 **.vcxproj.user
 
 # Directories
-PhysiXal/thirdparty/Vulkan
-!vendor
