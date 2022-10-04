@@ -1,10 +1,13 @@
-#include "pch/px_pch.h"
+#include "px_pch.h"
+
 #include "main/log.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
 namespace PhysiXal {
+	
+	// From Hazel Engine
 
 	Ref<spdlog::logger> Log::s_CoreLogger;
 	Ref<spdlog::logger> Log::s_ClientLogger;
@@ -28,5 +31,4 @@ namespace PhysiXal {
 		s_ClientLogger->set_level(spdlog::level::trace);
 		s_ClientLogger->flush_on(spdlog::level::trace);
 	}
-
 }

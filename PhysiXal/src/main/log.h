@@ -1,11 +1,13 @@
 #pragma once
 
-#include "main/core.h"
+#include "core/core.h"
 
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 
 namespace PhysiXal {
+
+	// From Hazel Engine
 
 	class Log
 	{

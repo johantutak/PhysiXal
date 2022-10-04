@@ -2,9 +2,12 @@
 
 // ---- For use by PhysiXal applications ---------------------
 
-#include "main/core.h"
+// From Hazel Engine
+
+#include "core/core.h"
 
 #include "core/application.h"
+#include "core/core_layer.h"
 #include "main/log.h"
 
 #include "platform/win/win_window.h"
