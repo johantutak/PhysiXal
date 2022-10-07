@@ -10,8 +10,14 @@ namespace PhysiXal {
 
 	// From Hazel & Little Vulkan Engine
 
+	Application* Application::s_Instance = nullptr;
+
 	Application::Application()
 	{
+		PX_ASSERT(!s_Instance, "Application already exists");
+		s_Instance = this;
+		m_Window = Window::Create();
+		m_Window->SetEventCallback(PX_BIND_EVENT_FN(Application::OnEvent));
 	}
 
 	Application::~Application()
@@ -21,8 +27,7 @@ namespace PhysiXal {
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		// dispatcher.Dispatch<WindowCloseEvent>(PX_BIND_EVENT_FN(Application::OnWindowClose));
-		// dispatcher.Dispatch<WindowResizeEvent>(PX_BIND_EVENT_FN(Application::OnWindowResize));;
+		dispatcher.Dispatch<WindowCloseEvent>(PX_BIND_EVENT_FN(Application::OnWindowClose));
 
 		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 		{
@@ -33,7 +38,7 @@ namespace PhysiXal {
 	}
 
 	void Application::PushLayer(CoreLayer* layer)
-	{
+	{ 
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
@@ -46,8 +51,15 @@ namespace PhysiXal {
 
 	void Application::Run()
 	{
-		while (!WinWindow.shouldClose()) {
-			glfwPollEvents();
+		while (m_Running)
+		{
+			m_Window->OnUpdate();
 		}
+	}
+
+	bool Application::OnWindowClose(WindowCloseEvent& e)
+	{
+		m_Running = false;
+		return true;
 	}
 }

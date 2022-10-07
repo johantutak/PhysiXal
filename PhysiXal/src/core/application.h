@@ -1,12 +1,13 @@
 #pragma once
 
-
 #include "core/core.h"
 
-#include "platform/win/win_window.h"
+#include "core/window.h"
 #include "core/layer_stack.h"
 #include "events/event.h"
 #include "events/app_event.h"
+
+int main(int argc, char** argv);
 
 namespace PhysiXal {
 
@@ -17,19 +18,26 @@ namespace PhysiXal {
 	public:
 		Application();
 		virtual	~Application();
-		static constexpr int WIDTH = 1280;
-		static constexpr int HEIGHT = 720;
-
+		
 		void OnEvent(Event& e);
 
 		void PushLayer(CoreLayer* layer);
 		void PushOverlay(CoreLayer* layer);
 
-		void Run();
+		Window& GetWindow() { return *m_Window; }
+
+		static Application& Get() { return *s_Instance; }
 	private:
+		void Run();
+		bool OnWindowClose(WindowCloseEvent& e);
+	private:
+		std::unique_ptr<Window> m_Window;
+		bool m_Running = true;
 		LayerStack	m_LayerStack;
 	private:
-		WinWindow WinWindow{ WIDTH, HEIGHT, "PhysiXal Engine" };
+		static Application* s_Instance;
+		friend int ::main(int argc, char** argv);
+
 	};
 
 	// To be defined in CLIENT
