@@ -11,7 +11,8 @@ public:
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
 
-	// virtual void OnUIRender() override;
+	void OnUpdate() override;
+
 	void OnEvent(PhysiXal::Event& e) override;
-//private:
+private:
 };

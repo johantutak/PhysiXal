@@ -44,10 +44,15 @@ namespace PhysiXal {
 			++s_GLFWWindowCount;
 		}
 
+		//	#### TEMPORARY ####	
+		glfwMakeContextCurrent(m_Window);
+
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		
-		/*	####	Temporary example comment for initializing vSync for PysiXal with Vulkna API.	####
-		SetVSync(true); */
+
+
+		//	#### TO DO ####	Set Context for vSync interval
+		SetVSync(true); 
 
 		// Set GFLW callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
@@ -82,10 +87,12 @@ namespace PhysiXal {
 	void WinWindow::OnUpdate()
 	{
 		glfwPollEvents();
+
+		//	#### TO DO ####	Change this with Graphics Context for example, SwapBuffers(); class
+		glfwSwapBuffers(m_Window);
 	}
 
-	/*	####	Temporary example comment for initializing vSync for PysiXal with Vulkna API.	####
-
+	//	#### TO DO ####	Set Context for vSync interval
 	void WinWindow::SetVSync(bool enabled)
 	{
 		if (enabled)
@@ -96,9 +103,10 @@ namespace PhysiXal {
 		m_Data.VSync = enabled;
 	}
 
+	//	#### TO DO ####	Set Context for vSync interval
 	bool WinWindow::IsVSync() const
 	{
 		return m_Data.VSync;
-	} */
+	}
 
 }

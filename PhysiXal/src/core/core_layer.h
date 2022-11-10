@@ -21,7 +21,8 @@ namespace PhysiXal {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 
-		// virtual void OnUIRender() {} // Using ImGui.
+		virtual void OnUpdate() {};
+
 		virtual void OnEvent(Event& event) {}
 
 		const std::string& GetName() const { return m_DebugName; }

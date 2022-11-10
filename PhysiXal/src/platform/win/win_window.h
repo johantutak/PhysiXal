@@ -3,7 +3,7 @@
 #include "core/window.h"
 
 #define GLFW_INCLUDE_VULKAN
-#include "/dev/ThePhysiXalEngine/PhysiXal/thirdparty/GLFW/include/GLFW/glfw3.h"
+#include "GLFW/glfw3.h"
 
 namespace PhysiXal {
 
@@ -23,9 +23,9 @@ namespace PhysiXal {
 		// Window attributes
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		
-		/*	####	Temporary example comment for initializing vSync for PysiXal with Vulkna API.	####
+		//	#### TO DO ####	Set Context for vSync interval
 		void SetVSync(bool enabled) override;
-		bool IsVSync() const override; */
+		bool IsVSync() const override;
 
 		virtual void* GetNativeWindow() const { return m_Window; }
 	private:
@@ -38,7 +38,9 @@ namespace PhysiXal {
 		{
 			std::string Title;
 			unsigned int Width, Height;
-			// bool VSync;
+
+			//	#### TO DO ####	Set Context for vSync interval
+			bool VSync;
 
 			EventCallbackFn EventCallback;
 		};

@@ -20,6 +20,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "PhysiXal/thirdparty/GLFW/include"
 IncludeDir["Vulkan"] = "PhysiXal/thirdparty/Vulkan/include"
+IncludeDir["ImGui"] = "PhysiXal/thirdparty/imgui"
 IncludeDir["glm"] = "PhysiXal/thirdparty/glm"
 
 LibraryDir = {}
@@ -30,6 +31,7 @@ Library["Vulkan"] = "%{LibraryDir.Vulkan}/vulkan-1.lib"
 
 group "Dependencies"
 	include "PhysiXal/thirdparty/GLFW"
+	include "PhysiXal/thirdparty/imgui"
 
 group ""
 
@@ -66,6 +68,7 @@ project "PhysiXal"
 		"%{prj.name}/thirdparty/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{prj.name}/thirdparty/Vulkan/include",
+		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}"
 	}
 

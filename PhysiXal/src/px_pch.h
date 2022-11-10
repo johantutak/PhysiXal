@@ -15,6 +15,9 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <stdio.h>          // printf, fprintf
+#include <stdlib.h>         // abort
+
 #include "main/log.h"
 
 #ifdef PX_PLATFORM_WINDOWS
