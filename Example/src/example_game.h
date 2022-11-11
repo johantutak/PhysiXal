@@ -11,7 +11,7 @@ public:
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
 
-	void OnUpdate() override;
+	void OnUpdate(PhysiXal::Timestep ts) override;
 
 	void OnEvent(PhysiXal::Event& e) override;
 private:

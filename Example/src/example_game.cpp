@@ -13,7 +13,7 @@ void ExampleGame::OnDetach()
 {
 }
 
-void ExampleGame::OnUpdate()
+void ExampleGame::OnUpdate(PhysiXal::Timestep ts)
 {
 }
 

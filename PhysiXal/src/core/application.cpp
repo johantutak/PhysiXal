@@ -2,9 +2,13 @@
 
 #include "core/application.h"
 
+#include "main/log.h"
+
 #include "platform/win/win_window.h"
 
-#include "main/log.h"
+#include "core/input/input.h"
+
+#include <GLFW/glfw3.h>
 
 namespace PhysiXal {
 
@@ -53,6 +57,20 @@ namespace PhysiXal {
 	{
 		while (m_Running)
 		{
+			// #### TEMPORARY #### 
+			// Add class that is general rather than api specific like exmaple -> (Platform::GetTime();)
+			float time = (float)glfwGetTime();
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
+			if (!m_Minimized)
+			{
+				{
+					for (CoreLayer* layer : m_LayerStack)
+						layer->OnUpdate(timestep);
+				}
+			}
+
 			m_Window->OnUpdate();
 		}
 	}
@@ -61,5 +79,18 @@ namespace PhysiXal {
 	{
 		m_Running = false;
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			m_Minimized = true;
+			return false;
+		}
+
+		m_Minimized = false;
+
+		return false;
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/core.h"
+#include "core/timestep.h"
 #include "events/event.h"
 
 namespace PhysiXal {
@@ -21,7 +22,7 @@ namespace PhysiXal {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 
-		virtual void OnUpdate() {};
+		virtual void OnUpdate(Timestep ts) {};
 
 		virtual void OnEvent(Event& event) {}
 
