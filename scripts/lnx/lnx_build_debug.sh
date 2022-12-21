@@ -2,6 +2,8 @@
 
 pushd ..\
 
+pushd ..\
+
 make
 
 popd

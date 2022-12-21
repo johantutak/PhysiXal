@@ -2,6 +2,8 @@
 
 pushd ..\
 
+pushd ..\
+
 premake5 gmake2
 
 popd

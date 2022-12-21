@@ -32,7 +32,7 @@ namespace PhysiXal {
 		m_Data.Width = m_Specification.Width;
 		m_Data.Height = m_Specification.Height;
 
-		PX_CORE_INFO("Creating window {0} ({1}, {2})", m_Specification.Title, m_Specification.Width, m_Specification.Height);
+		PX_CORE_INFO("Creating window for {0} ({1}, {2})", m_Specification.Title, m_Specification.Width, m_Specification.Height);
 
 		if (s_GLFWWindowCount == 0)
 		{
@@ -79,6 +79,8 @@ namespace PhysiXal {
 		{
 			glfwTerminate();
 		}
+
+		PX_CORE_WARN("...Destroying window");
 	}
 
 	void WinWindow::OnUpdate()

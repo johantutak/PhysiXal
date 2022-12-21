@@ -99,7 +99,7 @@ project "PhysiXal"
 
 	filter "system:windows"
 		cppdialect "C++20"
-		staticruntime "On"
+		staticruntime "on"
 		systemversion "latest"
 
 		removefiles { "src/core/platform/lnx/**.h",

@@ -4,6 +4,7 @@
 #include "core/input/input.h"
 #include "core/window.h"
 
+#include "api/vulkan/vk_renderer.h"
 
 #include <GLFW/glfw3.h>
 
@@ -28,13 +29,28 @@ namespace PhysiXal {
 		m_Window->SetEventCallback(PX_BIND_EVENT_FN(Application::OnEvent));
 
 		// Initialize the renderer
-                
+#ifdef PX_PLATFORM_WINDOWS
+		VulkanRenderer::Init();
+#endif
+
 		// #### TODO ####
 		// Add func to execute command queue to compile all shaders
 	}
 
 	Application::~Application()
 	{
+		// Shutdown the renderer
+#ifdef PX_PLATFORM_WINDOWS
+		VulkanRenderer::Shutdown();
+#endif
+
+		// Destroy the window
+		//Window::~Window(); It's only for symbolic purposes since the window is destroyed within it's own class.
+
+		// Shutdown the application
+		// #### TO DO #### Make it Shutdown in he correct order.
+		PX_WARN("...Shutting down Application (client).");
+		PX_CORE_WARN("...Shutting down Log (core).");
 	}
 
 	void Application::OnEvent(Event& e)
@@ -80,6 +96,9 @@ namespace PhysiXal {
 				}
 
 				//Draw frame here
+#ifdef PX_PLATFORM_WINDOWS
+				VulkanRenderer::BeginFrame();
+#endif
 
 			}
 
