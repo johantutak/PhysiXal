@@ -1,7 +1,14 @@
 # Binaries
 **/bin/
-!vendor/bin/premake/
 bin-int/
+
+# Files
+*.user
+Makefile
+PhysiXal.config
+PhysiXal.creator
+PhysiXal.files
+PhysiXal.includes
 
 # PhysiXal files
 *.log
@@ -14,3 +21,4 @@ bin-int/
 **.vcxproj.user
 
 # Directories
+nbproject
