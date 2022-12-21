@@ -8,7 +8,7 @@
 
 #include "core/application.h"
 #include "core/core_layer.h"
-#include "main/log.h"
+#include "log/log.h"
 
 // ---- UI ---------------------------------------------------
 

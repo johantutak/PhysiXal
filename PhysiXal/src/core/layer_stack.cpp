@@ -1,5 +1,4 @@
 #include "px_pch.h"
-
 #include "core/layer_stack.h"
 
 namespace PhysiXal {
@@ -46,5 +45,4 @@ namespace PhysiXal {
 			m_Layers.erase(it);
 		}
 	}
-
 }

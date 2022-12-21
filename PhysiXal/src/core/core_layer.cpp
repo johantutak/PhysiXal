@@ -1,5 +1,4 @@
 #include "px_pch.h"
-
 #include "core/core_layer.h"
 
 namespace PhysiXal {

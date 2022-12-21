@@ -1,5 +1,4 @@
 #include "px_pch.h"
-
 #include "core/input/input.h"
 
 #ifdef PX_PLATFORM_WINDOWS

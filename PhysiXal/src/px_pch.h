@@ -2,23 +2,21 @@
 
 // From Hazel Engine
 
-#include <iostream>
 #include <memory>
-#include <utility>
-#include <algorithm>
-#include <functional>
-
-#include <string>
-#include <sstream>
-#include <array>
 #include <vector>
+#include <string>
+#include <array>
 #include <unordered_map>
-#include <unordered_set>
+#include <functional>
+#include <algorithm>
 
-#include <stdio.h>          // printf, fprintf
-#include <stdlib.h>         // abort
+#include <fstream>
 
-#include "main/log.h"
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+
+#include <core/core.h>
+#include "log/log.h"
+#include <events/event.h>
 
 #ifdef PX_PLATFORM_WINDOWS
 	#include <windows.h>

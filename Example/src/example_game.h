@@ -6,7 +6,7 @@ class ExampleGame : public PhysiXal::CoreLayer
 {
 public:
 	ExampleGame();
-	virtual ~ExampleGame() = default;
+	virtual ~ExampleGame();
 
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;

@@ -19,5 +19,4 @@ namespace PhysiXal {
 	private:
 		float m_Time;
 	};
-
 }

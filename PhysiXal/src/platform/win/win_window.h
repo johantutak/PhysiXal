@@ -8,13 +8,16 @@
 namespace PhysiXal {
 
 	// From Hazel & Little Vulkan Engine
-
+    
+#ifdef PX_PLATFORM_WINDOWS
+    
 	class WinWindow : public Window
 	{
 	public:
-		WinWindow(const WindowProps& props);
+		WinWindow(const WindowSpecification& specification);
 		virtual ~WinWindow();
 
+		virtual void Init() override;
 		void OnUpdate() override;
 
 		unsigned int GetWidth() const override { return m_Data.Width; }
@@ -22,30 +25,23 @@ namespace PhysiXal {
 
 		// Window attributes
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-		
-		//	#### TO DO ####	Set Context for vSync interval
-		void SetVSync(bool enabled) override;
-		bool IsVSync() const override;
 
 		virtual void* GetNativeWindow() const { return m_Window; }
 	private:
-		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
+		WindowSpecification m_Specification;
 
 		struct WindowData
 		{
 			std::string Title;
 			unsigned int Width, Height;
 
-			//	#### TO DO ####	Set Context for vSync interval
-			bool VSync;
-
 			EventCallbackFn EventCallback;
 		};
 
 		WindowData m_Data;
 	};
-
+#endif
 }

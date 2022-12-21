@@ -6,7 +6,9 @@
 namespace PhysiXal {
 
 	// From Hazel & Little Vulkan Engine
-
+    
+#ifdef PX_PLATFORM_WINDOWS
+    
 	static uint8_t s_GLFWWindowCount = 0;
 
 	static void GLFWErrorCallback(int error, const char* description)
@@ -14,9 +16,9 @@ namespace PhysiXal {
 		PX_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	WinWindow::WinWindow(const WindowProps& props)
+	WinWindow::WinWindow(const WindowSpecification& props)
+		: m_Specification(props)
 	{
-		Init(props);
 	}
 
 	WinWindow::~WinWindow()
@@ -24,13 +26,13 @@ namespace PhysiXal {
 		Shutdown();
 	}
 
-	void WinWindow::Init(const WindowProps& props)
+	void WinWindow::Init()
 	{
-		m_Data.Title = props.Title;
-		m_Data.Width = props.Width;
-		m_Data.Height = props.Height;
+		m_Data.Title = m_Specification.Title;
+		m_Data.Width = m_Specification.Width;
+		m_Data.Height = m_Specification.Height;
 
-		PX_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+		PX_CORE_INFO("Creating window {0} ({1}, {2})", m_Specification.Title, m_Specification.Width, m_Specification.Height);
 
 		if (s_GLFWWindowCount == 0)
 		{
@@ -40,36 +42,31 @@ namespace PhysiXal {
 		}
 
 		{
-			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+			m_Window = glfwCreateWindow((int)m_Specification.Width, (int)m_Specification.Height, m_Data.Title.c_str(), nullptr, nullptr);
 			++s_GLFWWindowCount;
 		}
 
-		//	#### TEMPORARY ####	
-		glfwMakeContextCurrent(m_Window);
-
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		
-
-
-		//	#### TO DO ####	Set Context for vSync interval
-		SetVSync(true); 
 
 		// Set GFLW callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-				data.Width = width;
-				data.Height = height;
+		data.Width = width;
+		data.Height = height;
 
-				WindowResizeEvent event(width, height);
-				data.EventCallback(event);
+		WindowResizeEvent event(width, height);
+		data.EventCallback(event);
 			});
 
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-				WindowCloseEvent event;
-				data.EventCallback(event);
+		WindowCloseEvent event;
+		data.EventCallback(event);
 			});
 	}
 
@@ -87,26 +84,6 @@ namespace PhysiXal {
 	void WinWindow::OnUpdate()
 	{
 		glfwPollEvents();
-
-		//	#### TO DO ####	Change this with Graphics Context for example, SwapBuffers(); class
-		glfwSwapBuffers(m_Window);
 	}
-
-	//	#### TO DO ####	Set Context for vSync interval
-	void WinWindow::SetVSync(bool enabled)
-	{
-		if (enabled)
-			glfwSwapInterval(1);
-		else
-			glfwSwapInterval(0);
-
-		m_Data.VSync = enabled;
-	}
-
-	//	#### TO DO ####	Set Context for vSync interval
-	bool WinWindow::IsVSync() const
-	{
-		return m_Data.VSync;
-	}
-
+#endif
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "px_pch.h"
-
 #include "events/event.h"
 
 namespace PhysiXal {

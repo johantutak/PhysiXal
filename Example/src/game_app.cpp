@@ -6,19 +6,24 @@
 class GameApp : public PhysiXal::Application
 {
 	public:
-	GameApp()
+	GameApp(const PhysiXal::ApplicationSpecification& specification)
+		: Application(specification)
 	{
 		PushLayer(new ExampleGame());
 	}
 
 	~GameApp()
 	{
-
 	}
 
 };
 
 PhysiXal::Application* PhysiXal::CreateApplication()
 {
-	return new GameApp();
+	PhysiXal::ApplicationSpecification specification;
+	specification.Name = "PhysiXal Engine";
+	specification.WindowWidth = 1600;
+	specification.WindowHeight = 900;
+
+	return new GameApp(specification);
 }

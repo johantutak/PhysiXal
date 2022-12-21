@@ -2,6 +2,11 @@
 
 #include "core/core.h"
 
+#include <sstream>
+#include <string>
+#include <functional>
+
+
 namespace PhysiXal {
 
 	// Events in PhysiXal are currently blocking, meaning when an event occurs it

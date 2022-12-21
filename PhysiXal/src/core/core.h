@@ -12,6 +12,7 @@
 	*	s for static
 	*	i for indexes and iterators
 	*	e for events
+        *       g for global  
 */
 
 // Platform detection using predefined macros
@@ -49,7 +50,6 @@
 	#error "Android is not supported!"
 #elif defined(__linux__)
 	#define PX_PLATFORM_LINUX
-	#error "Linux is not supported!"
 #else
 	/* Unknown compiler/platform */
 	#error "Unknown platform!"

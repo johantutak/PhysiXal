@@ -3,7 +3,9 @@
 #include "core/input/input.h"
 
 namespace PhysiXal {
-
+    
+#ifdef PX_PLATFORM_WINDOWS
+    
 	class WindowsInput : public Input
 	{
 	protected:
@@ -14,5 +16,5 @@ namespace PhysiXal {
 		virtual float GetMouseXImpl() override;
 		virtual float GetMouseYImpl() override;
 	};
-
+#endif
 }

@@ -30,5 +30,4 @@ namespace PhysiXal {
 	protected:
 		std::string m_DebugName;
 	};
-
 }

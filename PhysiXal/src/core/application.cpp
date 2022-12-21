@@ -1,12 +1,9 @@
 #include "px_pch.h"
-
 #include "core/application.h"
 
-#include "main/log.h"
-
-#include "platform/win/win_window.h"
-
 #include "core/input/input.h"
+#include "core/window.h"
+
 
 #include <GLFW/glfw3.h>
 
@@ -16,12 +13,24 @@ namespace PhysiXal {
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
+	Application::Application(const ApplicationSpecification& specification)
 	{
 		PX_ASSERT(!s_Instance, "Application already exists");
 		s_Instance = this;
-		m_Window = Window::Create();
+
+		// Initialize the window
+		WindowSpecification windowSpec;
+		windowSpec.Title = specification.Name;
+		windowSpec.Width = specification.WindowWidth;
+		windowSpec.Height = specification.WindowHeight;
+		m_Window = std::unique_ptr<Window>(Window::Create(windowSpec));
+		m_Window->Init();
 		m_Window->SetEventCallback(PX_BIND_EVENT_FN(Application::OnEvent));
+
+		// Initialize the renderer
+                
+		// #### TODO ####
+		// Add func to execute command queue to compile all shaders
 	}
 
 	Application::~Application()
@@ -69,6 +78,9 @@ namespace PhysiXal {
 					for (CoreLayer* layer : m_LayerStack)
 						layer->OnUpdate(timestep);
 				}
+
+				//Draw frame here
+
 			}
 
 			m_Window->OnUpdate();

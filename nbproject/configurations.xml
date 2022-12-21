@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="Example">
+        <df name="src">
+          <in>example_game.cpp</in>
+          <in>game_app.cpp</in>
+        </df>
+      </df>
+      <df name="PhysiXal">
+        <df name="src">
+          <df name="core">
+            <df name="input">
+              <in>input.cpp</in>
+            </df>
+            <in>application.cpp</in>
+            <in>core_layer.cpp</in>
+            <in>layer_stack.cpp</in>
+            <in>window.cpp</in>
+          </df>
+          <df name="log">
+            <in>log.cpp</in>
+          </df>
+          <df name="main">
+            <in>log.cpp</in>
+          </df>
+          <df name="platform">
+            <df name="lnx">
+              <in>lnx_window.cpp</in>
+            </df>
+            <df name="win">
+              <in>win_input.cpp</in>
+              <in>win_window.cpp</in>
+            </df>
+          </df>
+          <in>px_pch.cpp</in>
+        </df>
+        <df name="thirdparty">
+          <df name="imgui">
+            <in>imgui.cpp</in>
+            <in>imgui_demo.cpp</in>
+            <in>imgui_draw.cpp</in>
+            <in>imgui_tables.cpp</in>
+            <in>imgui_widgets.cpp</in>
+          </df>
+        </df>
+      </df>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-m64"/>
+        <element flagsID="1" commonFlags="-m64 -std=c++17"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
+          <preBuildCommand></preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <item path="Example/src/example_game.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="Example/src/game_app.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/core/application.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/core/core_layer.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/core/input/input.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/core/layer_stack.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/core/window.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/log/log.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/main/log.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/platform/lnx/lnx_window.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/platform/win/win_input.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/platform/win/win_window.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/src/px_pch.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/thirdparty/imgui/imgui.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/thirdparty/imgui/imgui_demo.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/thirdparty/imgui/imgui_draw.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/thirdparty/imgui/imgui_tables.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="PhysiXal/thirdparty/imgui/imgui_widgets.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <folder path="0/Example">
+        <ccTool>
+          <incDir>
+            <pElem>PhysiXal/thirdparty/spdlog/include</pElem>
+            <pElem>PhysiXal/src</pElem>
+            <pElem>PhysiXal/thirdparty</pElem>
+            <pElem>PhysiXal/thirdparty/glm</pElem>
+            <pElem>Example</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PX_DEBUG</Elem>
+            <Elem>PX_PLATFORM_LINUX</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/PhysiXal/src">
+        <ccTool>
+          <incDir>
+            <pElem>PhysiXal/src</pElem>
+            <pElem>PhysiXal/thirdparty/spdlog/include</pElem>
+            <pElem>PhysiXal/thirdparty/glm</pElem>
+            <pElem>PhysiXal</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>GLFW_INCLUDE_NONE</Elem>
+            <Elem>PX_DEBUG</Elem>
+            <Elem>PX_PLATFORM_LINUX</Elem>
+            <Elem>_CRT_SECURE_NO_WARNINGS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+    </conf>
+  </confs>
+</configurationDescriptor>
