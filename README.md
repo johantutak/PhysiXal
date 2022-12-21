@@ -52,6 +52,11 @@ Change the file name of premake5.lua.win.txt to premake5.lua.
 
 Premake generates project files for Visual Studio, Visual Studio 2022 is recommended. To generate the .sln and .vcxproj files for Visual Studio 2022, run premake vs2022 at the command line. Or you may run win_gen_projects.bat as a convenience batch file for this task.
 
+PhysiXal uses the Vulkan API and needs to be installed.
+
+Download the Vulkan SDK version 1.3.236 from https://vulkan.lunarg.com
+
+Install the SDK.
 
 
 Linux:
