@@ -31,10 +31,10 @@ namespace PhysiXal {
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		
-		// #### TO DO #### Set real context for vSync interval
 #ifdef PX_PLATFORM_LINUX
-                
-                virtual void SetVSync(bool enabled) = 0;
+		// OpenGL VSync interval
+		// #### TO DO #### Set real context for vSync interval
+		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 #endif
                 

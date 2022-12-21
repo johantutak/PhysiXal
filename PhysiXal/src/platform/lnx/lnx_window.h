@@ -2,7 +2,7 @@
 
 #include "core/window.h"
 
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 namespace PhysiXal {
 
@@ -25,7 +25,7 @@ namespace PhysiXal {
 		// Window attributes
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
                 
-                // ####	Initializing vSync for PysiXal with OpenGL API	####
+        // ####	Initializing vSync for PysiXal with OpenGL API	####
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
                 
@@ -40,9 +40,11 @@ namespace PhysiXal {
 		{
 			std::string Title;
 			unsigned int Width, Height;
-                        bool VSync;
+
+			// ####	Initializing vSync for PysiXal with OpenGL API	####
+			bool VSync;
 			
-                        EventCallbackFn EventCallback;
+			EventCallbackFn EventCallback;
 		};
 
 		WindowData m_Data;

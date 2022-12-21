@@ -19,7 +19,7 @@ namespace PhysiXal	{
         return new LnxWindow(specification);
 #else
     PX_CORE_ASSERT(false, "Unknown platform!");
-    return nullptr;
+        return nullptr;
 #endif
 	}
 }

@@ -50,9 +50,9 @@ namespace PhysiXal {
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
                 
-                glfwMakeContextCurrent(m_Window);
-                
-                // ####	Initializing vSync for PysiXal with OpenGL API	####
+		glfwMakeContextCurrent(m_Window);
+		
+		// ####	Initializing vSync for PysiXal with OpenGL API	####
 		SetVSync(true);
                 
 		// Set GFLW callbacks
@@ -88,12 +88,10 @@ namespace PhysiXal {
 	void LnxWindow::OnUpdate()
 	{
 		glfwPollEvents();
-                
-                glfwSwapBuffers(m_Window);
+		glfwSwapBuffers(m_Window);
 	}
         
-        // ####	Temporary example comment for initializing vSync for PysiXal with OpenGL API.	####
-
+	// ####	Initializing vSync for PysiXal with OpenGL API.	####
 	void LnxWindow::SetVSync(bool enabled)
 	{
 		if (enabled)

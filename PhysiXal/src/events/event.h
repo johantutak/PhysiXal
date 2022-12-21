@@ -86,6 +86,5 @@ namespace PhysiXal {
 	{
 		return os << e.ToString();
 	}
-
 }
 
