@@ -47,14 +47,6 @@ namespace PhysiXal {
 		}
 	}
 
-	VulkanContext::VulkanContext()
-	{
-	}
-
-	VulkanContext::~VulkanContext()
-	{
-	}
-
 	void VulkanContext::InitContext()
 	{
 		PX_CORE_INFO("Creating Vulkan context");

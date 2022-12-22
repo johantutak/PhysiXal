@@ -2,6 +2,7 @@
 #include "api/vulkan/vk_renderer.h"
 
 #include "api/vulkan/vk_context.h"
+#include "api/vulkan/vk_device.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -15,6 +16,7 @@ namespace PhysiXal {
 		PX_CORE_INFO("Initializing the renderer");
 		VulkanContext::InitContext(); 
 		VulkanContext::SetupDebugMessenger();
+		VulkanDevice::PickPhysicalDevice();
 	}
 	
 	void VulkanRenderer::Shutdown()
