@@ -10,6 +10,16 @@ namespace PhysiXal {
 
 #ifdef PX_PLATFORM_WINDOWS
 
+	const std::vector<const char*> ValidationLayers = {
+		"VK_LAYER_KHRONOS_validation"
+	};
+
+#ifdef PX_DEBUG
+	static bool s_EnableValidation = true;
+#else // PX_RELEASE || PX_DIST
+	static bool s_EnableValidation = false;
+#endif
+
 	class VulkanContext
 	{
 	public:

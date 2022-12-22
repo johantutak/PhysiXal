@@ -17,10 +17,12 @@ namespace PhysiXal {
 		VulkanContext::InitContext(); 
 		VulkanContext::SetupDebugMessenger();
 		VulkanDevice::PickPhysicalDevice();
+		VulkanDevice::CreateLogicalDevice();
 	}
 	
 	void VulkanRenderer::Shutdown()
 	{
+		VulkanDevice::DestroyDevice();
 		VulkanContext::DestroyContext();
 		PX_CORE_WARN("...Shutting down the renderer");
 	}
