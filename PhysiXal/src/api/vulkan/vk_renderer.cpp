@@ -13,7 +13,8 @@ namespace PhysiXal {
 	void VulkanRenderer::Init()
 	{
 		PX_CORE_INFO("Initializing the renderer");
-		VulkanContext::InitContext();
+		VulkanContext::InitContext(); 
+		VulkanContext::SetupDebugMessenger();
 	}
 	
 	void VulkanRenderer::Shutdown()
