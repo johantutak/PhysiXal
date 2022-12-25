@@ -28,6 +28,8 @@ namespace PhysiXal {
         // ####	Initializing vSync for PysiXal with OpenGL API	####
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
+
+		void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
                 
 		virtual void* GetNativeWindow() const { return m_Window; }
 	private:

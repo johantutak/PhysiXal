@@ -1,7 +1,11 @@
 #include "px_pch.h"
 #include "platform/lnx/lnx_window.h"
 
-#include"events/app_event.h"
+#include "events/app_event.h"
+
+#ifdef PX_PLATFORM_LINUX
+	#include <glad/glad.h>
+#endif
 
 namespace PhysiXal {
 
@@ -42,6 +46,12 @@ namespace PhysiXal {
 		}
 
 		{
+			// #### TEMPORARY #### TO DO #### Move this to it's own class ####
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			// #### ENDS ####
+			
 			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 			m_Window = glfwCreateWindow((int)m_Specification.Width, (int)m_Specification.Height, m_Data.Title.c_str(), nullptr, nullptr);
@@ -49,7 +59,9 @@ namespace PhysiXal {
 		}
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-                
+
+		// ####	OpenGL context is created within the window class ####
+		PX_CORE_INFO("Creating OpenGL context");
 		glfwMakeContextCurrent(m_Window);
 		
 		// ####	Initializing vSync for PysiXal with OpenGL API	####
@@ -83,6 +95,8 @@ namespace PhysiXal {
 		{
 			glfwTerminate();
 		}
+                
+        PX_CORE_WARN("...Destroying window");
 	}
 
 	void LnxWindow::OnUpdate()

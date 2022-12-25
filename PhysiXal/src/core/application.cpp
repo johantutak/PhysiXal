@@ -5,6 +5,7 @@
 #include "core/window.h"
 
 #include "api/vulkan/vk_renderer.h"
+#include "api/opengl/gl_renderer.h"
 
 #include <GLFW/glfw3.h>
 
@@ -32,6 +33,9 @@ namespace PhysiXal {
 #ifdef PX_PLATFORM_WINDOWS
 		VulkanRenderer::Init();
 #endif
+#ifdef PX_PLATFORM_LINUX
+		OpenGLRenderer::Init();
+#endif
 
 		// #### TODO ####
 		// Add func to execute command queue to compile all shaders
@@ -42,6 +46,9 @@ namespace PhysiXal {
 		// Shutdown the renderer
 #ifdef PX_PLATFORM_WINDOWS
 		VulkanRenderer::Shutdown();
+#endif
+#ifdef PX_PLATFORM_LINUX
+		OpenGLRenderer::Shutdown();
 #endif
 
 		// Destroy the window
@@ -94,12 +101,13 @@ namespace PhysiXal {
 					for (CoreLayer* layer : m_LayerStack)
 						layer->OnUpdate(timestep);
 				}
-
 				//Draw frame here
 #ifdef PX_PLATFORM_WINDOWS
 				VulkanRenderer::BeginFrame();
 #endif
-
+#ifdef PX_PLATFORM_LINUX
+				OpenGLRenderer::BeginFrame();
+#endif
 			}
 
 			m_Window->OnUpdate();

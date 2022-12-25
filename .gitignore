@@ -9,6 +9,7 @@ PhysiXal.config
 PhysiXal.creator
 PhysiXal.files
 PhysiXal.includes
+*.code-workspace
 
 # PhysiXal files
 *.log

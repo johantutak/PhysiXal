@@ -15,6 +15,12 @@
 
 // ---- Renderer ---------------------------------------------
 
+#ifdef PX_PLATFORM_WINDOWS
 #include "api/vulkan/vk_renderer.h"
+#endif
+#ifdef PX_PLATFORM_LINUX
+#include "api/opengl/gl_renderer.h"
+#include "api/opengl/gl_shader.h"
+#endif
 
 // -----------------------------------------------------------

@@ -2,6 +2,8 @@
 
 #include "core/physixal.h"
 
+#ifdef PX_PLATFORM_WINDOWS
+
 class ExampleGame : public PhysiXal::CoreLayer
 {
 public:
@@ -16,3 +18,4 @@ public:
 	void OnEvent(PhysiXal::Event& e) override;
 private:
 };
+#endif
