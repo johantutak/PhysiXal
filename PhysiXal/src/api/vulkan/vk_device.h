@@ -4,19 +4,20 @@
 	#include <vulkan/vulkan.h>
 #endif
 
+#include "platform/win/win_window.h"
+
 #include <optional>
 
 namespace PhysiXal {
 
 #ifdef PX_PLATFORM_WINDOWS
 
-	struct QueueFamilyIndices
-	{
+	struct QueueFamilyIndices {
 		std::optional<uint32_t> m_GraphicsFamily;
+		std::optional<uint32_t> m_PresentFamily;
 
-		bool IsComplete()
-		{
-			return m_GraphicsFamily.has_value();
+		bool IsComplete() {
+			return m_GraphicsFamily.has_value() && m_PresentFamily.has_value();
 		}
 	};
 
@@ -24,20 +25,26 @@ namespace PhysiXal {
 	{
 	public:
 		// Physical Device
-		static void PickPhysicalDevice();
-
-		static bool IsDeviceSuitable(VkPhysicalDevice device);
-		static QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+		void PickPhysicalDevice();
+		bool IsDeviceSuitable(VkPhysicalDevice device);
+		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
 		//  Logical Device
-		static void CreateLogicalDevice();
-		static void DestroyDevice();
+		void CreateLogicalDevice();
+		void DestroyDevice();
 
+		// Surface
+		void CreateSurface();
+		void DestroySurface();
 	private:
-		inline static VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
-		inline static VkDevice m_LogicalDevice;
+		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
+		
+		VkDevice m_LogicalDevice;
 
-		inline static VkQueue m_GraphicsQueue;
+		VkQueue m_GraphicsQueue;
+		VkQueue m_PresentQueue;
+
+		VkSurfaceKHR m_Surface;
 	};
 #endif
 }

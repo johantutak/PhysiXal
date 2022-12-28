@@ -3,6 +3,8 @@
 
 namespace PhysiXal {
 
+#ifdef PX_PLATFORM_LINUX
+
     static std::string ReadFileAsString(const std::string& filepath)
     {
         std::string result;
@@ -104,4 +106,5 @@ namespace PhysiXal {
         
         m_RendererID = program;
     }
+#endif
 }

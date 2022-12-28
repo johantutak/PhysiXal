@@ -4,7 +4,7 @@
 #include "core/input/input.h"
 #include "core/window.h"
 
-#include "api/vulkan/vk_renderer.h"
+#include "renderer/renderer.h"
 #include "api/opengl/gl_renderer.h"
 
 #include <GLFW/glfw3.h>
@@ -31,7 +31,7 @@ namespace PhysiXal {
 
 		// Initialize the renderer
 #ifdef PX_PLATFORM_WINDOWS
-		VulkanRenderer::Init();
+		Renderer::Init();
 #endif
 #ifdef PX_PLATFORM_LINUX
 		OpenGLRenderer::Init();
@@ -45,7 +45,7 @@ namespace PhysiXal {
 	{
 		// Shutdown the renderer
 #ifdef PX_PLATFORM_WINDOWS
-		VulkanRenderer::Shutdown();
+		Renderer::Shutdown();
 #endif
 #ifdef PX_PLATFORM_LINUX
 		OpenGLRenderer::Shutdown();
@@ -103,7 +103,7 @@ namespace PhysiXal {
 				}
 				//Draw frame here
 #ifdef PX_PLATFORM_WINDOWS
-				VulkanRenderer::BeginFrame();
+				Renderer::BeginFrame();
 #endif
 #ifdef PX_PLATFORM_LINUX
 				OpenGLRenderer::BeginFrame();

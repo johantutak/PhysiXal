@@ -6,6 +6,7 @@
 #ifdef PX_PLATFORM_LINUX
     #include <../../../PhysiXal/thirdparty/glad/include/glad/glad.h>
 #endif
+
 namespace PhysiXal {
     
 #ifdef PX_PLATFORM_LINUX

@@ -3,6 +3,10 @@
 
 #include "api/vulkan/vk_context.h"
 
+#include "core/application.h"
+
+#include <set>
+
 namespace PhysiXal {
 
 #ifdef PX_PLATFORM_WINDOWS
@@ -11,7 +15,7 @@ namespace PhysiXal {
     {
         PX_CORE_INFO("Finding suitable device (physical)");
 
-        auto vkInstance = VulkanContext::GetInstance();
+        auto vkInstance = VulkanContext::GetVulkanInstance();
 
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(vkInstance, &deviceCount, nullptr);
@@ -64,6 +68,14 @@ namespace PhysiXal {
                 indices.m_GraphicsFamily = i;
             }
 
+            VkBool32 presentSupport = false;
+            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_Surface, &presentSupport);
+
+            if (presentSupport) 
+            {
+                indices.m_PresentFamily = i;
+            }
+
             if (indices.IsComplete()) 
             {
                 break;
@@ -81,21 +93,27 @@ namespace PhysiXal {
 
         QueueFamilyIndices indices = FindQueueFamilies(m_PhysicalDevice);
 
-        VkDeviceQueueCreateInfo queueCreateInfo{};
-        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-        queueCreateInfo.queueFamilyIndex = indices.m_GraphicsFamily.value();
-        queueCreateInfo.queueCount = 1;
+        std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+        std::set<uint32_t> uniqueQueueFamilies = { indices.m_GraphicsFamily.value(), indices.m_PresentFamily.value() };
 
         float queuePriority = 1.0f;
-        queueCreateInfo.pQueuePriorities = &queuePriority;
+        for (uint32_t queueFamily : uniqueQueueFamilies) 
+        {
+            VkDeviceQueueCreateInfo queueCreateInfo{};
+            queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            queueCreateInfo.queueFamilyIndex = queueFamily;
+            queueCreateInfo.queueCount = 1;
+            queueCreateInfo.pQueuePriorities = &queuePriority;
+            queueCreateInfos.push_back(queueCreateInfo);
+        }
 
         VkPhysicalDeviceFeatures deviceFeatures{};
 
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 
-        createInfo.pQueueCreateInfos = &queueCreateInfo;
-        createInfo.queueCreateInfoCount = 1;
+        createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+        createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
         createInfo.pEnabledFeatures = &deviceFeatures;
 
@@ -117,6 +135,7 @@ namespace PhysiXal {
         }
 
         vkGetDeviceQueue(m_LogicalDevice, indices.m_GraphicsFamily.value(), 0, &m_GraphicsQueue);
+        vkGetDeviceQueue(m_LogicalDevice, indices.m_PresentFamily.value(), 0, &m_PresentQueue);
     }
     
     void VulkanDevice::DestroyDevice()
@@ -124,6 +143,28 @@ namespace PhysiXal {
         PX_CORE_WARN("...Unloading the device (logical)");
 
         vkDestroyDevice(m_LogicalDevice, nullptr);
+    }
+
+    void VulkanDevice::CreateSurface()
+    {
+        PX_CORE_INFO("Creating Vulkan surface");
+
+        auto vkInstance = VulkanContext::GetVulkanInstance();
+        auto vkWindow = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+        if (glfwCreateWindowSurface(vkInstance, vkWindow, nullptr, &m_Surface) != VK_SUCCESS)
+        {
+            PX_CORE_ERROR("Failed to create window surface!");
+        }
+    }
+
+    void VulkanDevice::DestroySurface()
+    {
+        PX_CORE_WARN("...Destroying Vulkan surface");
+
+        auto vkInstance = VulkanContext::GetVulkanInstance();
+
+        vkDestroySurfaceKHR(vkInstance, m_Surface, nullptr);
     }
 #endif
 }

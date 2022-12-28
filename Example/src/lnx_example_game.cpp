@@ -1,8 +1,9 @@
 #include "lnx_example_game.h"
 
-#include <GLFW/glfw3.h>
-#include <glad/include/glad/glad.h>
-
+#ifdef PX_PLATFORM_LINUX
+    #include <GLFW/glfw3.h>
+    #include <glad/include/glad/glad.h>
+#endif
 #include <iostream>
 
 #ifdef PX_PLATFORM_LINUX

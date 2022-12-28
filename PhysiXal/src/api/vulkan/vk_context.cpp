@@ -39,7 +39,7 @@ namespace PhysiXal {
 		}
 	}
 
-	void VulkanContext::InitContext()
+	void VulkanContext::CreateContext()
 	{
 		PX_CORE_INFO("Creating Vulkan context");
 

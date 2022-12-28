@@ -55,7 +55,7 @@ project "PhysiXal"
 	location "PhysiXal"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++20"
+	cppdialect "C++17"
 	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -98,7 +98,7 @@ project "PhysiXal"
 	flags { "NoPCH" }
 
 	filter "system:windows"
-		cppdialect "C++20"
+		cppdialect "C++17"
 		staticruntime "on"
 		systemversion "latest"
 
@@ -139,7 +139,7 @@ project "Example"
 	location "Example"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++20"
+	cppdialect "C++17"
 	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -166,7 +166,7 @@ project "Example"
 	}
 	
 	filter "system:windows"
-		cppdialect "C++20"
+		cppdialect "C++17"
 		staticruntime "on"
 		systemversion "latest"
 

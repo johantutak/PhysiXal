@@ -7,10 +7,10 @@ namespace PhysiXal {
 	class VulkanRenderer
 	{
 	public:
-		static void Init();
-		static void Shutdown();
+		void Init();
+		void Shutdown();
 
-		static void BeginFrame();
+		void BeginFrame();
 	private:
 	};
 #endif
