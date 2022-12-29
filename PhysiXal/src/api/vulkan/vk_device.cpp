@@ -342,5 +342,46 @@ namespace PhysiXal {
             return actualExtent;
         }
     }
+
+    void VulkanDevice::CreateImageViews()
+    {
+        PX_CORE_INFO("Setting up and creating Vulkan image views");
+
+        m_SwapChainImageViews.resize(m_SwapChainImages.size());
+
+        for (size_t i = 0; i < m_SwapChainImages.size(); i++) 
+        {
+            VkImageViewCreateInfo createInfo{};
+            createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+            createInfo.image = m_SwapChainImages[i];
+            createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+            createInfo.format = m_SwapChainImageFormat;
+            createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            createInfo.subresourceRange.baseMipLevel = 0;
+            createInfo.subresourceRange.levelCount = 1;
+            createInfo.subresourceRange.baseArrayLayer = 0;
+            createInfo.subresourceRange.layerCount = 1;
+
+            if (vkCreateImageView(m_LogicalDevice, &createInfo, nullptr, &m_SwapChainImageViews[i]) != VK_SUCCESS) 
+            {
+                PX_CORE_ERROR("Failed to create image views!");
+            }
+        }
+    }
+
+    void VulkanDevice::DestroyImageViews()
+    {
+        PX_CORE_WARN("...Destroying Vulkan image views");
+
+        for (auto imageView : m_SwapChainImageViews) 
+        {
+            vkDestroyImageView(m_LogicalDevice, imageView, nullptr);
+        }
+
+    }
 #endif
 }

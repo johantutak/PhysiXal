@@ -34,6 +34,7 @@ namespace PhysiXal {
 	public:
 		// Physical Device
 		void PickPhysicalDevice();
+		
 		bool IsDeviceSuitable(VkPhysicalDevice device);
 		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
 		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
@@ -41,18 +42,25 @@ namespace PhysiXal {
 		//  Logical Device
 		void CreateLogicalDevice();
 		void DestroyDevice();
+		
+		VkDevice GetVulkanDevice() { return m_LogicalDevice; }
 
 		// Surface
 		void CreateSurface();
 		void DestroySurface();
 
-		// SwapChain
+		// Swap chain
 		void CreateSwapChain();
 		void DestroySwapChain();
+		
 		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+		
+		// Image views
+		void CreateImageViews();
+		void DestroyImageViews();
 	private:
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
 		
@@ -67,6 +75,8 @@ namespace PhysiXal {
 		std::vector<VkImage> m_SwapChainImages;
 		VkFormat m_SwapChainImageFormat;
 		VkExtent2D m_SwapChainExtent;
+
+		std::vector<VkImageView> m_SwapChainImageViews;
 	};
 #endif
 }
