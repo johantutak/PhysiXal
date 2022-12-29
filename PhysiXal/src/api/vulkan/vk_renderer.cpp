@@ -48,10 +48,12 @@ namespace PhysiXal {
 		m_Device->CreateSurface();
 		m_Device->PickPhysicalDevice();
 		m_Device->CreateLogicalDevice();
+		m_Device->CreateSwapChain();
 	}
 	
 	void VulkanRenderer::Shutdown()
 	{
+		m_Device->DestroySwapChain();
 		m_Device->DestroyDevice();
 		m_Device->DestroySurface();
 		m_Context->DestroyContext();
