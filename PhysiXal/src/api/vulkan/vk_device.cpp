@@ -252,7 +252,7 @@ namespace PhysiXal {
         m_SwapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(s_LogicalDevice, m_SwapChain, &imageCount, m_SwapChainImages.data());
 
-        m_SwapChainImageFormat = surfaceFormat.format;
+        s_SwapChainImageFormat = surfaceFormat.format;
         m_SwapChainExtent = extent;
     }
 
@@ -355,7 +355,7 @@ namespace PhysiXal {
             createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
             createInfo.image = m_SwapChainImages[i];
             createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-            createInfo.format = m_SwapChainImageFormat;
+            createInfo.format = s_SwapChainImageFormat;
             createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
             createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
             createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;

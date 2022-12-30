@@ -45,6 +45,8 @@ namespace PhysiXal {
 		
 		static VkDevice GetVulkanDevice() { return s_LogicalDevice; }
 
+		static VkFormat GetVulkanImageFormat() { return s_SwapChainImageFormat; }
+
 		// Surface
 		void CreateSurface();
 		void DestroySurface();
@@ -73,7 +75,7 @@ namespace PhysiXal {
 		
 		VkSwapchainKHR m_SwapChain;
 		std::vector<VkImage> m_SwapChainImages;
-		VkFormat m_SwapChainImageFormat;
+		inline static VkFormat s_SwapChainImageFormat;
 		VkExtent2D m_SwapChainExtent;
 
 		std::vector<VkImageView> m_SwapChainImageViews;

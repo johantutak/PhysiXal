@@ -10,9 +10,9 @@ namespace PhysiXal {
 
 #ifdef PX_PLATFORM_WINDOWS
 
-    void VulkanPipeline::CreateGraphicsPipeline()
+    void VulkanPipeline::InitGraphicsPipeline()
     {
-        PX_CORE_INFO("Creating graphics pipeline");
+        PX_CORE_INFO("Creating the layout of the graphics pipeline");
 
         auto vertShaderCode = ReadFile("../Example/assets/shaders/base_vert.spv");
         auto fragShaderCode = ReadFile("../Example/assets/shaders/base_frag.spv");
@@ -99,6 +99,29 @@ namespace PhysiXal {
             PX_CORE_ERROR("Failed to create pipeline layout!");
         }
 
+        PX_CORE_INFO("Initializing the graphics pipeline");
+
+        VkGraphicsPipelineCreateInfo pipelineInfo{};
+        pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        pipelineInfo.stageCount = 2;
+        pipelineInfo.pStages = shaderStages;
+        pipelineInfo.pVertexInputState = &vertexInputInfo;
+        pipelineInfo.pInputAssemblyState = &inputAssembly;
+        pipelineInfo.pViewportState = &viewportState;
+        pipelineInfo.pRasterizationState = &rasterizer;
+        pipelineInfo.pMultisampleState = &multisampling;
+        pipelineInfo.pColorBlendState = &colorBlending;
+        pipelineInfo.pDynamicState = &dynamicState;
+        pipelineInfo.layout = s_PipelineLayout;
+        pipelineInfo.renderPass = m_RenderPass;
+        pipelineInfo.subpass = 0;
+        pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+        if (vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline) != VK_SUCCESS)
+        {
+            PX_CORE_ERROR("Failed to create graphics pipeline!");
+        }
+
         vkDestroyShaderModule(vkDevice, fragShaderModule, nullptr);
         vkDestroyShaderModule(vkDevice, vertShaderModule, nullptr);
     }
@@ -106,6 +129,13 @@ namespace PhysiXal {
     void VulkanPipeline::ShutdownGraphicsPipeline()
     {
         PX_CORE_WARN("...Shutting down the graphics pipeline");
+
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        vkDestroyPipeline(vkDevice, m_GraphicsPipeline, nullptr);
+
+        PX_CORE_WARN("...Destroying the layout of the graphics pipeline");
+
+        vkDestroyPipelineLayout(vkDevice, s_PipelineLayout, nullptr);
     }
 
     VkShaderModule VulkanPipeline::CreateShaderModule(const std::vector<char>& code)
@@ -143,6 +173,52 @@ namespace PhysiXal {
         file.close();
 
         return buffer;
+    }
+
+    void VulkanPipeline::CreateRenderPass()
+    {
+        PX_CORE_INFO("Creating Vulkan context");
+
+        VkAttachmentDescription colorAttachment{};
+        VkFormat vkSwapChainImageFormat = VulkanDevice::GetVulkanImageFormat();
+        colorAttachment.format = vkSwapChainImageFormat;
+        colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+        colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+        colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+        VkAttachmentReference colorAttachmentRef{};
+        colorAttachmentRef.attachment = 0;
+        colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+        VkSubpassDescription subpass{};
+        subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+        subpass.colorAttachmentCount = 1;
+        subpass.pColorAttachments = &colorAttachmentRef;
+
+        VkRenderPassCreateInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+        renderPassInfo.attachmentCount = 1;
+        renderPassInfo.pAttachments = &colorAttachment;
+        renderPassInfo.subpassCount = 1;
+        renderPassInfo.pSubpasses = &subpass;
+
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        if (vkCreateRenderPass(vkDevice, &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
+        {
+            PX_CORE_ERROR("Failed to create render pass!");
+        }
+    }
+
+    void VulkanPipeline::DestroyRenderPass()
+    {
+        PX_CORE_WARN("...Destroying Vulkan context");
+
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        vkDestroyRenderPass(vkDevice, m_RenderPass, nullptr);
     }
 #endif
 }

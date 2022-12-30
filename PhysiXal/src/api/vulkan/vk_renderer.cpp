@@ -3,7 +3,6 @@
 
 #include "api/vulkan/vk_context.h"
 #include "api/vulkan/vk_device.h"
-#include "api/vulkan/vk_swap_chain.h"
 #include "api/vulkan/vk_pipeline.h"
 
 #define GLFW_INCLUDE_VULKAN
@@ -16,27 +15,18 @@ namespace PhysiXal {
 	struct GLFWwindow* windowHandle;
 
 	static VulkanContext* m_Context = nullptr;
+	static VulkanDevice* m_Device = nullptr;
+	static VulkanPipeline* m_Pipeline = nullptr;
 
 	static VulkanContext* InitContext()
 	{
 		return new VulkanContext();
 	}
 
-	static VulkanDevice* m_Device = nullptr;
-
 	static VulkanDevice* InitDevice()
 	{
 		return new VulkanDevice();
 	}
-
-	static VulkanSwapChain* m_SwapChain = nullptr;
-
-	static VulkanSwapChain* InitSwapChain()
-	{
-		return new VulkanSwapChain();
-	}
-
-	static VulkanPipeline* m_Pipeline = nullptr;
 
 	static VulkanPipeline* InitPipeline()
 	{
@@ -49,22 +39,18 @@ namespace PhysiXal {
 		
 		m_Context = InitContext();
 		m_Device = InitDevice();
-		m_SwapChain = InitSwapChain();
 		m_Pipeline = InitPipeline();
 
 
 		m_Context->CreateContext();
 		m_Context->SetupDebugMessenger();
-
 		m_Device->CreateSurface();
-
 		m_Device->PickPhysicalDevice();
 		m_Device->CreateLogicalDevice();
-
 		m_Device->CreateSwapChain();
 		m_Device->CreateImageViews();
-
-		m_Pipeline->CreateGraphicsPipeline();
+		m_Pipeline->CreateRenderPass();
+		m_Pipeline->InitGraphicsPipeline();
 	}
 	
 	void VulkanRenderer::Shutdown()
@@ -72,14 +58,11 @@ namespace PhysiXal {
 		PX_CORE_WARN("...Shutting down the renderer");
 
 		m_Pipeline->ShutdownGraphicsPipeline();
-
+		m_Pipeline->DestroyRenderPass();
 		m_Device->DestroyImageViews();
 		m_Device->DestroySwapChain();
-
 		m_Device->DestroyDevice();
-
 		m_Device->DestroySurface();
-
 		m_Context->DestroyContext();
 	}
 

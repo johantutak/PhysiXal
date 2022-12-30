@@ -12,14 +12,22 @@ namespace PhysiXal {
 	{
 	public:
 		// Graphics pipeline
-		void CreateGraphicsPipeline();
+		void InitGraphicsPipeline();
 		void ShutdownGraphicsPipeline();
 
 		// Shader
 		VkShaderModule CreateShaderModule(const std::vector<char>& code);
 		static std::vector<char> ReadFile(const std::string& filename);
+
+		// Render pass
+		void CreateRenderPass();
+		void DestroyRenderPass();
 	private:
+	VkPipeline m_GraphicsPipeline;
+
 	inline static VkPipelineLayout s_PipelineLayout;
+
+	VkRenderPass m_RenderPass;
 	};
 #endif
 }
