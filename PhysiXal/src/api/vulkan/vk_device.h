@@ -43,7 +43,7 @@ namespace PhysiXal {
 		void CreateLogicalDevice();
 		void DestroyDevice();
 		
-		VkDevice GetVulkanDevice() { return m_LogicalDevice; }
+		static VkDevice GetVulkanDevice() { return s_LogicalDevice; }
 
 		// Surface
 		void CreateSurface();
@@ -64,7 +64,7 @@ namespace PhysiXal {
 	private:
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
 		
-		VkDevice m_LogicalDevice;
+		inline static VkDevice s_LogicalDevice;
 
 		VkQueue m_GraphicsQueue;
 		VkQueue m_PresentQueue;

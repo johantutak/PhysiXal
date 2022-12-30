@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef PX_PLATFORM_WINDOWS
+#include <vulkan/vulkan.h>
+#endif
+
 namespace PhysiXal {
 
 #ifdef PX_PLATFORM_WINDOWS
@@ -7,13 +11,15 @@ namespace PhysiXal {
 	class VulkanPipeline
 	{
 	public:
-		/*// Graphics pipeline
+		// Graphics pipeline
 		void CreateGraphicsPipeline();
 		void ShutdownGraphicsPipeline();
 
 		// Shader
-		static std::vector<char> ReadFile(const std::string& filename);*/
+		VkShaderModule CreateShaderModule(const std::vector<char>& code);
+		static std::vector<char> ReadFile(const std::string& filename);
 	private:
+	inline static VkPipelineLayout s_PipelineLayout;
 	};
 #endif
 }

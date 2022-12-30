@@ -158,20 +158,20 @@ namespace PhysiXal {
             createInfo.enabledLayerCount = 0;
         }
 
-        if (vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_LogicalDevice) != VK_SUCCESS) 
+        if (vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &s_LogicalDevice) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create logical device!");
         }
 
-        vkGetDeviceQueue(m_LogicalDevice, indices.m_GraphicsFamily.value(), 0, &m_GraphicsQueue);
-        vkGetDeviceQueue(m_LogicalDevice, indices.m_PresentFamily.value(), 0, &m_PresentQueue);
+        vkGetDeviceQueue(s_LogicalDevice, indices.m_GraphicsFamily.value(), 0, &m_GraphicsQueue);
+        vkGetDeviceQueue(s_LogicalDevice, indices.m_PresentFamily.value(), 0, &m_PresentQueue);
     }
     
     void VulkanDevice::DestroyDevice()
     {
         PX_CORE_WARN("...Unloading the device (logical)");
 
-        vkDestroyDevice(m_LogicalDevice, nullptr);
+        vkDestroyDevice(s_LogicalDevice, nullptr);
     }
 
     void VulkanDevice::CreateSurface()
@@ -243,14 +243,14 @@ namespace PhysiXal {
 
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        if (vkCreateSwapchainKHR(m_LogicalDevice, &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS) 
+        if (vkCreateSwapchainKHR(s_LogicalDevice, &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create swap chain!");
         }
 
-        vkGetSwapchainImagesKHR(m_LogicalDevice, m_SwapChain, &imageCount, nullptr);
+        vkGetSwapchainImagesKHR(s_LogicalDevice, m_SwapChain, &imageCount, nullptr);
         m_SwapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(m_LogicalDevice, m_SwapChain, &imageCount, m_SwapChainImages.data());
+        vkGetSwapchainImagesKHR(s_LogicalDevice, m_SwapChain, &imageCount, m_SwapChainImages.data());
 
         m_SwapChainImageFormat = surfaceFormat.format;
         m_SwapChainExtent = extent;
@@ -260,7 +260,7 @@ namespace PhysiXal {
     {
         PX_CORE_WARN("...Destroying Vulkan swap chain");
 
-        vkDestroySwapchainKHR(m_LogicalDevice, m_SwapChain, nullptr);
+        vkDestroySwapchainKHR(s_LogicalDevice, m_SwapChain, nullptr);
     }
 
     SwapChainSupportDetails VulkanDevice::QuerySwapChainSupport(VkPhysicalDevice device)
@@ -366,7 +366,7 @@ namespace PhysiXal {
             createInfo.subresourceRange.baseArrayLayer = 0;
             createInfo.subresourceRange.layerCount = 1;
 
-            if (vkCreateImageView(m_LogicalDevice, &createInfo, nullptr, &m_SwapChainImageViews[i]) != VK_SUCCESS) 
+            if (vkCreateImageView(s_LogicalDevice, &createInfo, nullptr, &m_SwapChainImageViews[i]) != VK_SUCCESS)
             {
                 PX_CORE_ERROR("Failed to create image views!");
             }
@@ -379,9 +379,8 @@ namespace PhysiXal {
 
         for (auto imageView : m_SwapChainImageViews) 
         {
-            vkDestroyImageView(m_LogicalDevice, imageView, nullptr);
+            vkDestroyImageView(s_LogicalDevice, imageView, nullptr);
         }
-
     }
 #endif
 }

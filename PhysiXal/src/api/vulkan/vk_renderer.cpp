@@ -64,14 +64,14 @@ namespace PhysiXal {
 		m_Device->CreateSwapChain();
 		m_Device->CreateImageViews();
 
-		//m_Pipeline->CreateGraphicsPipeline();
+		m_Pipeline->CreateGraphicsPipeline();
 	}
 	
 	void VulkanRenderer::Shutdown()
 	{
 		PX_CORE_WARN("...Shutting down the renderer");
 
-		//m_Pipeline->ShutdownGraphicsPipeline();
+		m_Pipeline->ShutdownGraphicsPipeline();
 
 		m_Device->DestroyImageViews();
 		m_Device->DestroySwapChain();

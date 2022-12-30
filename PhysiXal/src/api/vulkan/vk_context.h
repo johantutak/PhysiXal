@@ -36,7 +36,7 @@ namespace PhysiXal {
 		// Get extensions and validation Layers
 		std::vector<const char*> GetRequiredExtensions();
 		bool CheckValidationLayerSupport();
-	private: 
+	private:
 		// Vulkan instance
 		inline static VkInstance s_VulkanInstance;
 
