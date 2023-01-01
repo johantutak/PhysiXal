@@ -13,13 +13,13 @@ namespace PhysiXal {
     void OpenGLRenderer::Init()
     {
         PX_CORE_INFO("Initializing the renderer");
-        OpenGLContext::InitContext();
+        //OpenGLContext::InitContext();
     }
 	
     void OpenGLRenderer::Shutdown()
     {
         PX_CORE_WARN("...Shutting down the renderer");
-        OpenGLContext::DestroyContext();
+        //OpenGLContext::DestroyContext();
     }
 
     void OpenGLRenderer::BeginFrame()

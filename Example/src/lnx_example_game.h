@@ -21,7 +21,6 @@ private:
     PhysiXal::OpenGLShader* m_Shader;
     
     // VERTEX ARRAY
-    unsigned int VBO;
-    unsigned int VAO;
+    unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
 };
 #endif

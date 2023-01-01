@@ -1,17 +1,24 @@
 #pragma once
 
+#ifdef PX_PLATFORM_LINUX
+struct GLFWwindow;
+#endif
+
 namespace PhysiXal {
     
 #ifdef PX_PLATFORM_LINUX
-
-    struct GLFWwindow;
     
     class OpenGLContext
     {
     public:
-        static void InitContext();
-        static void DestroyContext();
+        OpenGLContext(GLFWwindow* windowHandle);
+        
+        void CreateContext();
+        void DestroyContext();
+        
+        void SwapBuffers();
     private:
+        GLFWwindow* m_WindowHandle;
     };
 #endif
 }
