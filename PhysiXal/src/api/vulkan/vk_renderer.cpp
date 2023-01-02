@@ -4,6 +4,8 @@
 #include "api/vulkan/vk_context.h"
 #include "api/vulkan/vk_device.h"
 #include "api/vulkan/vk_pipeline.h"
+#include "api/vulkan/vk_framebuffer.h"
+#include "api/vulkan/vk_command_buffer.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -17,6 +19,8 @@ namespace PhysiXal {
 	static VulkanContext* m_Context = nullptr;
 	static VulkanDevice* m_Device = nullptr;
 	static VulkanPipeline* m_Pipeline = nullptr;
+	static VulkanFramebuffer* m_Framebuffer = nullptr;
+	static VulkanCommandBuffer* m_CommandBuffer = nullptr;
 
 	static VulkanContext* InitContext()
 	{
@@ -33,6 +37,16 @@ namespace PhysiXal {
 		return new VulkanPipeline();
 	}
 
+	static VulkanFramebuffer* InitFramebuffer()
+	{
+		return new VulkanFramebuffer();
+	}
+
+	static VulkanCommandBuffer* InitCommandBuffer()
+	{
+		return new VulkanCommandBuffer();
+	}
+
 	void VulkanRenderer::Init()
 	{
 		PX_CORE_INFO("Initializing the renderer");
@@ -40,6 +54,8 @@ namespace PhysiXal {
 		m_Context = InitContext();
 		m_Device = InitDevice();
 		m_Pipeline = InitPipeline();
+		m_Framebuffer = InitFramebuffer();
+		m_CommandBuffer = InitCommandBuffer();
 
 
 		m_Context->CreateContext();
@@ -51,12 +67,18 @@ namespace PhysiXal {
 		m_Device->CreateImageViews();
 		m_Pipeline->CreateRenderPass();
 		m_Pipeline->InitGraphicsPipeline();
+		m_Framebuffer->CreateFramebuffer();
+		m_Device->CreateCommandPool();
+		m_CommandBuffer->CreateCommandBuffer();
 	}
 	
 	void VulkanRenderer::Shutdown()
 	{
 		PX_CORE_WARN("...Shutting down the renderer");
 
+		m_CommandBuffer->DestroyCommandBuffer();
+		m_Device->DestroyCommandPool();
+		m_Framebuffer->DestroyFramebuffer();
 		m_Pipeline->ShutdownGraphicsPipeline();
 		m_Pipeline->DestroyRenderPass();
 		m_Device->DestroyImageViews();

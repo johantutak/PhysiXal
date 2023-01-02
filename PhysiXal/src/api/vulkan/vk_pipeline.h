@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef PX_PLATFORM_WINDOWS
-#include <vulkan/vulkan.h>
+	#include <vulkan/vulkan.h>
 #endif
 
 namespace PhysiXal {
@@ -15,6 +15,8 @@ namespace PhysiXal {
 		void InitGraphicsPipeline();
 		void ShutdownGraphicsPipeline();
 
+		static VkPipeline GetVulkanPipeline() { return s_GraphicsPipeline; }
+
 		// Shader
 		VkShaderModule CreateShaderModule(const std::vector<char>& code);
 		static std::vector<char> ReadFile(const std::string& filename);
@@ -22,12 +24,14 @@ namespace PhysiXal {
 		// Render pass
 		void CreateRenderPass();
 		void DestroyRenderPass();
+
+		static VkRenderPass GetVulkanRenderPass() { return s_RenderPass; }
 	private:
-	VkPipeline m_GraphicsPipeline;
+		inline static VkPipeline s_GraphicsPipeline;
 
-	inline static VkPipelineLayout s_PipelineLayout;
+		inline static VkPipelineLayout s_PipelineLayout;
 
-	VkRenderPass m_RenderPass;
+		inline static VkRenderPass s_RenderPass;
 	};
 #endif
 }

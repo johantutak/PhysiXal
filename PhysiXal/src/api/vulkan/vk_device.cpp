@@ -253,7 +253,7 @@ namespace PhysiXal {
         vkGetSwapchainImagesKHR(s_LogicalDevice, m_SwapChain, &imageCount, m_SwapChainImages.data());
 
         s_SwapChainImageFormat = surfaceFormat.format;
-        m_SwapChainExtent = extent;
+        s_SwapChainExtent = extent;
     }
 
     void VulkanDevice::DestroySwapChain()
@@ -347,7 +347,7 @@ namespace PhysiXal {
     {
         PX_CORE_INFO("Setting up and creating Vulkan image views");
 
-        m_SwapChainImageViews.resize(m_SwapChainImages.size());
+        s_SwapChainImageViews.resize(m_SwapChainImages.size());
 
         for (size_t i = 0; i < m_SwapChainImages.size(); i++) 
         {
@@ -366,7 +366,7 @@ namespace PhysiXal {
             createInfo.subresourceRange.baseArrayLayer = 0;
             createInfo.subresourceRange.layerCount = 1;
 
-            if (vkCreateImageView(s_LogicalDevice, &createInfo, nullptr, &m_SwapChainImageViews[i]) != VK_SUCCESS)
+            if (vkCreateImageView(s_LogicalDevice, &createInfo, nullptr, &s_SwapChainImageViews[i]) != VK_SUCCESS)
             {
                 PX_CORE_ERROR("Failed to create image views!");
             }
@@ -377,10 +377,30 @@ namespace PhysiXal {
     {
         PX_CORE_WARN("...Destroying Vulkan image views");
 
-        for (auto imageView : m_SwapChainImageViews) 
+        for (auto imageView : s_SwapChainImageViews)
         {
             vkDestroyImageView(s_LogicalDevice, imageView, nullptr);
         }
+    }
+
+    void VulkanDevice::CreateCommandPool()
+    {
+        QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_PhysicalDevice);
+
+        VkCommandPoolCreateInfo poolInfo{};
+        poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+        poolInfo.queueFamilyIndex = queueFamilyIndices.m_GraphicsFamily.value();
+
+        if (vkCreateCommandPool(s_LogicalDevice, &poolInfo, nullptr, &s_CommandPool) != VK_SUCCESS) 
+        {
+            PX_CORE_ERROR("Failed to create command pool!");
+        }
+    }
+
+    void VulkanDevice::DestroyCommandPool()
+    {
+        vkDestroyCommandPool(s_LogicalDevice, s_CommandPool, nullptr);
     }
 #endif
 }

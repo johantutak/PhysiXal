@@ -113,11 +113,11 @@ namespace PhysiXal {
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
         pipelineInfo.layout = s_PipelineLayout;
-        pipelineInfo.renderPass = m_RenderPass;
+        pipelineInfo.renderPass = s_RenderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline) != VK_SUCCESS)
+        if (vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &s_GraphicsPipeline) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create graphics pipeline!");
         }
@@ -131,7 +131,7 @@ namespace PhysiXal {
         PX_CORE_WARN("...Shutting down the graphics pipeline");
 
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        vkDestroyPipeline(vkDevice, m_GraphicsPipeline, nullptr);
+        vkDestroyPipeline(vkDevice, s_GraphicsPipeline, nullptr);
 
         PX_CORE_WARN("...Destroying the layout of the graphics pipeline");
 
@@ -207,7 +207,7 @@ namespace PhysiXal {
         renderPassInfo.pSubpasses = &subpass;
 
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        if (vkCreateRenderPass(vkDevice, &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
+        if (vkCreateRenderPass(vkDevice, &renderPassInfo, nullptr, &s_RenderPass) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create render pass!");
         }
@@ -218,7 +218,7 @@ namespace PhysiXal {
         PX_CORE_WARN("...Destroying Vulkan context");
 
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        vkDestroyRenderPass(vkDevice, m_RenderPass, nullptr);
+        vkDestroyRenderPass(vkDevice, s_RenderPass, nullptr);
     }
 #endif
 }

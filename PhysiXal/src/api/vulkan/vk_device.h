@@ -39,13 +39,11 @@ namespace PhysiXal {
 		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
 		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
-		//  Logical Device
+		// Logical Device
 		void CreateLogicalDevice();
 		void DestroyDevice();
 		
 		static VkDevice GetVulkanDevice() { return s_LogicalDevice; }
-
-		static VkFormat GetVulkanImageFormat() { return s_SwapChainImageFormat; }
 
 		// Surface
 		void CreateSurface();
@@ -59,10 +57,21 @@ namespace PhysiXal {
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
+		static VkFormat GetVulkanImageFormat() { return s_SwapChainImageFormat; }
+		static VkExtent2D GetVulkanSwapChainExtent() { return s_SwapChainExtent; }
 		
 		// Image views
 		void CreateImageViews();
 		void DestroyImageViews();
+
+		static std::vector<VkImageView> GetVulkanImageViews() { return s_SwapChainImageViews; }
+
+		// Command Pool
+		void CreateCommandPool();
+		void DestroyCommandPool();
+
+		static VkCommandPool GetVulkanCommandPool() { return s_CommandPool; }
 	private:
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
 		
@@ -76,9 +85,11 @@ namespace PhysiXal {
 		VkSwapchainKHR m_SwapChain;
 		std::vector<VkImage> m_SwapChainImages;
 		inline static VkFormat s_SwapChainImageFormat;
-		VkExtent2D m_SwapChainExtent;
+		inline static VkExtent2D s_SwapChainExtent;
 
-		std::vector<VkImageView> m_SwapChainImageViews;
+		inline static std::vector<VkImageView> s_SwapChainImageViews;
+
+		inline static VkCommandPool s_CommandPool;
 	};
 #endif
 }
