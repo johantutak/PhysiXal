@@ -29,5 +29,10 @@ namespace PhysiXal {
 		s_Renderer->BeginFrame();
 	}
 
+	void Renderer::WaitAndIdle()
+	{
+		s_Renderer->WaitAndIdle();
+	}
+
 #endif
 }

@@ -25,7 +25,7 @@ namespace PhysiXal {
         allocInfo.commandBufferCount = 1;
 
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        if (vkAllocateCommandBuffers(vkDevice, &allocInfo, &m_CommandBuffer) != VK_SUCCESS) 
+        if (vkAllocateCommandBuffers(vkDevice, &allocInfo, &s_CommandBuffer) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to allocate command buffer!");
         }
@@ -35,7 +35,9 @@ namespace PhysiXal {
     {
         PX_CORE_WARN("...Destroying Vulkan command buffer");
 
-
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
+        vkDestroyCommandPool(vkDevice, vkCommandPool, nullptr);
     }
 
     void VulkanCommandBuffer::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
@@ -61,7 +63,7 @@ namespace PhysiXal {
         VkExtent2D vkSwapChainExtent2D = VulkanDevice::GetVulkanSwapChainExtent();
         renderPassInfo.renderArea.extent = vkSwapChainExtent2D;
 
-        VkClearValue clearColor = { {{0.1f, 0.1f, 0.1f, 1.0f}} };
+        VkClearValue clearColor = { {{0.02f, 0.02f, 0.02f, 1.0f}} };
         renderPassInfo.clearValueCount = 1;
         renderPassInfo.pClearValues = &clearColor;
 

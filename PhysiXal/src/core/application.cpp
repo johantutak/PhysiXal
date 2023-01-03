@@ -111,6 +111,10 @@ namespace PhysiXal {
 			}
 
 			m_Window->OnUpdate();
+
+#ifdef PX_PLATFORM_WINDOWS
+			Renderer::WaitAndIdle();
+#endif
 		}
 	}
 

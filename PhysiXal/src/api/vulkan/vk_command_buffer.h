@@ -15,9 +15,11 @@ namespace PhysiXal {
 		void CreateCommandBuffer();
 		void DestroyCommandBuffer();
 
+		static VkCommandBuffer GetVulkanCommandBuffer() { return s_CommandBuffer; }
+
 		void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 	private:
-		VkCommandBuffer m_CommandBuffer;
+		inline static VkCommandBuffer s_CommandBuffer;
 	};
 #endif
 }

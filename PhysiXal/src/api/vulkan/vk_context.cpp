@@ -12,7 +12,7 @@ namespace PhysiXal {
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanContext::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
 	{
-		PX_CORE_CRITICAL("Validation layer: {0}", pCallbackData->pMessage);
+		PX_CORE_TRACE("Validation layer: {0}", pCallbackData->pMessage);
 
 		return VK_FALSE;
 	}

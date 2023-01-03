@@ -45,6 +45,9 @@ namespace PhysiXal {
 		
 		static VkDevice GetVulkanDevice() { return s_LogicalDevice; }
 
+		static VkQueue GetVulkanGraphicsQueue() { return s_GraphicsQueue; }
+		static VkQueue GetVulkanPresentQueue() { return s_PresentQueue; }
+
 		// Surface
 		void CreateSurface();
 		void DestroySurface();
@@ -57,6 +60,8 @@ namespace PhysiXal {
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
+		static VkSwapchainKHR GetVulkanSwapChain() { return s_SwapChain; }
 
 		static VkFormat GetVulkanImageFormat() { return s_SwapChainImageFormat; }
 		static VkExtent2D GetVulkanSwapChainExtent() { return s_SwapChainExtent; }
@@ -77,12 +82,12 @@ namespace PhysiXal {
 		
 		inline static VkDevice s_LogicalDevice;
 
-		VkQueue m_GraphicsQueue;
-		VkQueue m_PresentQueue;
+		inline static VkQueue s_GraphicsQueue;
+		inline static VkQueue s_PresentQueue;
 
 		VkSurfaceKHR m_Surface;
 		
-		VkSwapchainKHR m_SwapChain;
+		inline static VkSwapchainKHR s_SwapChain;
 		std::vector<VkImage> m_SwapChainImages;
 		inline static VkFormat s_SwapChainImageFormat;
 		inline static VkExtent2D s_SwapChainExtent;

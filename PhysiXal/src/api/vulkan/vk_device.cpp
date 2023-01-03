@@ -163,8 +163,8 @@ namespace PhysiXal {
             PX_CORE_ERROR("Failed to create logical device!");
         }
 
-        vkGetDeviceQueue(s_LogicalDevice, indices.m_GraphicsFamily.value(), 0, &m_GraphicsQueue);
-        vkGetDeviceQueue(s_LogicalDevice, indices.m_PresentFamily.value(), 0, &m_PresentQueue);
+        vkGetDeviceQueue(s_LogicalDevice, indices.m_GraphicsFamily.value(), 0, &s_GraphicsQueue);
+        vkGetDeviceQueue(s_LogicalDevice, indices.m_PresentFamily.value(), 0, &s_PresentQueue);
     }
     
     void VulkanDevice::DestroyDevice()
@@ -243,14 +243,14 @@ namespace PhysiXal {
 
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        if (vkCreateSwapchainKHR(s_LogicalDevice, &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
+        if (vkCreateSwapchainKHR(s_LogicalDevice, &createInfo, nullptr, &s_SwapChain) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create swap chain!");
         }
 
-        vkGetSwapchainImagesKHR(s_LogicalDevice, m_SwapChain, &imageCount, nullptr);
+        vkGetSwapchainImagesKHR(s_LogicalDevice, s_SwapChain, &imageCount, nullptr);
         m_SwapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(s_LogicalDevice, m_SwapChain, &imageCount, m_SwapChainImages.data());
+        vkGetSwapchainImagesKHR(s_LogicalDevice, s_SwapChain, &imageCount, m_SwapChainImages.data());
 
         s_SwapChainImageFormat = surfaceFormat.format;
         s_SwapChainExtent = extent;
@@ -260,7 +260,7 @@ namespace PhysiXal {
     {
         PX_CORE_WARN("...Destroying Vulkan swap chain");
 
-        vkDestroySwapchainKHR(s_LogicalDevice, m_SwapChain, nullptr);
+        vkDestroySwapchainKHR(s_LogicalDevice, s_SwapChain, nullptr);
     }
 
     SwapChainSupportDetails VulkanDevice::QuerySwapChainSupport(VkPhysicalDevice device)

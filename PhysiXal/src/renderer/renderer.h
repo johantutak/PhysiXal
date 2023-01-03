@@ -13,6 +13,8 @@ namespace PhysiXal {
 		static void Shutdown();
 
 		static void BeginFrame();
+
+		static void WaitAndIdle();
 	private:
 	};
 #endif
