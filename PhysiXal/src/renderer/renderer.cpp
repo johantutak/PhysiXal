@@ -6,16 +6,11 @@
 namespace PhysiXal {
 
 #ifdef PX_PLATFORM_WINDOWS
+	
 	static VulkanRenderer* s_Renderer = nullptr;
-
-	static VulkanRenderer* InitRenderer()
-	{
-		return new VulkanRenderer();
-	}
 
 	void Renderer::Init()
 	{
-		s_Renderer = InitRenderer();
 		s_Renderer->Init();
 	}
 

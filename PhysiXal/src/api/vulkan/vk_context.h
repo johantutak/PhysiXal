@@ -23,7 +23,7 @@ namespace PhysiXal {
 	class VulkanContext
 	{
 	public:
-		// Create context
+		// Create context (instance)
 		void CreateContext();
 		void DestroyContext();
 
@@ -33,16 +33,16 @@ namespace PhysiXal {
 		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 		void SetupDebugMessenger();
 		
-		// Get extensions and validation Layers
+		// Extensions and validation layers
 		std::vector<const char*> GetRequiredExtensions();
 		bool CheckValidationLayerSupport();
 	private:
-		// Vulkan instance
 		inline static VkInstance s_VulkanInstance;
 
-		// Debug messenger
-		VkDebugUtilsMessengerEXT m_DebugMessenger;
-		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
+		inline static VkDebugUtilsMessengerEXT s_DebugMessenger;
+		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, 
+			VkDebugUtilsMessageTypeFlagsEXT messageType, 
+			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 	};
 #endif
 }

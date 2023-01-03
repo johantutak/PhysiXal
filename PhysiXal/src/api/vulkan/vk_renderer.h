@@ -21,9 +21,9 @@ namespace PhysiXal {
 		void CreateSyncObjects();
 		void DestroySyncObjects();
 	private:
-		VkSemaphore m_ImageAvailableSemaphore;
-		VkSemaphore m_RenderFinishedSemaphore;
-		VkFence m_InFlightFence;
+		inline static VkSemaphore s_ImageAvailableSemaphore;
+		inline static VkSemaphore s_RenderFinishedSemaphore;
+		inline static VkFence s_InFlightFence;
 	};
 #endif
 }

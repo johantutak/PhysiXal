@@ -3,7 +3,9 @@
 
 #include "api/vulkan/vk_context.h"
 #include "api/vulkan/vk_device.h"
+#include "api/vulkan/vk_swap_chain.h"
 #include "api/vulkan/vk_pipeline.h"
+#include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_framebuffer.h"
 #include "api/vulkan/vk_command_buffer.h"
 
@@ -18,55 +20,25 @@ namespace PhysiXal {
 
 	static VulkanContext* m_Context = nullptr;
 	static VulkanDevice* m_Device = nullptr;
+	static VulkanSwapChain* m_SwapChain = nullptr;
+	static VulkanRenderPass* m_RenderPass = nullptr;
 	static VulkanPipeline* m_Pipeline = nullptr;
 	static VulkanFramebuffer* m_Framebuffer = nullptr;
 	static VulkanCommandBuffer* m_CommandBuffer = nullptr;
 
-	static VulkanContext* InitContext()
-	{
-		return new VulkanContext();
-	}
-
-	static VulkanDevice* InitDevice()
-	{
-		return new VulkanDevice();
-	}
-
-	static VulkanPipeline* InitPipeline()
-	{
-		return new VulkanPipeline();
-	}
-
-	static VulkanFramebuffer* InitFramebuffer()
-	{
-		return new VulkanFramebuffer();
-	}
-
-	static VulkanCommandBuffer* InitCommandBuffer()
-	{
-		return new VulkanCommandBuffer();
-	}
-
 	void VulkanRenderer::Init()
 	{
 		PX_CORE_INFO("Initializing the renderer");
-		
-		m_Context = InitContext();
-		m_Device = InitDevice();
-		m_Pipeline = InitPipeline();
-		m_Framebuffer = InitFramebuffer();
-		m_CommandBuffer = InitCommandBuffer();
-
 
 		m_Context->CreateContext();
 		m_Context->SetupDebugMessenger();
 		m_Device->CreateSurface();
 		m_Device->PickPhysicalDevice();
 		m_Device->CreateLogicalDevice();
-		m_Device->CreateSwapChain();
-		m_Device->CreateImageViews();
-		m_Pipeline->CreateRenderPass();
-		m_Pipeline->InitGraphicsPipeline();
+		m_SwapChain->CreateSwapChain();
+		m_SwapChain->CreateImageViews();
+		m_RenderPass->CreateRenderPass();
+		m_Pipeline->CreateGraphicsPipeline();
 		m_Framebuffer->CreateFramebuffer();
 		m_Device->CreateCommandPool();
 		m_CommandBuffer->CreateCommandBuffer();
@@ -81,10 +53,10 @@ namespace PhysiXal {
 		m_CommandBuffer->DestroyCommandBuffer();
 		m_Device->DestroyCommandPool();
 		m_Framebuffer->DestroyFramebuffer();
-		m_Pipeline->ShutdownGraphicsPipeline();
-		m_Pipeline->DestroyRenderPass();
-		m_Device->DestroyImageViews();
-		m_Device->DestroySwapChain();
+		m_Pipeline->DestroyGraphicsPipeline();
+		m_RenderPass->DestroyRenderPass();
+		m_SwapChain->DestroyImageViews();
+		m_SwapChain->DestroySwapChain();
 		m_Device->DestroyDevice();
 		m_Device->DestroySurface();
 		m_Context->DestroyContext();
@@ -95,13 +67,13 @@ namespace PhysiXal {
 		PX_CORE_INFO("Drawing frame!");
 
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		vkWaitForFences(vkDevice, 1, &m_InFlightFence, VK_TRUE, UINT64_MAX);
-		vkResetFences(vkDevice, 1, &m_InFlightFence);
+		vkWaitForFences(vkDevice, 1, &s_InFlightFence, VK_TRUE, UINT64_MAX);
+		vkResetFences(vkDevice, 1, &s_InFlightFence);
 
 		uint32_t imageIndex;
 
-		VkSwapchainKHR vkSwapChain = VulkanDevice::GetVulkanSwapChain();
-		vkAcquireNextImageKHR(vkDevice, vkSwapChain, UINT64_MAX, m_ImageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+		VkSwapchainKHR vkSwapChain = VulkanSwapChain::GetVulkanSwapChain();
+		vkAcquireNextImageKHR(vkDevice, vkSwapChain, UINT64_MAX, s_ImageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
 		VkCommandBuffer vkCommandBuffer = VulkanCommandBuffer::GetVulkanCommandBuffer();
 		vkResetCommandBuffer(vkCommandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
@@ -110,7 +82,7 @@ namespace PhysiXal {
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-		VkSemaphore waitSemaphores[] = { m_ImageAvailableSemaphore };
+		VkSemaphore waitSemaphores[] = { s_ImageAvailableSemaphore };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
@@ -119,12 +91,12 @@ namespace PhysiXal {
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &vkCommandBuffer;
 
-		VkSemaphore signalSemaphores[] = { m_RenderFinishedSemaphore };
+		VkSemaphore signalSemaphores[] = { s_RenderFinishedSemaphore };
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
 		VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
-		if (vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, m_InFlightFence) != VK_SUCCESS) 
+		if (vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, s_InFlightFence) != VK_SUCCESS) 
 		{
 			PX_CORE_ERROR("Failed to submit draw command buffer!");
 		}
@@ -163,9 +135,9 @@ namespace PhysiXal {
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		if (vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &m_ImageAvailableSemaphore) != VK_SUCCESS ||
-			vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &m_RenderFinishedSemaphore) != VK_SUCCESS ||
-			vkCreateFence(vkDevice, &fenceInfo, nullptr, &m_InFlightFence) != VK_SUCCESS)
+		if (vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &s_ImageAvailableSemaphore) != VK_SUCCESS ||
+			vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &s_RenderFinishedSemaphore) != VK_SUCCESS ||
+			vkCreateFence(vkDevice, &fenceInfo, nullptr, &s_InFlightFence) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to create synchronization objects for a frame!");
 		}
@@ -176,9 +148,9 @@ namespace PhysiXal {
 		PX_CORE_WARN("...Destroying sync objects");
 
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		vkDestroySemaphore(vkDevice, m_ImageAvailableSemaphore, nullptr);
-		vkDestroySemaphore(vkDevice, m_RenderFinishedSemaphore, nullptr);
-		vkDestroyFence(vkDevice, m_InFlightFence, nullptr);
+		vkDestroySemaphore(vkDevice, s_ImageAvailableSemaphore, nullptr);
+		vkDestroySemaphore(vkDevice, s_RenderFinishedSemaphore, nullptr);
+		vkDestroyFence(vkDevice, s_InFlightFence, nullptr);
 	}
 #endif
 }

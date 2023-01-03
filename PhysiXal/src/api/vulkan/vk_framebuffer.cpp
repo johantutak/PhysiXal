@@ -2,6 +2,8 @@
 #include "api/vulkan/vk_framebuffer.h"
 
 #include "api/vulkan/vk_device.h"
+#include "api/vulkan/vk_swap_chain.h"
+#include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_pipeline.h"
 
 #define GLFW_INCLUDE_VULKAN
@@ -15,7 +17,7 @@ namespace PhysiXal {
     {
         PX_CORE_INFO("Creating Vulkan framebuffer");
         
-        std::vector<VkImageView> vkSwapChainImageViews = VulkanDevice::GetVulkanImageViews();
+        std::vector<VkImageView> vkSwapChainImageViews = VulkanSwapChain::GetVulkanImageViews();
         s_Framebuffer.resize(vkSwapChainImageViews.size());
 
         for (size_t i = 0; i < vkSwapChainImageViews.size(); i++)
@@ -28,12 +30,12 @@ namespace PhysiXal {
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             
-            VkRenderPass vkRenderPass = VulkanPipeline::GetVulkanRenderPass();
+            VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
             framebufferInfo.renderPass = vkRenderPass;
             framebufferInfo.attachmentCount = 1;
             framebufferInfo.pAttachments = attachments;
             
-            VkExtent2D vkSwapChainExtent2D = VulkanDevice::GetVulkanSwapChainExtent();
+            VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
             framebufferInfo.width = vkSwapChainExtent2D.width;
             framebufferInfo.height = vkSwapChainExtent2D.height;
             framebufferInfo.layers = 1;

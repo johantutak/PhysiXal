@@ -23,12 +23,6 @@ namespace PhysiXal {
 		}
 	};
 
-	struct SwapChainSupportDetails {
-		VkSurfaceCapabilitiesKHR capabilities;
-		std::vector<VkSurfaceFormatKHR> formats;
-		std::vector<VkPresentModeKHR> presentModes;
-	};
-
 	class VulkanDevice
 	{
 	public:
@@ -37,7 +31,9 @@ namespace PhysiXal {
 		
 		bool IsDeviceSuitable(VkPhysicalDevice device);
 		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
-		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+		static QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+
+		static VkPhysicalDevice GetVulkanPhysicalDevice() { return s_PhysicalDevice; }
 
 		// Logical Device
 		void CreateLogicalDevice();
@@ -52,47 +48,22 @@ namespace PhysiXal {
 		void CreateSurface();
 		void DestroySurface();
 
-		// Swap chain
-		void CreateSwapChain();
-		void DestroySwapChain();
-		
-		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
-		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+		static VkSurfaceKHR GetVulkanSurface() { return s_Surface; }
 
-		static VkSwapchainKHR GetVulkanSwapChain() { return s_SwapChain; }
-
-		static VkFormat GetVulkanImageFormat() { return s_SwapChainImageFormat; }
-		static VkExtent2D GetVulkanSwapChainExtent() { return s_SwapChainExtent; }
-		
-		// Image views
-		void CreateImageViews();
-		void DestroyImageViews();
-
-		static std::vector<VkImageView> GetVulkanImageViews() { return s_SwapChainImageViews; }
-
-		// Command Pool
+		// Command pool
 		void CreateCommandPool();
 		void DestroyCommandPool();
 
 		static VkCommandPool GetVulkanCommandPool() { return s_CommandPool; }
 	private:
-		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
+		inline static VkPhysicalDevice s_PhysicalDevice = VK_NULL_HANDLE;
 		
 		inline static VkDevice s_LogicalDevice;
 
 		inline static VkQueue s_GraphicsQueue;
 		inline static VkQueue s_PresentQueue;
 
-		VkSurfaceKHR m_Surface;
-		
-		inline static VkSwapchainKHR s_SwapChain;
-		std::vector<VkImage> m_SwapChainImages;
-		inline static VkFormat s_SwapChainImageFormat;
-		inline static VkExtent2D s_SwapChainExtent;
-
-		inline static std::vector<VkImageView> s_SwapChainImageViews;
+		inline static VkSurfaceKHR s_Surface;
 
 		inline static VkCommandPool s_CommandPool;
 	};

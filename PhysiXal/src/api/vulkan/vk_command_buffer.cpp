@@ -2,6 +2,8 @@
 #include "api/vulkan/vk_command_buffer.h"
 
 #include "api/vulkan/vk_device.h"
+#include "api/vulkan/vk_swap_chain.h"
+#include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_framebuffer.h"
 #include "api/vulkan/vk_pipeline.h"
 
@@ -53,14 +55,14 @@ namespace PhysiXal {
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 
-        VkRenderPass vkRenderPass = VulkanPipeline::GetVulkanRenderPass();
+        VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
         renderPassInfo.renderPass = vkRenderPass;
 
         std::vector<VkFramebuffer> vkFramebuffer = VulkanFramebuffer::GetVulkanFramebuffer();
         renderPassInfo.framebuffer = vkFramebuffer[imageIndex];
         renderPassInfo.renderArea.offset = { 0, 0 };
 
-        VkExtent2D vkSwapChainExtent2D = VulkanDevice::GetVulkanSwapChainExtent();
+        VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
         renderPassInfo.renderArea.extent = vkSwapChainExtent2D;
 
         VkClearValue clearColor = { {{0.02f, 0.02f, 0.02f, 1.0f}} };
