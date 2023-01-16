@@ -3,6 +3,10 @@
 
 #include "events/app_event.h"
 
+#include "core/application.h"
+
+#include "api/vulkan/vk_renderer.h"
+
 namespace PhysiXal {
 
 	// From Hazel & Little Vulkan Engine
@@ -43,7 +47,6 @@ namespace PhysiXal {
 
 		{
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 			m_Window = glfwCreateWindow((int)m_Specification.Width, (int)m_Specification.Height, m_Data.Title.c_str(), nullptr, nullptr);
 			++s_GLFWWindowCount;

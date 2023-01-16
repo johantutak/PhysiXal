@@ -8,11 +8,11 @@ namespace PhysiXal {
 	{
 	public:
 		// Framebuffer
-		void CreateFramebuffer();
-		void DestroyFramebuffer();
+		void CreateFramebuffers();
+		void DestroyFramebuffers();
 
-		static std::vector<VkFramebuffer> GetVulkanFramebuffer() { return s_Framebuffer; }
+		static std::vector<VkFramebuffer> GetVulkanFramebuffers() { return s_Framebuffers; }
 	private:
-		static inline std::vector<VkFramebuffer> s_Framebuffer;
+		static inline std::vector<VkFramebuffer> s_Framebuffers;
 	};
 }

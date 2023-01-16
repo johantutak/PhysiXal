@@ -48,7 +48,6 @@ namespace PhysiXal {
 
 		// Command pool
 		void CreateCommandPool();
-		void DestroyCommandPool();
 
 		static VkCommandPool GetVulkanCommandPool() { return s_CommandPool; }
 	private:

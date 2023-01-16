@@ -14,13 +14,11 @@ namespace PhysiXal {
 
 		void WaitAndIdle();
 
-		void CreateSyncObjects();
-		void DestroySyncObjects();
+		void RecreateSwapChain();
+		void DestroyRecreatedSwapChain();
 	private:
-		inline static std::vector<VkSemaphore> s_ImageAvailableSemaphores;
-		inline static std::vector<VkSemaphore> s_RenderFinishedSemaphores;
-		inline static std::vector<VkFence> s_InFlightFences;
-
 		inline static uint32_t s_CurrentFrame = 0;
+
+		inline static bool s_FramebufferResized;
 	};
 }

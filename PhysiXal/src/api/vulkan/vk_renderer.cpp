@@ -8,6 +8,9 @@
 #include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_framebuffer.h"
 #include "api/vulkan/vk_command_buffer.h"
+#include "api/vulkan/vk_sync_objects.h"
+
+#include "core/application.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -23,6 +26,7 @@ namespace PhysiXal {
 	static VulkanPipeline* m_Pipeline = nullptr;
 	static VulkanFramebuffer* m_Framebuffer = nullptr;
 	static VulkanCommandBuffer* m_CommandBuffer = nullptr;
+	static VulkanSyncObjects* m_SyncObjects = nullptr;
 
 	void VulkanRenderer::Init()
 	{
@@ -37,24 +41,22 @@ namespace PhysiXal {
 		m_SwapChain->CreateImageViews();
 		m_RenderPass->CreateRenderPass();
 		m_Pipeline->CreateGraphicsPipeline();
-		m_Framebuffer->CreateFramebuffer();
+		m_Framebuffer->CreateFramebuffers();
 		m_Device->CreateCommandPool();
 		m_CommandBuffer->CreateCommandBuffers();
-		CreateSyncObjects();
+		m_SyncObjects->CreateSyncObjects();
 	}
 	
 	void VulkanRenderer::Shutdown()
 	{
 		PX_CORE_WARN("...Shutting down the renderer");
 
-		DestroySyncObjects();
-		m_CommandBuffer->DestroyCommandBuffers();
-		m_Device->DestroyCommandPool();
-		m_Framebuffer->DestroyFramebuffer();
+		DestroyRecreatedSwapChain();
+		
 		m_Pipeline->DestroyGraphicsPipeline();
 		m_RenderPass->DestroyRenderPass();
-		m_SwapChain->DestroyImageViews();
-		m_SwapChain->DestroySwapChain();
+		m_SyncObjects->DestroySyncObjects();
+		m_CommandBuffer->DestroyCommandBuffers();
 		m_Device->DestroyDevice();
 		m_Device->DestroySurface();
 		m_Context->DestroyContext();
@@ -63,15 +65,28 @@ namespace PhysiXal {
 	void VulkanRenderer::BeginFrame()
 	{
 		PX_CORE_INFO("Drawing frame!");
-
+	
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		vkWaitForFences(vkDevice, 1, &s_InFlightFences[s_CurrentFrame], VK_TRUE, UINT64_MAX);
-		vkResetFences(vkDevice, 1, &s_InFlightFences[s_CurrentFrame]);
+		std::vector<VkFence> vkInFlightFences = VulkanSyncObjects::GetVulkanFences();
+		vkWaitForFences(vkDevice, 1, &vkInFlightFences[s_CurrentFrame], VK_TRUE, UINT64_MAX);
 
 		uint32_t imageIndex;
 
 		VkSwapchainKHR vkSwapChain = VulkanSwapChain::GetVulkanSwapChain();
-		vkAcquireNextImageKHR(vkDevice, vkSwapChain, UINT64_MAX, s_ImageAvailableSemaphores[s_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
+		std::vector<VkSemaphore> vkImageSemaphores = VulkanSyncObjects::GetVulkanImageSemaphores();
+		VkResult result = vkAcquireNextImageKHR(vkDevice, vkSwapChain, UINT64_MAX, vkImageSemaphores[s_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
+
+		if (result == VK_ERROR_OUT_OF_DATE_KHR) 
+		{
+			RecreateSwapChain();
+			return;
+		}
+		else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) 
+		{
+			PX_CORE_ERROR("Failed to acquire swap chain image!");
+		}
+
+		vkResetFences(vkDevice, 1, &vkInFlightFences[s_CurrentFrame]);
 
 		std::vector<VkCommandBuffer> vkCommandBuffers = VulkanCommandBuffer::GetVulkanCommandBuffers();
 		vkResetCommandBuffer(vkCommandBuffers[s_CurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);
@@ -80,7 +95,7 @@ namespace PhysiXal {
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-		VkSemaphore waitSemaphores[] = { s_ImageAvailableSemaphores[s_CurrentFrame] };
+		VkSemaphore waitSemaphores[] = { vkImageSemaphores[s_CurrentFrame] };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
@@ -89,12 +104,13 @@ namespace PhysiXal {
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &vkCommandBuffers[s_CurrentFrame];
 
-		VkSemaphore signalSemaphores[] = { s_RenderFinishedSemaphores[s_CurrentFrame] };
+		std::vector<VkSemaphore> vkRenderSemaphores = VulkanSyncObjects::GetVulkanRenderSemaphores();
+		VkSemaphore signalSemaphores[] = { vkRenderSemaphores[s_CurrentFrame] };
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
 		VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
-		if (vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, s_InFlightFences[s_CurrentFrame]) != VK_SUCCESS)
+		if (vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, vkInFlightFences[s_CurrentFrame]) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to submit draw command buffer!");
 		}
@@ -110,9 +126,19 @@ namespace PhysiXal {
 		presentInfo.pSwapchains = swapChains;
 
 		presentInfo.pImageIndices = &imageIndex;
-		
+
 		VkQueue vkPresentQueue = VulkanDevice::GetVulkanPresentQueue();
-		vkQueuePresentKHR(vkPresentQueue, &presentInfo);
+		result = vkQueuePresentKHR(vkPresentQueue, &presentInfo);
+
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || s_FramebufferResized)
+		{
+			s_FramebufferResized = false;
+			RecreateSwapChain();
+		}
+		else if (result != VK_SUCCESS) 
+		{
+			PX_CORE_ERROR("Failed to present swap chain image!");
+		}
 
 		s_CurrentFrame = (s_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
@@ -123,43 +149,31 @@ namespace PhysiXal {
 		vkDeviceWaitIdle(vkDevice);
 	}
 
-	void VulkanRenderer::CreateSyncObjects()
+	void VulkanRenderer::RecreateSwapChain()
 	{
-		PX_CORE_INFO("Creating sync objects");
+		int width = 0, height = 0;
 
-		s_ImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-		s_RenderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-		s_InFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-
-		VkSemaphoreCreateInfo semaphoreInfo{};
-		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-		VkFenceCreateInfo fenceInfo{};
-		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
+		auto vkWindowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		glfwGetFramebufferSize(vkWindowHandle, &width, &height);
+		while (width == 0 || height == 0) 
 		{
-			VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-			if (vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &s_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &s_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
-				vkCreateFence(vkDevice, &fenceInfo, nullptr, &s_InFlightFences[i]) != VK_SUCCESS)
-			{
-				PX_CORE_ERROR("Failed to create synchronization objects for a frame!");
-			}
+			glfwGetFramebufferSize(vkWindowHandle, &width, &height);
+			glfwWaitEvents();
 		}
+
+		WaitAndIdle();
+
+		DestroyRecreatedSwapChain();
+
+		m_SwapChain->CreateSwapChain();
+		m_SwapChain->CreateImageViews();
+		m_Framebuffer->CreateFramebuffers();
 	}
 
-	void VulkanRenderer::DestroySyncObjects()
+	void VulkanRenderer::DestroyRecreatedSwapChain()
 	{
-		PX_CORE_WARN("...Destroying sync objects");
-
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
-		{
-			vkDestroySemaphore(vkDevice, s_ImageAvailableSemaphores[i], nullptr);
-			vkDestroySemaphore(vkDevice, s_RenderFinishedSemaphores[i], nullptr);
-			vkDestroyFence(vkDevice, s_InFlightFences[i], nullptr);
-		}
+		m_Framebuffer->DestroyFramebuffers();
+		m_SwapChain->DestroyImageViews();
+		m_SwapChain->DestroySwapChain();
 	}
 }

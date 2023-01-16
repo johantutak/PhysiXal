@@ -58,7 +58,7 @@ namespace PhysiXal {
         VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
         renderPassInfo.renderPass = vkRenderPass;
 
-        std::vector<VkFramebuffer> vkFramebuffer = VulkanFramebuffer::GetVulkanFramebuffer();
+        std::vector<VkFramebuffer> vkFramebuffer = VulkanFramebuffer::GetVulkanFramebuffers();
         renderPassInfo.framebuffer = vkFramebuffer[imageIndex];
         renderPassInfo.renderArea.offset = { 0, 0 };
 

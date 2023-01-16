@@ -207,9 +207,4 @@ namespace PhysiXal {
             PX_CORE_ERROR("Failed to create command pool!");
         }
     }
-
-    void VulkanDevice::DestroyCommandPool()
-    {
-        vkDestroyCommandPool(s_LogicalDevice, s_CommandPool, nullptr);
-    }
 }
