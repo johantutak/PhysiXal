@@ -11,8 +11,6 @@
 
 namespace PhysiXal {
 
-#ifdef PX_PLATFORM_WINDOWS
-
     void VulkanFramebuffer::CreateFramebuffer()
     {
         PX_CORE_INFO("Creating Vulkan framebuffer");
@@ -58,6 +56,5 @@ namespace PhysiXal {
             vkDestroyFramebuffer(vkDevice, framebuffer, nullptr);
         }
     }
-#endif
 }
 

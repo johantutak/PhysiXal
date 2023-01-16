@@ -1,25 +1,22 @@
 #pragma once
 
-#ifdef PX_PLATFORM_WINDOWS
-	#include <vulkan/vulkan.h>
-#endif
+#include <vulkan/vulkan.h>
 
 namespace PhysiXal {
 
-#ifdef PX_PLATFORM_WINDOWS
+	const int MAX_FRAMES_IN_FLIGHT = 2;
 
 	class VulkanCommandBuffer
 	{
 	public:
 		// Command buffer
-		void CreateCommandBuffer();
-		void DestroyCommandBuffer();
+		void CreateCommandBuffers();
+		void DestroyCommandBuffers();
 
-		static VkCommandBuffer GetVulkanCommandBuffer() { return s_CommandBuffer; }
+		static std::vector<VkCommandBuffer> GetVulkanCommandBuffers() { return s_CommandBuffers; }
 
-		void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+		void RecordCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 	private:
-		inline static VkCommandBuffer s_CommandBuffer;
+		inline static std::vector<VkCommandBuffer> s_CommandBuffers;
 	};
-#endif
 }

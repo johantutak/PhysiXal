@@ -1,12 +1,8 @@
 #pragma once
 
-#ifdef PX_PLATFORM_WINDOWS
-	#include <vulkan/vulkan.h>
-#endif
+#include <vulkan/vulkan.h>
 
 namespace PhysiXal {
-
-#ifdef PX_PLATFORM_WINDOWS
 
 	class VulkanPipeline
 	{
@@ -20,5 +16,4 @@ namespace PhysiXal {
 		inline static VkPipeline s_GraphicsPipeline;
 		inline static VkPipelineLayout s_PipelineLayout;
 	};
-#endif
 }

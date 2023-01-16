@@ -1,0 +1,199 @@
+-- ###################################################################
+--						The PhysiXal Engine
+-- ###################################################################
+
+workspace "ThePhysiXalEngine"
+	architecture "x86_64"
+	startproject "Example"
+
+	configurations
+	{
+		"Debug",
+		"Release",
+		"Dist"
+	}
+
+	flags
+	{
+		"MultiProcessorCompile"
+	}
+
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+-- Extract Vulkan to Development enviroment (install directory )
+VULKAN_SDK = os.getenv("VULKAN_SDK")
+
+-- Include directories reletive to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "PhysiXal/thirdparty/GLFW/include"
+IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
+IncludeDir["ImGui"] = "PhysiXal/thirdparty/imgui"
+IncludeDir["glm"] = "PhysiXal/thirdparty/glm"
+
+LibraryDir = {}
+LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
+
+Library = {}
+Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
+
+group "Dependencies"
+	include "PhysiXal/thirdparty/GLFW"
+	include "PhysiXal/thirdparty/imgui"
+group ""
+
+-- ###################################################################
+--					##########################
+-- ###################################################################
+
+
+
+-- ###################################################################
+--							  PhysiXal
+-- ###################################################################
+
+project "PhysiXal"
+	location "PhysiXal"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	pchheader "px_pch.h"
+	pchsource "PhysiXal/src/px_pch.cpp"
+
+	files 
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/thirdparty/glm/glm/**.hpp",
+		"%{prj.name}/thirdparty/glm/glm/**.inl"
+	}
+
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS",
+		"GLFW_INCLUDE_NONE"
+	}
+	
+	includedirs
+	{
+		"%{prj.name}/src",
+		"%{prj.name}/thirdparty/spdlog/include",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.VulkanSDK}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
+	}
+
+	links
+	{
+		"GLFW",
+
+		"%{Library.Vulkan}"
+	}
+	
+	flags { "NoPCH" }
+
+	filter "system:windows"
+		cppdialect "C++17"
+		staticruntime "on"
+		systemversion "latest"
+
+		removefiles { "src/core/platform/lnx/**.h",
+		              "src/core/platform/lnx/**.cpp" }
+		
+		defines
+		{
+			"PX_PLATFORM_WINDOWS"
+		}
+
+		filter "configurations:Debug"
+			defines "PX_DEBUG"
+			runtime "Debug"
+			symbols "on"
+
+		filter "configurations:Release"
+			defines "PX_RELEASE"
+			runtime "Release"
+			optimize "on"
+
+		filter "configurations:Dist"
+			defines "PX_DIST"
+			runtime "Release"
+			optimize "on"
+
+-- ###################################################################
+--					##########################
+-- ###################################################################
+
+
+
+-- ###################################################################
+--							  Example
+-- ###################################################################
+
+project "Example"
+	location "Example"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files 
+	{
+		"%{prj.name}/**.h",
+		"%{prj.name}/**.cpp"
+	}
+
+	includedirs
+	{
+		"PhysiXal/thirdparty/spdlog/include",
+		"PhysiXal/src",
+		"PhysiXal/thirdparty",
+		"%{IncludeDir.VulkanSDK}",
+		"%{IncludeDir.glm}"
+	}
+
+	links 
+	{
+		"PhysiXal"
+	}
+	
+	filter "system:windows"
+		cppdialect "C++17"
+		staticruntime "on"
+		systemversion "latest"
+
+		links 
+		{
+		}
+
+		defines 
+    	{
+    		"PX_PLATFORM_WINDOWS"
+    	}
+		
+		filter "configurations:Debug"
+			defines "PX_DEBUG"
+			runtime "Debug"
+			symbols "on"
+	
+		filter "configurations:Release"
+			defines "PX_RELEASE"
+			runtime "Release"
+			optimize "on"
+	
+		filter "configurations:Dist"
+			defines "PX_DIST"
+			runtime "Release"
+			optimize "on"
+
+-- ###################################################################
+--					##########################
+-- ###################################################################

@@ -5,7 +5,6 @@
 #include "core/window.h"
 
 #include "renderer/renderer.h"
-#include "api/opengl/gl_renderer.h"
 
 #include <GLFW/glfw3.h>
 
@@ -30,12 +29,7 @@ namespace PhysiXal {
 		m_Window->SetEventCallback(PX_BIND_EVENT_FN(Application::OnEvent));
 
 		// Initialize the renderer
-#ifdef PX_PLATFORM_WINDOWS
 		Renderer::Init();
-#endif
-#ifdef PX_PLATFORM_LINUX
-		OpenGLRenderer::Init();
-#endif
 
 		// #### TODO ####
 		// Add func to execute command queue to compile all shaders
@@ -44,18 +38,14 @@ namespace PhysiXal {
 	Application::~Application()
 	{
 		// Shutdown the renderer
-#ifdef PX_PLATFORM_WINDOWS
 		Renderer::Shutdown();
-#endif
-#ifdef PX_PLATFORM_LINUX
-		OpenGLRenderer::Shutdown();
-#endif
+
 
 		// Destroy the window
 		//Window::~Window(); It's only for symbolic purposes since the window is destroyed within it's own class.
 
 		// Shutdown the application
-		// #### TO DO #### Make it Shutdown in he correct order.
+		// #### TO DO #### Make it shutdown in he correct order.
 		PX_WARN("...Shutting down Application (client).");
 		PX_CORE_WARN("...Shutting down Log (core).");
 	}
@@ -102,19 +92,12 @@ namespace PhysiXal {
 						layer->OnUpdate(timestep);
 				}
 				//Draw frame here
-#ifdef PX_PLATFORM_WINDOWS
 				Renderer::BeginFrame();
-#endif
-#ifdef PX_PLATFORM_LINUX
-				OpenGLRenderer::BeginFrame();
-#endif
 			}
 
 			m_Window->OnUpdate();
 
-#ifdef PX_PLATFORM_WINDOWS
 			Renderer::WaitAndIdle();
-#endif
 		}
 	}
 

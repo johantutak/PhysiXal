@@ -4,8 +4,6 @@
 
 namespace PhysiXal {
 
-#ifdef PX_PLATFORM_WINDOWS
-
 	class Renderer
 	{
 	public:
@@ -17,5 +15,4 @@ namespace PhysiXal {
 		static void WaitAndIdle();
 	private:
 	};
-#endif
 }

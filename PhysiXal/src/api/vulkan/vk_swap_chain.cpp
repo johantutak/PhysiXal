@@ -10,8 +10,6 @@
 
 namespace PhysiXal {
 
-#ifdef PX_PLATFORM_WINDOWS
-
     void VulkanSwapChain::CreateSwapChain()
     {
         PX_CORE_INFO("Creating Vulkan swap chain");
@@ -205,5 +203,4 @@ namespace PhysiXal {
             vkDestroyImageView(vkDevice, imageView, nullptr);
         }
     }
-#endif
 }

@@ -9,8 +9,6 @@
 
 namespace PhysiXal {
 
-#ifdef PX_PLATFORM_WINDOWS
-
     void VulkanRenderPass::CreateRenderPass()
     {
         PX_CORE_INFO("Creating Vulkan context");
@@ -66,6 +64,5 @@ namespace PhysiXal {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         vkDestroyRenderPass(vkDevice, s_RenderPass, nullptr);
     }
-#endif
 }
 

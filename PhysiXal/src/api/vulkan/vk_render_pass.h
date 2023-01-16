@@ -1,12 +1,8 @@
 #pragma once
 
-#ifdef PX_PLATFORM_WINDOWS
-	#include <vulkan/vulkan.h>
-#endif
+#include <vulkan/vulkan.h>
 
 namespace PhysiXal {
-
-#ifdef PX_PLATFORM_WINDOWS
 
 	class VulkanRenderPass
 	{
@@ -19,5 +15,4 @@ namespace PhysiXal {
 	private:
 		inline static VkRenderPass s_RenderPass;
 	};
-#endif
 }

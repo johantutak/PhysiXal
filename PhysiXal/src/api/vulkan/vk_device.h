@@ -1,16 +1,12 @@
 #pragma once
 
-#ifdef PX_PLATFORM_WINDOWS
-	#include <vulkan/vulkan.h>
-#endif
+#include <vulkan/vulkan.h>
 
 #include "platform/win/win_window.h"
 
 #include <optional>
 
 namespace PhysiXal {
-
-#ifdef PX_PLATFORM_WINDOWS
 
 	const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
@@ -67,5 +63,4 @@ namespace PhysiXal {
 
 		inline static VkCommandPool s_CommandPool;
 	};
-#endif
 }

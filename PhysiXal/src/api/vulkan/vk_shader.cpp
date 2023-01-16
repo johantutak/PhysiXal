@@ -8,8 +8,6 @@
 
 namespace PhysiXal {
 
-#ifdef PX_PLATFORM_WINDOWS
-
     VkShaderModule VulkanShader::CreateShaderModule(const std::vector<char>& code)
     {
         VkShaderModuleCreateInfo createInfo{};
@@ -46,6 +44,5 @@ namespace PhysiXal {
 
         return buffer;
     }
-#endif
 }
 

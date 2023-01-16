@@ -2,9 +2,8 @@
 
 #include "core/window.h"
 
-#include "api/opengl/gl_context.h"
-
-#include <GLFW/glfw3.h>
+#define GLFW_INCLUDE_VULKAN
+#include "GLFW/glfw3.h"
 
 namespace PhysiXal {
 
@@ -15,42 +14,34 @@ namespace PhysiXal {
     class LnxWindow : public Window
     {
     public:
-        LnxWindow(const WindowSpecification& specification);
-        virtual ~LnxWindow();
-        
-        virtual void Init() override;
-        void OnUpdate() override;
-        
-        unsigned int GetWidth() const override { return m_Data.Width; }
-        unsigned int GetHeight() const override { return m_Data.Height; }
+		LnxWindow(const WindowSpecification& specification);
+		virtual ~LnxWindow();
 
-        // Window attributes
-        void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-                
-        // #### Initializing vSync for PysiXal with OpenGL API ####
-        void SetVSync(bool enabled) override;
-        bool IsVSync() const override;
-        
-        virtual void* GetNativeWindow() const { return m_Window; }
-    private:
-        virtual void Shutdown();
-    private:
-        GLFWwindow* m_Window;
-        WindowSpecification m_Specification;
-        OpenGLContext* m_Context;
+		virtual void Init() override;
+		void OnUpdate() override;
 
-        struct WindowData
-        {
-            std::string Title;
-            unsigned int Width, Height;
-            
-            // #### Initializing vSync for PysiXal with OpenGL API	####
-            bool VSync;
-            
-            EventCallbackFn EventCallback;
-        };
-        
-        WindowData m_Data;
+		unsigned int GetWidth() const override { return m_Data.Width; }
+		unsigned int GetHeight() const override { return m_Data.Height; }
+
+		// Window attributes
+		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+
+		virtual void* GetNativeWindow() const { return m_Window; }
+	private:
+		virtual void Shutdown();
+	private:
+		GLFWwindow* m_Window;
+		WindowSpecification m_Specification;
+
+		struct WindowData
+		{
+			std::string Title;
+			unsigned int Width, Height;
+
+			EventCallbackFn EventCallback;
+		};
+
+		WindowData m_Data;
     };
 #endif
 }

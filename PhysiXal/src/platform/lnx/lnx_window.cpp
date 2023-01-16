@@ -2,11 +2,6 @@
 #include "platform/lnx/lnx_window.h"
 
 #include "events/app_event.h"
-#include "api/opengl/gl_context.h"
-
-#ifdef PX_PLATFORM_LINUX
-	#include <glad/glad.h>
-#endif
 
 namespace PhysiXal {
 
@@ -14,109 +9,83 @@ namespace PhysiXal {
     
 #ifdef PX_PLATFORM_LINUX
     
-    static uint8_t s_GLFWWindowCount = 0;
+	static uint8_t s_GLFWWindowCount = 0;
 
-    static void GLFWErrorCallback(int error, const char* description)
-    {
-        PX_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
-    }
+	static void GLFWErrorCallback(int error, const char* description)
+	{
+		PX_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+	}
 
-    LnxWindow::LnxWindow(const WindowSpecification& props)
-        : m_Specification(props)
-    {
-    }
+	LnxWindow::LnxWindow(const WindowSpecification& props)
+		: m_Specification(props)
+	{
+	}
 
-    LnxWindow::~LnxWindow()
-    {
-        Shutdown();
-    }
+	LnxWindow::~LnxWindow()
+	{
+		Shutdown();
+	}
 
-    void LnxWindow::Init()
-    {
-        m_Data.Title = m_Specification.Title;
-        m_Data.Width = m_Specification.Width;
-        m_Data.Height = m_Specification.Height;
+	void LnxWindow::Init()
+	{
+		m_Data.Title = m_Specification.Title;
+		m_Data.Width = m_Specification.Width;
+		m_Data.Height = m_Specification.Height;
 
-        PX_CORE_INFO("Creating window {0} ({1}, {2})", m_Specification.Title, m_Specification.Width, m_Specification.Height);
+		PX_CORE_INFO("Creating window for {0} ({1}, {2})", m_Specification.Title, m_Specification.Width, m_Specification.Height);
 
-        if (s_GLFWWindowCount == 0)
-        {
-            int success = glfwInit();
-            PX_CORE_ASSERT(success, "Could not initialize GLFW!");
-            glfwSetErrorCallback(GLFWErrorCallback);
-        }
-    
-        {
-			
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    
-        m_Window = glfwCreateWindow((int)m_Specification.Width, (int)m_Specification.Height, m_Data.Title.c_str(), nullptr, nullptr);
-        ++s_GLFWWindowCount;
-        }
+		if (s_GLFWWindowCount == 0)
+		{
+			int success = glfwInit();
+			PX_CORE_ASSERT(success, "Could not initialize GLFW!");
+			glfwSetErrorCallback(GLFWErrorCallback);
+		}
 
-        glfwSetWindowUserPointer(m_Window, &m_Data);
+		{
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-        // #### OpenGL context is created within the window class ####
-        m_Context = new OpenGLContext(m_Window);
-        m_Context->CreateContext();
-    
-        // #### Initializing vSync for PysiXal with OpenGL API ####
-        SetVSync(true);
-    
-        // Set GFLW callbacks
-        glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-        {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            data.Width = width;
-            data.Height = height;
+			m_Window = glfwCreateWindow((int)m_Specification.Width, (int)m_Specification.Height, m_Data.Title.c_str(), nullptr, nullptr);
+			++s_GLFWWindowCount;
+		}
 
-            WindowResizeEvent event(width, height);
-            data.EventCallback(event);
-        });
+		glfwSetWindowUserPointer(m_Window, &m_Data);
 
-        glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-        {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            WindowCloseEvent event;
-            data.EventCallback(event);
-        });
-    }
+		// Set GFLW callbacks
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		data.Width = width;
+		data.Height = height;
 
-    void LnxWindow::Shutdown()
-    {
-        glfwDestroyWindow(m_Window);
-        --s_GLFWWindowCount;
+		WindowResizeEvent event(width, height);
+		data.EventCallback(event);
+			});
 
-        if (s_GLFWWindowCount -= 1)
-        {
-            glfwTerminate();
-        }
-        
-        m_Context->DestroyContext();
-                
-        PX_CORE_WARN("...Destroying window");
-    }
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		WindowCloseEvent event;
+		data.EventCallback(event);
+			});
+	}
 
-    void LnxWindow::OnUpdate()
-    {
-        glfwPollEvents();
-        m_Context->SwapBuffers();
-    }
-        
-    // ####	Initializing vSync for PysiXal with OpenGL API.	####
-    void LnxWindow::SetVSync(bool enabled)
-    {
-        if (enabled)
-            glfwSwapInterval(1);
-        else
-            glfwSwapInterval(0);
-        
-        m_Data.VSync = enabled;
-    }
+	void LnxWindow::Shutdown()
+	{
+		glfwDestroyWindow(m_Window);
+		--s_GLFWWindowCount;
 
-    bool LnxWindow::IsVSync() const
-    {
-        return m_Data.VSync;
-    }
+		if (s_GLFWWindowCount -= 1)
+		{
+			glfwTerminate();
+		}
+
+		PX_CORE_WARN("...Destroying window");
+	}
+
+	void LnxWindow::OnUpdate()
+	{
+		glfwPollEvents();
+	}
 #endif
 }

@@ -1,14 +1,11 @@
 #pragma once
 
-#ifdef PX_PLATFORM_WINDOWS
-	#include <vulkan/vulkan.h>
-#endif
+
+#include <vulkan/vulkan.h>
 
 #include "platform/win/win_window.h"
 
 namespace PhysiXal {
-
-#ifdef PX_PLATFORM_WINDOWS
 
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR capabilities;
@@ -46,5 +43,4 @@ namespace PhysiXal {
 
 		inline static std::vector<VkImageView> s_SwapChainImageViews;
 	};
-#endif
 }

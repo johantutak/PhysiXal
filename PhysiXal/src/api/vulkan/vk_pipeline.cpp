@@ -11,8 +11,6 @@
 
 namespace PhysiXal {
 
-#ifdef PX_PLATFORM_WINDOWS
-
     void VulkanPipeline::CreateGraphicsPipeline()
     {
         PX_CORE_INFO("Creating the layout of the graphics pipeline");
@@ -142,6 +140,5 @@ namespace PhysiXal {
 
         vkDestroyPipelineLayout(vkDevice, s_PipelineLayout, nullptr);
     }
-#endif
 }
 

@@ -1,12 +1,8 @@
 #pragma once
 
-#ifdef PX_PLATFORM_WINDOWS
-	#include <vulkan/vulkan.h>
-#endif
+#include <vulkan/vulkan.h>
 
 namespace PhysiXal {
-
-#ifdef PX_PLATFORM_WINDOWS
 
 	class VulkanRenderer
 	{
@@ -21,9 +17,10 @@ namespace PhysiXal {
 		void CreateSyncObjects();
 		void DestroySyncObjects();
 	private:
-		inline static VkSemaphore s_ImageAvailableSemaphore;
-		inline static VkSemaphore s_RenderFinishedSemaphore;
-		inline static VkFence s_InFlightFence;
+		inline static std::vector<VkSemaphore> s_ImageAvailableSemaphores;
+		inline static std::vector<VkSemaphore> s_RenderFinishedSemaphores;
+		inline static std::vector<VkFence> s_InFlightFences;
+
+		inline static uint32_t s_CurrentFrame = 0;
 	};
-#endif
 }

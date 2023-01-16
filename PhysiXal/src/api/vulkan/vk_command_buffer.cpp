@@ -12,11 +12,11 @@
 
 namespace PhysiXal {
 
-#ifdef PX_PLATFORM_WINDOWS
-
-    void VulkanCommandBuffer::CreateCommandBuffer()
+    void VulkanCommandBuffer::CreateCommandBuffers()
     {
         PX_CORE_INFO("Creating Vulkan command buffer");
+
+        s_CommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -24,16 +24,16 @@ namespace PhysiXal {
         VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
         allocInfo.commandPool = vkCommandPool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = 1;
+        allocInfo.commandBufferCount = (uint32_t)s_CommandBuffers.size();
 
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        if (vkAllocateCommandBuffers(vkDevice, &allocInfo, &s_CommandBuffer) != VK_SUCCESS)
+        if (vkAllocateCommandBuffers(vkDevice, &allocInfo, s_CommandBuffers.data()) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to allocate command buffer!");
         }
     }
 
-    void VulkanCommandBuffer::DestroyCommandBuffer()
+    void VulkanCommandBuffer::DestroyCommandBuffers()
     {
         PX_CORE_WARN("...Destroying Vulkan command buffer");
 
@@ -42,7 +42,7 @@ namespace PhysiXal {
         vkDestroyCommandPool(vkDevice, vkCommandPool, nullptr);
     }
 
-    void VulkanCommandBuffer::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+    void VulkanCommandBuffer::RecordCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex)
     {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -97,6 +97,5 @@ namespace PhysiXal {
             PX_CORE_ERROR("Failed to record command buffer!");
         }
     }
-#endif
 }
 

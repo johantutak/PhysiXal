@@ -1,12 +1,8 @@
 #pragma once
 
-#ifdef PX_PLATFORM_WINDOWS
-	#include <vulkan/vulkan.h>
-#endif
+#include <vulkan/vulkan.h>
 
 namespace PhysiXal {
-
-#ifdef PX_PLATFORM_WINDOWS
 
 	class VulkanFramebuffer
 	{
@@ -19,5 +15,4 @@ namespace PhysiXal {
 	private:
 		static inline std::vector<VkFramebuffer> s_Framebuffer;
 	};
-#endif
 }

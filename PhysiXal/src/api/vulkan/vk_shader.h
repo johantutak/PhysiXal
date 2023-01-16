@@ -1,12 +1,9 @@
 #pragma once
 
-#ifdef PX_PLATFORM_WINDOWS
-	#include <vulkan/vulkan.h>
-#endif
+
+#include <vulkan/vulkan.h>
 
 namespace PhysiXal {
-
-#ifdef PX_PLATFORM_WINDOWS
 
 	class VulkanShader
 	{
@@ -16,5 +13,4 @@ namespace PhysiXal {
 		static std::vector<char> ReadFile(const std::string& filename);
 	private:
 	};
-#endif
 }

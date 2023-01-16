@@ -12,8 +12,6 @@
 
 namespace PhysiXal {
 
-#ifdef PX_PLATFORM_WINDOWS
-
     void VulkanDevice::PickPhysicalDevice() 
     {
         PX_CORE_INFO("Finding suitable device (physical)");
@@ -214,5 +212,4 @@ namespace PhysiXal {
     {
         vkDestroyCommandPool(s_LogicalDevice, s_CommandPool, nullptr);
     }
-#endif
 }

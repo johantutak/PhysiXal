@@ -1,14 +1,10 @@
 #pragma once
 
-#ifdef PX_PLATFORM_WINDOWS
-	#include <vulkan/vulkan.h>
-#endif
+#include <vulkan/vulkan.h>
 
 struct GLFWwindow;
 
 namespace PhysiXal {
-
-#ifdef PX_PLATFORM_WINDOWS
 
 	const std::vector<const char*> ValidationLayers = {
 		"VK_LAYER_KHRONOS_validation"
@@ -44,5 +40,4 @@ namespace PhysiXal {
 			VkDebugUtilsMessageTypeFlagsEXT messageType, 
 			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 	};
-#endif
 }

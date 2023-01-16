@@ -4,8 +4,6 @@
 #include <api/vulkan/vk_renderer.h>
 
 namespace PhysiXal {
-
-#ifdef PX_PLATFORM_WINDOWS
 	
 	static VulkanRenderer* s_Renderer = nullptr;
 
@@ -28,6 +26,4 @@ namespace PhysiXal {
 	{
 		s_Renderer->WaitAndIdle();
 	}
-
-#endif
 }
