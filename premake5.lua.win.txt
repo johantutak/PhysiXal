@@ -93,6 +93,8 @@ project "PhysiXal"
 		"GLFW",
 
 		"%{Library.Vulkan}"
+
+		"ImGui"
 	}
 	
 	flags { "NoPCH" }

@@ -68,36 +68,43 @@ Change the file name of premake5.lua.lnx.txt to premake5.lua.
 
 PhysiXal is configured with:
 
-Premake generates Makefiles files for C++ IDE's, Apache Netbeans is recommended. To generate the Makefile for your IDE, run $ premake5 gmake2 at the command line in solution directory. Or you may run lnx_gen_projects.sh as a convenience bash file for this task.
+Premake generates Makefiles files for C++ IDE's. To generate the Makefile for your IDE, run $ premake5 gmake2 at the command line in solution directory. Or you may run lnx_gen_projects.sh as a convenience bash file for this task.
 
-Make lnx_gen_projects.sh executable by navigating to ThePhysiXalEngine/scripts on the command line using $ cd. then run chmod u+x lnx_gen_projects.sh. now ur able to run it by left clicking.
+Make lnx_gen_projects.sh executable by navigating to ThePhysiXalEngine/scripts/lnx on the command line using $ cd. then run chmod u+x lnx_gen_projects.sh. now ur able to run it by left clicking.
 
 PhysiXal is compiled with:
 
-The Make command will compile the project for you and make it into a x executable file, run $ make at the command line in solution directory. Or you may run lnx_build_debug.sh as a convenience bash file for this task.
+The $ make command will compile the project for you and make it into a x executable file, run $ make at the command line in solution directory. Or you may run lnx_build_debug.sh as a convenience bash file for this task.
 
-Make lnx_build_debug.sh executable by navigating to ThePhysiXalEngine/scripts on the command line using $ cd. then run chmod u+x lnx_build_debug.sh. now ur able to run it by left clicking.
+Make lnx_build_debug.sh executable by navigating to ThePhysiXalEngine/scripts/lnx on the terminal using $ cd. Then run chmod u+x lnx_build_debug.sh. Now ur able to run it by left clicking.
 
 Debug configuration is only supported at the moment.
 
 Debian (Ubuntu) X11 support only. Further support later on.
 
-PhysiXal uses a few OpenGL/GLFW API features and needs to be installed. Installing by Tarball to a custom directory is not supported by this time.
+PhysiXal uses a few Vulkan/GLFW API features and needs to be installed.
 
 PhysiXal has extra development dependencies needed for Linux. The following packages are needed to compile the project:   
     
-    libxcursor
     libxrandr
     libxinerama
     libxi
-    zenity
+    libxxf86vm
     glfw3
+    vulkan
 
 Install the additional dependencies by running:
 
-$ sudo apt install libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libglu1-mesa-dev libglfw3-dev libglfw3
+$ sudo apt install libxrandr-dev libxinerama-dev libxi-dev libxxf86vm-dev libglfw3-dev libglfw3 vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
+
+PhysiXal uses Google's glslc shader compiler. Download Google's unofficial binaries from https://github.com/google/shaderc/blob/main/downloads.md
+
+Copy glslc to your /usr/local/bin. Note you may need to $ sudo cd form extracted directory to target directory, depending on your permissions.
+
+Navigate into Example/assets/shaders in terminal and use $ chmod +x compile.sh to make file executable by left clicking. Run when you need to complie into Spir-V bytecode.
 
 
-NOTE!:
-	Before commiting a version of the software, change back the premake5.lua to premake5.lua. OS used (lnx or win) .txt.
+NOTE!: 
+
+Before commiting a version of the software, change back the premake5.lua to premake5.lua. OS used (lnx or win) .txt.
 

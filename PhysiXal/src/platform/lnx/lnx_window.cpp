@@ -3,6 +3,10 @@
 
 #include "events/app_event.h"
 
+#include "core/application.h"
+
+#include "api/vulkan/vk_renderer.h"
+
 namespace PhysiXal {
 
     // From Hazel & Little Vulkan Engine

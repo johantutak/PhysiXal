@@ -22,12 +22,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories reletive to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["Glad"] = "PhysiXal/thirdparty/glad/include"
 IncludeDir["ImGui"] = "PhysiXal/thirdparty/imgui"
 IncludeDir["glm"] = "PhysiXal/thirdparty/glm"
 
 group "Dependencies"
-	include "PhysiXal/thirdparty/glad"
 	include "PhysiXal/thirdparty/imgui"
 group ""
 
@@ -161,16 +159,19 @@ project "Example"
 		links 
 		{
 			"glfw",
-			"Glad",
+
 			"ImGui",
+			
 			"Xrandr",
-			"Xinerama",
-			"Xcursor",
+			"Xxf86vm",
 			"Xi",
-			"GL",
 			"X11",
 			"dl",
-			"pthread"
+			"pthread",
+			
+			"stdc++fs",		--GCC versions 5.3 through 8.x need stdc++fs for std::filesystem
+
+			"vulkan"
 		}
 
     	defines 

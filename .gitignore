@@ -10,6 +10,7 @@ PhysiXal.creator
 PhysiXal.files
 PhysiXal.includes
 *.code-workspace
+.vscode/c_cpp_properties.json
 
 # PhysiXal files
 *.log

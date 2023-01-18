@@ -2,6 +2,7 @@
 #include "platform/win/win_input.h"
 
 #include <GLFW/glfw3.h>
+
 #include "core/application.h"
 
 namespace PhysiXal {

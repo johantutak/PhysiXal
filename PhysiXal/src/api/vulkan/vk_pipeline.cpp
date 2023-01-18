@@ -15,8 +15,15 @@ namespace PhysiXal {
     {
         PX_CORE_INFO("Creating the layout of the graphics pipeline");
 
+#ifdef PX_PLATFORM_WINDOWS
         auto vertShaderCode = VulkanShader::ReadFile("../Example/assets/shaders/base_vert.spv");
         auto fragShaderCode = VulkanShader::ReadFile("../Example/assets/shaders/base_frag.spv");
+#endif
+
+#ifdef PX_PLATFORM_LINUX
+        auto vertShaderCode = VulkanShader::ReadFile("../../../Example/assets/shaders/base_vert.spv");
+        auto fragShaderCode = VulkanShader::ReadFile("../../../Example/assets/shaders/base_frag.spv");
+#endif
 
         VkShaderModule vertShaderModule = VulkanShader::CreateShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = VulkanShader::CreateShaderModule(fragShaderCode);
