@@ -50,6 +50,10 @@ namespace PhysiXal {
 	class VulkanVertexBuffer
 	{
 	public:
+		// Buffer creation
+		void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+		void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
 		// Vertex buffer
 		void CreateVertexBuffer();
 		void DestroyVertexBuffer();
