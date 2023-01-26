@@ -14,9 +14,9 @@ namespace PhysiXal {
 
     void VulkanDevice::PickPhysicalDevice() 
     {
-        PX_CORE_INFO("Finding suitable device (physical)");
-
         auto vkInstance = VulkanContext::GetVulkanInstance();
+
+        PX_CORE_INFO("Finding suitable device (physical)");
 
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(vkInstance, &deviceCount, nullptr);
@@ -175,10 +175,11 @@ namespace PhysiXal {
 
     void VulkanDevice::CreateSurface()
     {
-        PX_CORE_INFO("Creating Vulkan surface");
-
         auto vkInstance = VulkanContext::GetVulkanInstance();
         auto vkWindowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+        PX_CORE_INFO("Creating Vulkan surface");
+
         if (glfwCreateWindowSurface(vkInstance, vkWindowHandle, nullptr, &s_Surface) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create window surface!");
@@ -187,9 +188,10 @@ namespace PhysiXal {
 
     void VulkanDevice::DestroySurface()
     {
+        auto vkInstance = VulkanContext::GetVulkanInstance();
+
         PX_CORE_WARN("...Destroying Vulkan surface");
 
-        auto vkInstance = VulkanContext::GetVulkanInstance();
         vkDestroySurfaceKHR(vkInstance, s_Surface, nullptr);
     }
 

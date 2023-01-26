@@ -9,6 +9,7 @@
 #include "api/vulkan/vk_framebuffer.h"
 #include "api/vulkan/vk_command_buffer.h"
 #include "api/vulkan/vk_sync_objects.h"
+#include "api/vulkan/vk_vertex_buffer.h"
 
 #include "core/application.h"
 
@@ -27,6 +28,7 @@ namespace PhysiXal {
 	static VulkanFramebuffer* m_Framebuffer = nullptr;
 	static VulkanCommandBuffer* m_CommandBuffer = nullptr;
 	static VulkanSyncObjects* m_SyncObjects = nullptr;
+	static VulkanVertexBuffer* m_VertexBuffer = nullptr;
 
 	void VulkanRenderer::Init()
 	{
@@ -43,6 +45,7 @@ namespace PhysiXal {
 		m_Pipeline->CreateGraphicsPipeline();
 		m_Framebuffer->CreateFramebuffers();
 		m_Device->CreateCommandPool();
+		m_VertexBuffer->CreateVertexBuffer();
 		m_CommandBuffer->CreateCommandBuffers();
 		m_SyncObjects->CreateSyncObjects();
 	}
@@ -55,6 +58,7 @@ namespace PhysiXal {
 		
 		m_Pipeline->DestroyGraphicsPipeline();
 		m_RenderPass->DestroyRenderPass();
+		m_VertexBuffer->DestroyVertexBuffer();
 		m_SyncObjects->DestroySyncObjects();
 		m_CommandBuffer->DestroyCommandBuffers();
 		m_Device->DestroyDevice();
@@ -68,12 +72,17 @@ namespace PhysiXal {
 	
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		std::vector<VkFence> vkInFlightFences = VulkanSyncObjects::GetVulkanFences();
+		VkSwapchainKHR vkSwapChain = VulkanSwapChain::GetVulkanSwapChain();
+		std::vector<VkSemaphore> vkImageSemaphores = VulkanSyncObjects::GetVulkanImageSemaphores();
+		std::vector<VkCommandBuffer> vkCommandBuffers = VulkanCommandBuffer::GetVulkanCommandBuffers();
+		std::vector<VkSemaphore> vkRenderSemaphores = VulkanSyncObjects::GetVulkanRenderSemaphores();
+		VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
+		VkQueue vkPresentQueue = VulkanDevice::GetVulkanPresentQueue();
+
 		vkWaitForFences(vkDevice, 1, &vkInFlightFences[s_CurrentFrame], VK_TRUE, UINT64_MAX);
 
 		uint32_t imageIndex;
 
-		VkSwapchainKHR vkSwapChain = VulkanSwapChain::GetVulkanSwapChain();
-		std::vector<VkSemaphore> vkImageSemaphores = VulkanSyncObjects::GetVulkanImageSemaphores();
 		VkResult result = vkAcquireNextImageKHR(vkDevice, vkSwapChain, UINT64_MAX, vkImageSemaphores[s_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR) 
@@ -87,8 +96,6 @@ namespace PhysiXal {
 		}
 
 		vkResetFences(vkDevice, 1, &vkInFlightFences[s_CurrentFrame]);
-
-		std::vector<VkCommandBuffer> vkCommandBuffers = VulkanCommandBuffer::GetVulkanCommandBuffers();
 		vkResetCommandBuffer(vkCommandBuffers[s_CurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);
 		m_CommandBuffer->RecordCommandBuffers(vkCommandBuffers[s_CurrentFrame], imageIndex);
 
@@ -100,16 +107,13 @@ namespace PhysiXal {
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
-
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &vkCommandBuffers[s_CurrentFrame];
 
-		std::vector<VkSemaphore> vkRenderSemaphores = VulkanSyncObjects::GetVulkanRenderSemaphores();
 		VkSemaphore signalSemaphores[] = { vkRenderSemaphores[s_CurrentFrame] };
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
-		VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
 		if (vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, vkInFlightFences[s_CurrentFrame]) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to submit draw command buffer!");
@@ -117,17 +121,13 @@ namespace PhysiXal {
 
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = signalSemaphores;
 
 		VkSwapchainKHR swapChains[] = { vkSwapChain };
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
-
 		presentInfo.pImageIndices = &imageIndex;
-
-		VkQueue vkPresentQueue = VulkanDevice::GetVulkanPresentQueue();
 		result = vkQueuePresentKHR(vkPresentQueue, &presentInfo);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || s_FramebufferResized)
@@ -146,6 +146,7 @@ namespace PhysiXal {
 	void VulkanRenderer::WaitAndIdle()
 	{
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
 		vkDeviceWaitIdle(vkDevice);
 	}
 

@@ -10,13 +10,15 @@ namespace PhysiXal {
 
     VkShaderModule VulkanShader::CreateShaderModule(const std::vector<char>& code)
     {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
         VkShaderModuleCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         createInfo.codeSize = code.size();
         createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
         VkShaderModule shaderModule;
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
         if (vkCreateShaderModule(vkDevice, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create shader module!");

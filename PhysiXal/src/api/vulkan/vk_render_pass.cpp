@@ -11,10 +11,12 @@ namespace PhysiXal {
 
     void VulkanRenderPass::CreateRenderPass()
     {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
+
         PX_CORE_INFO("Creating Vulkan render pass");
 
         VkAttachmentDescription colorAttachment{};
-        VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
         colorAttachment.format = vkSwapChainImageFormat;
         colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
         colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -51,7 +53,6 @@ namespace PhysiXal {
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         if (vkCreateRenderPass(vkDevice, &renderPassInfo, nullptr, &s_RenderPass) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create render pass!");
@@ -60,9 +61,10 @@ namespace PhysiXal {
 
     void VulkanRenderPass::DestroyRenderPass()
     {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
         PX_CORE_WARN("...Destroying Vulkan render pass");
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         vkDestroyRenderPass(vkDevice, s_RenderPass, nullptr);
     }
 }

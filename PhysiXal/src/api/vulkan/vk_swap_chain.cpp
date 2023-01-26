@@ -12,9 +12,12 @@ namespace PhysiXal {
 
     void VulkanSwapChain::CreateSwapChain()
     {
+        VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
+        VkSurfaceKHR vkSurface = VulkanDevice::GetVulkanSurface();
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
         PX_CORE_INFO("Creating Vulkan swap chain");
 
-        VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
         SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(vkPhysicalDevice);
 
         VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -29,8 +32,6 @@ namespace PhysiXal {
 
         VkSwapchainCreateInfoKHR createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-
-        VkSurfaceKHR vkSurface = VulkanDevice::GetVulkanSurface();
         createInfo.surface = vkSurface;
 
         createInfo.minImageCount = imageCount;
@@ -60,7 +61,6 @@ namespace PhysiXal {
 
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         if (vkCreateSwapchainKHR(vkDevice, &createInfo, nullptr, &s_SwapChain) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create swap chain!");
@@ -76,17 +76,19 @@ namespace PhysiXal {
 
     void VulkanSwapChain::DestroySwapChain()
     {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
         PX_CORE_WARN("...Destroying Vulkan swap chain");
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         vkDestroySwapchainKHR(vkDevice, s_SwapChain, nullptr);
     }
 
     SwapChainSupportDetails VulkanSwapChain::QuerySwapChainSupport(VkPhysicalDevice device)
     {
+        VkSurfaceKHR vkSurface = VulkanDevice::GetVulkanSurface();
+
         SwapChainSupportDetails details;
 
-        VkSurfaceKHR vkSurface = VulkanDevice::GetVulkanSurface();
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, vkSurface, &details.capabilities);
 
         uint32_t formatCount;
@@ -164,6 +166,8 @@ namespace PhysiXal {
 
     void VulkanSwapChain::CreateImageViews()
     {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
         PX_CORE_INFO("Setting up and creating Vulkan image views");
 
         s_SwapChainImageViews.resize(s_SwapChainImages.size());
@@ -185,7 +189,6 @@ namespace PhysiXal {
             createInfo.subresourceRange.baseArrayLayer = 0;
             createInfo.subresourceRange.layerCount = 1;
 
-            VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
             if (vkCreateImageView(vkDevice, &createInfo, nullptr, &s_SwapChainImageViews[i]) != VK_SUCCESS)
             {
                 PX_CORE_ERROR("Failed to create image views!");
@@ -195,11 +198,12 @@ namespace PhysiXal {
 
     void VulkanSwapChain::DestroyImageViews()
     {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
         PX_CORE_WARN("...Destroying Vulkan image views");
 
         for (auto imageView : s_SwapChainImageViews)
         {
-            VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
             vkDestroyImageView(vkDevice, imageView, nullptr);
         }
     }

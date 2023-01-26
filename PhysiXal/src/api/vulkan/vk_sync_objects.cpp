@@ -11,6 +11,8 @@ namespace PhysiXal {
 
 	void VulkanSyncObjects::CreateSyncObjects()
 	{
+		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
 		PX_CORE_INFO("Creating sync objects");
 
 		s_ImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -26,7 +28,6 @@ namespace PhysiXal {
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 			if (vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &s_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
 				vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &s_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
 				vkCreateFence(vkDevice, &fenceInfo, nullptr, &s_InFlightFences[i]) != VK_SUCCESS)
@@ -38,9 +39,10 @@ namespace PhysiXal {
 
 	void VulkanSyncObjects::DestroySyncObjects()
 	{
+		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
 		PX_CORE_WARN("...Destroying sync objects");
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			vkDestroySemaphore(vkDevice, s_ImageAvailableSemaphores[i], nullptr);

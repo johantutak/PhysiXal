@@ -7,6 +7,7 @@ namespace PhysiXal {
 	class VulkanSyncObjects
 	{
 	public:
+		// Sync objects
 		void CreateSyncObjects();
 		void DestroySyncObjects();
 

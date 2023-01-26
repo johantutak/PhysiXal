@@ -6,6 +6,7 @@
 #include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_framebuffer.h"
 #include "api/vulkan/vk_pipeline.h"
+#include "api/vulkan/vk_vertex_buffer.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -14,19 +15,19 @@ namespace PhysiXal {
 
     void VulkanCommandBuffer::CreateCommandBuffers()
     {
+        VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
         PX_CORE_INFO("Creating Vulkan command buffer");
 
         s_CommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-
-        VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
         allocInfo.commandPool = vkCommandPool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandBufferCount = (uint32_t)s_CommandBuffers.size();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         if (vkAllocateCommandBuffers(vkDevice, &allocInfo, s_CommandBuffers.data()) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to allocate command buffer!");
@@ -35,15 +36,22 @@ namespace PhysiXal {
 
     void VulkanCommandBuffer::DestroyCommandBuffers()
     {
-        PX_CORE_WARN("...Destroying Vulkan command buffer");
-
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
+
+        PX_CORE_WARN("...Destroying Vulkan command buffer");
+
         vkDestroyCommandPool(vkDevice, vkCommandPool, nullptr);
     }
 
     void VulkanCommandBuffer::RecordCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex)
     {
+        VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
+        std::vector<VkFramebuffer> vkFramebuffer = VulkanFramebuffer::GetVulkanFramebuffers();
+        VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
+        VkPipeline vkPipeline = VulkanPipeline::GetVulkanPipeline();
+        VkBuffer vkVertexBuffer = VulkanVertexBuffer::GetVulkanVertexBuffer();
+
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -54,15 +62,9 @@ namespace PhysiXal {
 
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-
-        VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
         renderPassInfo.renderPass = vkRenderPass;
-
-        std::vector<VkFramebuffer> vkFramebuffer = VulkanFramebuffer::GetVulkanFramebuffers();
         renderPassInfo.framebuffer = vkFramebuffer[imageIndex];
         renderPassInfo.renderArea.offset = { 0, 0 };
-
-        VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
         renderPassInfo.renderArea.extent = vkSwapChainExtent2D;
 
         VkClearValue clearColor = { {{0.02f, 0.02f, 0.02f, 1.0f}} };
@@ -71,7 +73,6 @@ namespace PhysiXal {
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        VkPipeline vkPipeline = VulkanPipeline::GetVulkanPipeline();
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipeline);
 
         VkViewport viewport{};
@@ -88,7 +89,11 @@ namespace PhysiXal {
         scissor.extent = vkSwapChainExtent2D;
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-        vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+        VkBuffer vertexBuffers[] = { vkVertexBuffer };
+        VkDeviceSize offsets[] = { 0 };
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 

@@ -5,6 +5,7 @@
 #include "api/vulkan/vk_swap_chain.h"
 #include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_shader.h"
+#include "api/vulkan/vk_vertex_buffer.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -13,6 +14,9 @@ namespace PhysiXal {
 
     void VulkanPipeline::CreateGraphicsPipeline()
     {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
+
         PX_CORE_INFO("Creating the layout of the graphics pipeline");
 
 #ifdef PX_PLATFORM_WINDOWS
@@ -44,8 +48,14 @@ namespace PhysiXal {
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount = 0;
-        vertexInputInfo.vertexAttributeDescriptionCount = 0;
+
+        auto bindingDescription = Vertex::GetBindingDescription();
+        auto attributeDescriptions = Vertex::GetAttributeDescriptions();
+
+        vertexInputInfo.vertexBindingDescriptionCount = 1;
+        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+        vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
         inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -101,7 +111,6 @@ namespace PhysiXal {
         pipelineLayoutInfo.setLayoutCount = 0;
         pipelineLayoutInfo.pushConstantRangeCount = 0;
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         if (vkCreatePipelineLayout(vkDevice, &pipelineLayoutInfo, nullptr, &s_PipelineLayout) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create pipeline layout!");
@@ -121,8 +130,6 @@ namespace PhysiXal {
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
         pipelineInfo.layout = s_PipelineLayout;
-
-        VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
         pipelineInfo.renderPass = vkRenderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
@@ -138,9 +145,10 @@ namespace PhysiXal {
 
     void VulkanPipeline::DestroyGraphicsPipeline()
     {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
         PX_CORE_WARN("...Shutting down the graphics pipeline");
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         vkDestroyPipeline(vkDevice, s_GraphicsPipeline, nullptr);
 
         PX_CORE_WARN("...Destroying the layout of the graphics pipeline");
