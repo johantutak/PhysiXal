@@ -91,9 +91,7 @@ project "PhysiXal"
 	links
 	{
 		"GLFW",
-
-		"%{Library.Vulkan}"
-
+		"%{Library.Vulkan}",
 		"ImGui"
 	}
 	

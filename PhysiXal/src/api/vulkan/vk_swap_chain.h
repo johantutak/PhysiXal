@@ -35,10 +35,6 @@ namespace PhysiXal {
 		void DestroyImageViews();
 
 		static std::vector<VkImageView> GetVulkanImageViews() { return s_SwapChainImageViews; }
-
-		// Swap chain recreation
-		void RecreateSwapChain();
-		void DestroyRecreatedSwapChain();
 	private:
 		inline static VkSwapchainKHR s_SwapChain;
 		inline static std::vector<VkImage> s_SwapChainImages;

@@ -13,6 +13,8 @@ public:
 
 	void OnUpdate(PhysiXal::Timestep ts) override;
 
+	virtual void OnGuiRender() override;
+
 	void OnEvent(PhysiXal::Event& e) override;
 private:
 };

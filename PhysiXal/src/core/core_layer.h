@@ -22,7 +22,9 @@ namespace PhysiXal {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 
-		virtual void OnUpdate(Timestep ts) {};
+		virtual void OnUpdate(Timestep ts) {}
+
+		virtual void OnGuiRender() {}
 
 		virtual void OnEvent(Event& event) {}
 

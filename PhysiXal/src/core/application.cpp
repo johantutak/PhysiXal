@@ -33,6 +33,10 @@ namespace PhysiXal {
 
 		// #### TODO ####
 		// Add func to execute command queue to compile all shaders
+
+		// Initialize the GUI
+		m_GuiLayer = new GuiLayer();
+		PushOverlay(m_GuiLayer);
 	}
 
 	Application::~Application()
@@ -88,12 +92,20 @@ namespace PhysiXal {
 
 			if (!m_Minimized)
 			{
+				// Draw frame here
+				Renderer::BeginFrame();
 				{
 					for (CoreLayer* layer : m_LayerStack)
 						layer->OnUpdate(timestep);
 				}
-				//Draw frame here
-				Renderer::BeginFrame();
+
+				// Draw overlay (GUI) here
+				m_GuiLayer->Begin();
+				{
+					for (CoreLayer* layer : m_LayerStack)
+						layer->OnGuiRender();
+				}
+				m_GuiLayer->End();
 			}
 
 			m_Window->OnUpdate();

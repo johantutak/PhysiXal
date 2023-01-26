@@ -14,6 +14,7 @@ namespace PhysiXal {
 
 		void WaitAndIdle();
 
+		// Swap chain recreation
 		void RecreateSwapChain();
 		void DestroyRecreatedSwapChain();
 	private:

@@ -25,6 +25,13 @@ void ExampleGame::OnUpdate(PhysiXal::Timestep ts)
 	// Render
 }
 
+void ExampleGame::OnGuiRender()
+{
+	//ImGui::Begin("Settings");
+
+	//ImGui::End();
+}
+
 void ExampleGame::OnEvent(PhysiXal::Event& e)
 {
 }

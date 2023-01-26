@@ -11,7 +11,7 @@ namespace PhysiXal {
 
     void VulkanRenderPass::CreateRenderPass()
     {
-        PX_CORE_INFO("Creating Vulkan context");
+        PX_CORE_INFO("Creating Vulkan render pass");
 
         VkAttachmentDescription colorAttachment{};
         VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
@@ -22,7 +22,8 @@ namespace PhysiXal {
         colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        // Change to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR when multiple render passes are supported and ImGui is implemented
+        colorAttachment.finalLayout = /*VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL */ VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
         VkAttachmentReference colorAttachmentRef{};
         colorAttachmentRef.attachment = 0;
@@ -59,7 +60,7 @@ namespace PhysiXal {
 
     void VulkanRenderPass::DestroyRenderPass()
     {
-        PX_CORE_WARN("...Destroying Vulkan context");
+        PX_CORE_WARN("...Destroying Vulkan render pass");
 
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         vkDestroyRenderPass(vkDevice, s_RenderPass, nullptr);
