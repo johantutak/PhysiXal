@@ -12,6 +12,7 @@ namespace PhysiXal {
 		void DestroyGraphicsPipeline();
 
 		static VkPipeline GetVulkanPipeline() { return s_GraphicsPipeline; }
+		static VkPipelineLayout GetVulkanPipelineLayout() { return s_PipelineLayout; }
 	private:
 		inline static VkPipeline s_GraphicsPipeline;
 		inline static VkPipelineLayout s_PipelineLayout;

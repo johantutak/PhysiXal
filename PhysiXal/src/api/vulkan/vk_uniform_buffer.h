@@ -15,11 +15,18 @@ namespace PhysiXal {
 	class VulkanUniformBuffer
 	{
 	public:
-		// Descriptor pool
+		// Descriptor set layout
 		void CreateDescriptorSetLayout();
 		void DestroyDescriptorSetLayout();
 
 		static VkDescriptorSetLayout GetVulkanDescriptorSetLayout() { return s_DescriptorSetLayout; }
+
+		// Descriptor pool
+		void CreateDescriptorPool();
+		void DestroyDescriptorPool();
+		void CreateDescriptorSets();
+
+		static std::vector<VkDescriptorSet> GetVulkanDescriptorSets() { return s_DescriptorSets; }
 
 		// Uniform buffer
 		void CreateUniformBuffers();
@@ -34,5 +41,8 @@ namespace PhysiXal {
 		inline static std::vector<VkBuffer> s_UniformBuffers;
 		inline static std::vector<VkDeviceMemory> s_UniformBuffersMemory;
 		inline static std::vector<void*> s_UniformBuffersMapped;
+
+		inline static VkDescriptorPool s_DescriptorPool;
+		inline static std::vector<VkDescriptorSet> s_DescriptorSets;
 	};
 }

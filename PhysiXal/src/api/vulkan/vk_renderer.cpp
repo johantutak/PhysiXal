@@ -55,6 +55,8 @@ namespace PhysiXal {
 		m_Buffer->CreateVertexBuffer();
 		m_Buffer->CreateIndexBuffer();
 		m_UniformBuffer->CreateUniformBuffers();
+		m_UniformBuffer->CreateDescriptorPool();
+		m_UniformBuffer->CreateDescriptorSets();
 		m_CommandBuffer->CreateCommandBuffers();
 		m_SyncObjects->CreateSyncObjects();
 	}
@@ -68,6 +70,7 @@ namespace PhysiXal {
 		m_Pipeline->DestroyGraphicsPipeline();
 		m_RenderPass->DestroyRenderPass();
 		m_UniformBuffer->DestroyUnifromBuffers();
+		m_UniformBuffer->DestroyDescriptorPool();
 		m_UniformBuffer->DestroyDescriptorSetLayout();
 		m_Buffer->DestroyIndexBuffer();
 		m_Buffer->DestroyVertexBuffer();

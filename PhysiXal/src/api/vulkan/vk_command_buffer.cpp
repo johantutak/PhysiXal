@@ -7,6 +7,8 @@
 #include "api/vulkan/vk_framebuffer.h"
 #include "api/vulkan/vk_pipeline.h"
 #include "api/vulkan/vk_buffer.h"
+#include "api/vulkan/vk_uniform_buffer.h"
+#include "api/vulkan/vk_renderer.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -54,8 +56,11 @@ namespace PhysiXal {
         std::vector<VkFramebuffer> vkFramebuffer = VulkanFramebuffer::GetVulkanFramebuffers();
         VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
         VkPipeline vkPipeline = VulkanPipeline::GetVulkanPipeline();
+        VkPipelineLayout vkPipelineLayout = VulkanPipeline::GetVulkanPipelineLayout();
         VkBuffer vkVertexBuffer = VulkanBuffer::GetVulkanVertexBuffer();
         VkBuffer vkIndexBuffer = VulkanBuffer::GetVulkanIndexBuffer();
+        std::vector<VkDescriptorSet> vkDescriptorSets = VulkanUniformBuffer::GetVulkanDescriptorSets();
+        uint32_t vkCurrentFrame = VulkanRenderer::GetVulkanCurrentFrame();
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -99,6 +104,8 @@ namespace PhysiXal {
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
         vkCmdBindIndexBuffer(commandBuffer, vkIndexBuffer, 0, VK_INDEX_TYPE_UINT16);
+
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipelineLayout, 0, 1, &vkDescriptorSets[vkCurrentFrame], 0, nullptr);
 
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 

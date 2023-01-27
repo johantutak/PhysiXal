@@ -15,6 +15,8 @@ namespace PhysiXal {
 
 		void WaitAndIdle();
 
+		static uint32_t GetVulkanCurrentFrame() { return s_CurrentFrame; }
+
 		// Swap chain recreation
 		void RecreateSwapChain();
 		void DestroyRecreatedSwapChain();

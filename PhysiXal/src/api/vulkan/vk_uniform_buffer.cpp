@@ -20,14 +20,14 @@ namespace PhysiXal {
     static VulkanBuffer* m_Buffer = nullptr;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Descriptor pool
+    // Descriptor set layout
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void VulkanUniformBuffer::CreateDescriptorSetLayout()
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
-        PX_CORE_INFO("Creating Vulkan descriptor pool");
+        PX_CORE_INFO("Creating Vulkan descriptor set layout");
 
         VkDescriptorSetLayoutBinding uboLayoutBinding{};
         uboLayoutBinding.binding = 0;
@@ -51,13 +51,87 @@ namespace PhysiXal {
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
-        PX_CORE_WARN("...Destroying Vulkan descriptor pool");
+        PX_CORE_WARN("...Destroying Vulkan descriptor set layout");
         
         vkDestroyDescriptorSetLayout(vkDevice, s_DescriptorSetLayout, nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Vertex buffer
+    // Descriptor pool
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void VulkanUniformBuffer::CreateDescriptorPool()
+    {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
+        PX_CORE_INFO("Creating Vulkan descriptor pool");
+
+        VkDescriptorPoolSize poolSize{};
+        poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        poolSize.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+        VkDescriptorPoolCreateInfo poolInfo{};
+        poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        poolInfo.poolSizeCount = 1;
+        poolInfo.pPoolSizes = &poolSize;
+        poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+        if (vkCreateDescriptorPool(vkDevice, &poolInfo, nullptr, &s_DescriptorPool) != VK_SUCCESS) 
+        {
+            PX_CORE_ERROR("Failed to create descriptor pool!");
+        }
+    }
+    
+    void VulkanUniformBuffer::DestroyDescriptorPool()
+    {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
+        PX_CORE_WARN("...Destroying Vulkan descriptor pool");
+
+        vkDestroyDescriptorPool(vkDevice, s_DescriptorPool, nullptr);
+    }
+
+    void VulkanUniformBuffer::CreateDescriptorSets()
+    {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
+        PX_CORE_INFO("Creating Vulkan descriptor sets");
+
+        std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, s_DescriptorSetLayout);
+        VkDescriptorSetAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = s_DescriptorPool;
+        allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        allocInfo.pSetLayouts = layouts.data();
+
+        s_DescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+        if (vkAllocateDescriptorSets(vkDevice, &allocInfo, s_DescriptorSets.data()) != VK_SUCCESS)
+        {
+            PX_CORE_ERROR("Failed to allocate descriptor sets!");
+        }
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+        {
+            VkDescriptorBufferInfo bufferInfo{};
+            bufferInfo.buffer = s_UniformBuffers[i];
+            bufferInfo.offset = 0;
+            bufferInfo.range = sizeof(UniformBufferObject);
+
+            VkWriteDescriptorSet descriptorWrite{};
+            descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            descriptorWrite.dstSet = s_DescriptorSets[i];
+            descriptorWrite.dstBinding = 0;
+            descriptorWrite.dstArrayElement = 0;
+            descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            descriptorWrite.descriptorCount = 1;
+            descriptorWrite.pBufferInfo = &bufferInfo;
+
+            vkUpdateDescriptorSets(vkDevice, 1, &descriptorWrite, 0, nullptr);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Uniform buffer
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void VulkanUniformBuffer::CreateUniformBuffers()
