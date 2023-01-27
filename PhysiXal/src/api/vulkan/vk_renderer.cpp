@@ -9,7 +9,7 @@
 #include "api/vulkan/vk_framebuffer.h"
 #include "api/vulkan/vk_command_buffer.h"
 #include "api/vulkan/vk_sync_objects.h"
-#include "api/vulkan/vk_vertex_buffer.h"
+#include "api/vulkan/vk_buffer.h"
 
 #include "core/application.h"
 
@@ -17,6 +17,10 @@
 #include <GLFW/glfw3.h>
 
 namespace PhysiXal {
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Vulkan renderer
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	struct GLFWwindow* windowHandle;
 
@@ -28,7 +32,7 @@ namespace PhysiXal {
 	static VulkanFramebuffer* m_Framebuffer = nullptr;
 	static VulkanCommandBuffer* m_CommandBuffer = nullptr;
 	static VulkanSyncObjects* m_SyncObjects = nullptr;
-	static VulkanVertexBuffer* m_VertexBuffer = nullptr;
+	static VulkanBuffer* m_Buffer = nullptr;
 
 	void VulkanRenderer::Init()
 	{
@@ -45,7 +49,8 @@ namespace PhysiXal {
 		m_Pipeline->CreateGraphicsPipeline();
 		m_Framebuffer->CreateFramebuffers();
 		m_Device->CreateCommandPool();
-		m_VertexBuffer->CreateVertexBuffer();
+		m_Buffer->CreateVertexBuffer();
+		m_Buffer->CreateIndexBuffer();
 		m_CommandBuffer->CreateCommandBuffers();
 		m_SyncObjects->CreateSyncObjects();
 	}
@@ -58,7 +63,8 @@ namespace PhysiXal {
 		
 		m_Pipeline->DestroyGraphicsPipeline();
 		m_RenderPass->DestroyRenderPass();
-		m_VertexBuffer->DestroyVertexBuffer();
+		m_Buffer->DestroyIndexBuffer();
+		m_Buffer->DestroyVertexBuffer();
 		m_SyncObjects->DestroySyncObjects();
 		m_CommandBuffer->DestroyCommandBuffers();
 		m_Device->DestroyDevice();
@@ -149,6 +155,10 @@ namespace PhysiXal {
 
 		vkDeviceWaitIdle(vkDevice);
 	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Swap chain recreation
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	void VulkanRenderer::RecreateSwapChain()
 	{

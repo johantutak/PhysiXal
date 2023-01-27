@@ -42,15 +42,21 @@ namespace PhysiXal {
 
 	// #### TEMPORARY ####
 	const std::vector<Vertex> vertices = {
-	{{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
-	{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-	{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+	{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+	{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+	{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
 	};
 
-	class VulkanVertexBuffer
+	// #### TEMPORARY ####
+	const std::vector<uint16_t> indices = {
+		0, 1, 2, 2, 3, 0
+	};
+
+	class VulkanBuffer
 	{
 	public:
-		// Buffer creation
+		// Buffer creation (staging buffer)
 		void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 		void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
@@ -60,8 +66,17 @@ namespace PhysiXal {
 		uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 		static VkBuffer GetVulkanVertexBuffer() { return s_VertexBuffer; }
+
+		// Index buffer
+		void CreateIndexBuffer();
+		void DestroyIndexBuffer();
+
+		static VkBuffer GetVulkanIndexBuffer() { return s_IndexBuffer; }
 	private:
 		static inline VkBuffer s_VertexBuffer;
 		static inline VkDeviceMemory s_VertexBufferMemory;
+
+		static inline VkBuffer s_IndexBuffer;
+		static inline VkDeviceMemory s_IndexBufferMemory;
 	};
 }

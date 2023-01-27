@@ -5,12 +5,16 @@
 #include "api/vulkan/vk_swap_chain.h"
 #include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_shader.h"
-#include "api/vulkan/vk_vertex_buffer.h"
+#include "api/vulkan/vk_buffer.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 namespace PhysiXal {
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Graphics pipeline
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void VulkanPipeline::CreateGraphicsPipeline()
     {

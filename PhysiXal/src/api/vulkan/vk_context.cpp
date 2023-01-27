@@ -6,6 +6,10 @@
 
 namespace PhysiXal {
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Proxy classes
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, 
 		const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) 
 	{
@@ -29,14 +33,9 @@ namespace PhysiXal {
 		}
 	}
 
-	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanContext::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-		VkDebugUtilsMessageTypeFlagsEXT messageType,
-		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
-	{
-		PX_CORE_TRACE("Validation layer: {0}", pCallbackData->pMessage);
-
-		return VK_FALSE;
-	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Context (instance)
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	void VulkanContext::CreateContext()
 	{
@@ -97,6 +96,10 @@ namespace PhysiXal {
 		vkDestroyInstance(s_VulkanInstance, nullptr);
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Debug Messenger
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	void VulkanContext::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
 		createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -116,7 +119,11 @@ namespace PhysiXal {
 		{
 			PX_CORE_ERROR("Failed to set up debug messenger!");
 		}
-	} 
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Extensions and validation layers
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	std::vector<const char*> VulkanContext::GetRequiredExtensions()
 	{
@@ -162,5 +169,14 @@ namespace PhysiXal {
 		}
 
 		return true;
+	}
+
+	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanContext::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+		VkDebugUtilsMessageTypeFlagsEXT messageType,
+		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
+	{
+		PX_CORE_TRACE("Validation layer: {0}", pCallbackData->pMessage);
+
+		return VK_FALSE;
 	}
 }

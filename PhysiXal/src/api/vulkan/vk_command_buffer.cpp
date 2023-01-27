@@ -6,12 +6,16 @@
 #include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_framebuffer.h"
 #include "api/vulkan/vk_pipeline.h"
-#include "api/vulkan/vk_vertex_buffer.h"
+#include "api/vulkan/vk_buffer.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 namespace PhysiXal {
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Command buffer
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void VulkanCommandBuffer::CreateCommandBuffers()
     {
@@ -50,7 +54,8 @@ namespace PhysiXal {
         std::vector<VkFramebuffer> vkFramebuffer = VulkanFramebuffer::GetVulkanFramebuffers();
         VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
         VkPipeline vkPipeline = VulkanPipeline::GetVulkanPipeline();
-        VkBuffer vkVertexBuffer = VulkanVertexBuffer::GetVulkanVertexBuffer();
+        VkBuffer vkVertexBuffer = VulkanBuffer::GetVulkanVertexBuffer();
+        VkBuffer vkIndexBuffer = VulkanBuffer::GetVulkanIndexBuffer();
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -93,7 +98,9 @@ namespace PhysiXal {
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-        vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+        vkCmdBindIndexBuffer(commandBuffer, vkIndexBuffer, 0, VK_INDEX_TYPE_UINT16);
+
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 

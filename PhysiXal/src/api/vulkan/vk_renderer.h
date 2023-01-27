@@ -7,6 +7,7 @@ namespace PhysiXal {
 	class VulkanRenderer
 	{
 	public:
+		// Vulkan renderer
 		void Init();
 		void Shutdown();
 
