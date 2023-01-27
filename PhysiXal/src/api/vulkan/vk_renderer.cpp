@@ -10,6 +10,7 @@
 #include "api/vulkan/vk_command_buffer.h"
 #include "api/vulkan/vk_sync_objects.h"
 #include "api/vulkan/vk_buffer.h"
+#include "api/vulkan/vk_uniform_buffer.h"
 
 #include "core/application.h"
 
@@ -33,6 +34,7 @@ namespace PhysiXal {
 	static VulkanCommandBuffer* m_CommandBuffer = nullptr;
 	static VulkanSyncObjects* m_SyncObjects = nullptr;
 	static VulkanBuffer* m_Buffer = nullptr;
+	static VulkanUniformBuffer* m_UniformBuffer = nullptr;
 
 	void VulkanRenderer::Init()
 	{
@@ -46,11 +48,13 @@ namespace PhysiXal {
 		m_SwapChain->CreateSwapChain();
 		m_SwapChain->CreateImageViews();
 		m_RenderPass->CreateRenderPass();
+		m_UniformBuffer->CreateDescriptorSetLayout();
 		m_Pipeline->CreateGraphicsPipeline();
 		m_Framebuffer->CreateFramebuffers();
 		m_Device->CreateCommandPool();
 		m_Buffer->CreateVertexBuffer();
 		m_Buffer->CreateIndexBuffer();
+		m_UniformBuffer->CreateUniformBuffers();
 		m_CommandBuffer->CreateCommandBuffers();
 		m_SyncObjects->CreateSyncObjects();
 	}
@@ -63,6 +67,8 @@ namespace PhysiXal {
 		
 		m_Pipeline->DestroyGraphicsPipeline();
 		m_RenderPass->DestroyRenderPass();
+		m_UniformBuffer->DestroyUnifromBuffers();
+		m_UniformBuffer->DestroyDescriptorSetLayout();
 		m_Buffer->DestroyIndexBuffer();
 		m_Buffer->DestroyVertexBuffer();
 		m_SyncObjects->DestroySyncObjects();
@@ -100,6 +106,8 @@ namespace PhysiXal {
 		{
 			PX_CORE_ERROR("Failed to acquire swap chain image!");
 		}
+
+		m_UniformBuffer->UpdateUniformBuffer(s_CurrentFrame);
 
 		vkResetFences(vkDevice, 1, &vkInFlightFences[s_CurrentFrame]);
 		vkResetCommandBuffer(vkCommandBuffers[s_CurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);

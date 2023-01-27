@@ -6,6 +6,7 @@
 #include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_shader.h"
 #include "api/vulkan/vk_buffer.h"
+#include "api/vulkan/vk_uniform_buffer.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -20,6 +21,7 @@ namespace PhysiXal {
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
+        VkDescriptorSetLayout vkDescriptorSetLayout = VulkanUniformBuffer::GetVulkanDescriptorSetLayout();
 
         PX_CORE_INFO("Creating the layout of the graphics pipeline");
 
@@ -112,8 +114,8 @@ namespace PhysiXal {
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 0;
-        pipelineLayoutInfo.pushConstantRangeCount = 0;
+        pipelineLayoutInfo.setLayoutCount = 1;
+        pipelineLayoutInfo.pSetLayouts = &vkDescriptorSetLayout;
 
         if (vkCreatePipelineLayout(vkDevice, &pipelineLayoutInfo, nullptr, &s_PipelineLayout) != VK_SUCCESS)
         {
