@@ -9,6 +9,52 @@
 namespace PhysiXal {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Proxy classes
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    VkCommandBuffer BeginSingleTimeCommands()
+    {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
+
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandPool = vkCommandPool;
+        allocInfo.commandBufferCount = 1;
+
+        VkCommandBuffer commandBuffer;
+        vkAllocateCommandBuffers(vkDevice, &allocInfo, &commandBuffer);
+
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+        vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+        return commandBuffer;
+    }
+
+    void EndSingleTimeCommands(VkCommandBuffer commandBuffer)
+    {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
+        VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
+
+        vkEndCommandBuffer(commandBuffer);
+
+        VkSubmitInfo submitInfo{};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &commandBuffer;
+
+        vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+        vkQueueWaitIdle(vkGraphicsQueue);
+
+        vkFreeCommandBuffers(vkDevice, vkCommandPool, 1, &commandBuffer);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Buffer creation (staging buffer)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,40 +91,13 @@ namespace PhysiXal {
 
     void VulkanBuffer::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
     {
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
-        VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
-
-        VkCommandBufferAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandPool = vkCommandPool;
-        allocInfo.commandBufferCount = 1;
-
-        VkCommandBuffer commandBuffer;
-        vkAllocateCommandBuffers(vkDevice, &allocInfo, &commandBuffer);
-
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-        vkBeginCommandBuffer(commandBuffer, &beginInfo);
+        VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
         VkBufferCopy copyRegion{};
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
-        vkEndCommandBuffer(commandBuffer);
-
-        VkSubmitInfo submitInfo{};
-        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &commandBuffer;
-
-        vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-        vkQueueWaitIdle(vkGraphicsQueue);
-
-        vkFreeCommandBuffers(vkDevice, vkCommandPool, 1, &commandBuffer);
+        EndSingleTimeCommands(commandBuffer);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

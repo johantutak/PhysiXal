@@ -11,6 +11,7 @@
 #include "api/vulkan/vk_sync_objects.h"
 #include "api/vulkan/vk_buffer.h"
 #include "api/vulkan/vk_uniform_buffer.h"
+#include "api/vulkan/vk_texture.h"
 
 #include "core/application.h"
 
@@ -18,10 +19,6 @@
 #include <GLFW/glfw3.h>
 
 namespace PhysiXal {
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Vulkan renderer
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	struct GLFWwindow* windowHandle;
 
@@ -35,6 +32,11 @@ namespace PhysiXal {
 	static VulkanSyncObjects* m_SyncObjects = nullptr;
 	static VulkanBuffer* m_Buffer = nullptr;
 	static VulkanUniformBuffer* m_UniformBuffer = nullptr;
+	static VulkanTexture* m_Texture = nullptr;
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Vulkan renderer
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	void VulkanRenderer::Init()
 	{
@@ -52,6 +54,7 @@ namespace PhysiXal {
 		m_Pipeline->CreateGraphicsPipeline();
 		m_Framebuffer->CreateFramebuffers();
 		m_Device->CreateCommandPool();
+		m_Texture->ApplyTextureImage();
 		m_Buffer->CreateVertexBuffer();
 		m_Buffer->CreateIndexBuffer();
 		m_UniformBuffer->CreateUniformBuffers();
@@ -71,6 +74,7 @@ namespace PhysiXal {
 		m_RenderPass->DestroyRenderPass();
 		m_UniformBuffer->DestroyUnifromBuffers();
 		m_UniformBuffer->DestroyDescriptorPool();
+		m_Texture->EraseTextureImage();
 		m_UniformBuffer->DestroyDescriptorSetLayout();
 		m_Buffer->DestroyIndexBuffer();
 		m_Buffer->DestroyVertexBuffer();

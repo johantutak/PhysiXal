@@ -4,6 +4,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include "api/vulkan/vk_device.h"
+
 #include <array>
 
 namespace PhysiXal {
@@ -52,6 +54,10 @@ namespace PhysiXal {
 	const std::vector<uint16_t> indices = {
 		0, 1, 2, 2, 3, 0
 	};
+
+	// Proxy classes
+	VkCommandBuffer BeginSingleTimeCommands();
+	void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
 
 	class VulkanBuffer
 	{

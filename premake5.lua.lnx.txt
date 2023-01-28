@@ -24,6 +24,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["ImGui"] = "PhysiXal/thirdparty/imgui"
 IncludeDir["glm"] = "PhysiXal/thirdparty/glm"
+IncludeDir["stb_image"] = "PhysiXal/thirdparty/stb_image"
 
 group "Dependencies"
 	include "PhysiXal/thirdparty/imgui"
@@ -56,6 +57,8 @@ project "PhysiXal"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/thirdparty/stb_image/**.h",
+		"%{prj.name}/thirdparty/stb_image/**.cpp",
 		"%{prj.name}/thirdparty/glm/glm/**.hpp",
 		"%{prj.name}/thirdparty/glm/glm/**.inl"
 	}
@@ -72,12 +75,12 @@ project "PhysiXal"
 		"%{prj.name}/thirdparty/spdlog/include",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}"
 	}
 
 	links
 	{
-		"Glad",
 		"ImGui"
 	}
 
