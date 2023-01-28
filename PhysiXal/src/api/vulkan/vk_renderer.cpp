@@ -54,7 +54,9 @@ namespace PhysiXal {
 		m_Pipeline->CreateGraphicsPipeline();
 		m_Framebuffer->CreateFramebuffers();
 		m_Device->CreateCommandPool();
-		m_Texture->ApplyTextureImage();
+		m_Texture->CreateTextureImage();
+		m_Texture->CreateTextureImageView();
+		m_Texture->CreateTextureSampler();
 		m_Buffer->CreateVertexBuffer();
 		m_Buffer->CreateIndexBuffer();
 		m_UniformBuffer->CreateUniformBuffers();
@@ -74,7 +76,9 @@ namespace PhysiXal {
 		m_RenderPass->DestroyRenderPass();
 		m_UniformBuffer->DestroyUnifromBuffers();
 		m_UniformBuffer->DestroyDescriptorPool();
-		m_Texture->EraseTextureImage();
+		m_Texture->DestroyTextureSampler();
+		m_Texture->DestroyTextureImageView();
+		m_Texture->DestroyTextureImage();
 		m_UniformBuffer->DestroyDescriptorSetLayout();
 		m_Buffer->DestroyIndexBuffer();
 		m_Buffer->DestroyVertexBuffer();

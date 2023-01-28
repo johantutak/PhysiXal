@@ -4,8 +4,6 @@
 
 #include <vulkan/vulkan.h>
 
-#include "api/vulkan/vk_device.h"
-
 #include <array>
 
 namespace PhysiXal {

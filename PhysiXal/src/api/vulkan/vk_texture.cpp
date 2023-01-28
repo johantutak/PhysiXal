@@ -14,10 +14,38 @@ namespace PhysiXal {
 	static VulkanBuffer* m_Buffer = nullptr;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Proxy classes
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	VkImageView CreateImageView(VkImage image, VkFormat format) 
+	{
+		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
+		VkImageViewCreateInfo viewInfo{};
+		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewInfo.image = image;
+		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.format = format;
+		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		viewInfo.subresourceRange.baseMipLevel = 0;
+		viewInfo.subresourceRange.levelCount = 1;
+		viewInfo.subresourceRange.baseArrayLayer = 0;
+		viewInfo.subresourceRange.layerCount = 1;
+
+		VkImageView imageView;
+		if (vkCreateImageView(vkDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS) 
+		{
+			PX_CORE_ERROR("Failed to create texture image view!");
+		}
+
+		return imageView;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Texture
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void VulkanTexture::ApplyTextureImage()
+	void VulkanTexture::CreateTextureImage()
 	{
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
@@ -59,7 +87,7 @@ namespace PhysiXal {
 		vkFreeMemory(vkDevice, stagingBufferMemory, nullptr);
 	}
 
-	void VulkanTexture::EraseTextureImage()
+	void VulkanTexture::DestroyTextureImage()
 	{
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
@@ -185,5 +213,62 @@ namespace PhysiXal {
 		vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 		EndSingleTimeCommands(commandBuffer);
+	}
+
+	void VulkanTexture::CreateTextureImageView()
+	{
+		PX_CORE_INFO("Setting up and creating Vulkan texture image views");
+
+		s_TextureImageView = CreateImageView(s_TextureImage, VK_FORMAT_R8G8B8A8_SRGB);
+	}
+
+	void VulkanTexture::DestroyTextureImageView()
+	{
+		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
+		PX_CORE_WARN("...Destroying Vulkan texture image views");
+
+		vkDestroyImage(vkDevice, s_TextureImage, nullptr);
+		vkFreeMemory(vkDevice, s_TextureImageMemory, nullptr);
+	}
+
+	void VulkanTexture::CreateTextureSampler()
+	{
+		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
+
+		PX_CORE_INFO("Creating Vulkan texture sampler");
+
+		VkPhysicalDeviceProperties properties{};
+		vkGetPhysicalDeviceProperties(vkPhysicalDevice, &properties);
+
+		VkSamplerCreateInfo samplerInfo{};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerInfo.magFilter = VK_FILTER_LINEAR;
+		samplerInfo.minFilter = VK_FILTER_LINEAR;
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.anisotropyEnable = VK_TRUE;
+		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+		samplerInfo.unnormalizedCoordinates = VK_FALSE;
+		samplerInfo.compareEnable = VK_FALSE;
+		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+		if (vkCreateSampler(vkDevice, &samplerInfo, nullptr, &s_TextureSampler) != VK_SUCCESS)
+		{
+			PX_CORE_ERROR("Failed to create texture sampler!");
+		}
+	}
+
+	void VulkanTexture::DestroyTextureSampler()
+	{
+		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
+		PX_CORE_WARN("...Destroying Vulkan texture sampler");
+
+		vkDestroySampler(vkDevice, s_TextureSampler, nullptr);
 	}
 }
