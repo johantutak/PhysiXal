@@ -1,8 +1,7 @@
 #include "px_pch.h"
 #include "api/vulkan/vk_sync_objects.h"
 
-#include "api/vulkan/vk_device.h"
-#include "api/vulkan/vk_command_buffer.h"
+#include "api/vulkan/vk_utilities.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>

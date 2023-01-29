@@ -1,8 +1,7 @@
 #include "px_pch.h"
 #include "api/vulkan/vk_texture.h"
 
-#include "api/vulkan/vk_device.h"
-#include "api/vulkan/vk_buffer.h"
+#include "api/vulkan/vk_utilities.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -10,36 +9,6 @@
 #include <stb_image.h>
 
 namespace PhysiXal {
-
-	static VulkanBuffer* m_Buffer = nullptr;
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Proxy classes
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	VkImageView CreateImageView(VkImage image, VkFormat format) 
-	{
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
-		VkImageViewCreateInfo viewInfo{};
-		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		viewInfo.image = image;
-		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		viewInfo.format = format;
-		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		viewInfo.subresourceRange.baseMipLevel = 0;
-		viewInfo.subresourceRange.levelCount = 1;
-		viewInfo.subresourceRange.baseArrayLayer = 0;
-		viewInfo.subresourceRange.layerCount = 1;
-
-		VkImageView imageView;
-		if (vkCreateImageView(vkDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS) 
-		{
-			PX_CORE_ERROR("Failed to create texture image view!");
-		}
-
-		return imageView;
-	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Texture
@@ -67,7 +36,8 @@ namespace PhysiXal {
 
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
-		m_Buffer->CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+		m_Buffer->CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
+			stagingBuffer, stagingBufferMemory);
 
 		void* data;
 		vkMapMemory(vkDevice, stagingBufferMemory, 0, imageSize, 0, &data);
@@ -215,6 +185,10 @@ namespace PhysiXal {
 		EndSingleTimeCommands(commandBuffer);
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Texture image view
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	void VulkanTexture::CreateTextureImageView()
 	{
 		PX_CORE_INFO("Setting up and creating Vulkan texture image views");
@@ -231,6 +205,10 @@ namespace PhysiXal {
 		vkDestroyImage(vkDevice, s_TextureImage, nullptr);
 		vkFreeMemory(vkDevice, s_TextureImageMemory, nullptr);
 	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Texture sampler
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	void VulkanTexture::CreateTextureSampler()
 	{

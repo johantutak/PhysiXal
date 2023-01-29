@@ -1,10 +1,7 @@
 #include "px_pch.h"
 #include "api/vulkan/vk_framebuffer.h"
 
-#include "api/vulkan/vk_device.h"
-#include "api/vulkan/vk_swap_chain.h"
-#include "api/vulkan/vk_render_pass.h"
-#include "api/vulkan/vk_pipeline.h"
+#include "api/vulkan/vk_utilities.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>

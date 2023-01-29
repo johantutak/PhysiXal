@@ -5,8 +5,8 @@
 #include "api/vulkan/vk_swap_chain.h"
 #include "api/vulkan/vk_render_pass.h"
 #include "api/vulkan/vk_shader.h"
-#include "api/vulkan/vk_buffer.h"
-#include "api/vulkan/vk_uniform_buffer.h"
+
+#include "api/vulkan/vk_utilities.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -29,7 +29,6 @@ namespace PhysiXal {
         auto vertShaderCode = VulkanShader::ReadFile("../Example/assets/shaders/base_vert.spv");
         auto fragShaderCode = VulkanShader::ReadFile("../Example/assets/shaders/base_frag.spv");
 #endif
-
 #ifdef PX_PLATFORM_LINUX
         auto vertShaderCode = VulkanShader::ReadFile("../../../Example/assets/shaders/base_vert.spv");
         auto fragShaderCode = VulkanShader::ReadFile("../../../Example/assets/shaders/base_frag.spv");

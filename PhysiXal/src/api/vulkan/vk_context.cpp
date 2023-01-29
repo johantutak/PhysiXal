@@ -1,37 +1,12 @@
 #include "px_pch.h"
 #include "api/vulkan/vk_context.h"
 
+#include "api/vulkan/vk_utilities.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 namespace PhysiXal {
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Proxy classes
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-		const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger)
-	{
-		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-		if (func != nullptr)
-		{
-			return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-		}
-		else
-		{
-			return VK_ERROR_EXTENSION_NOT_PRESENT;
-		}
-	}
-
-	void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator)
-	{
-		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-		if (func != nullptr)
-		{
-			func(instance, debugMessenger, pAllocator);
-		}
-	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Context (instance)
@@ -97,7 +72,7 @@ namespace PhysiXal {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Debug Messenger
+	// Debug messenger
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	void VulkanContext::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {

@@ -4,9 +4,6 @@
 
 namespace PhysiXal {
 
-	// Proxy classes
-	VkImageView CreateImageView(VkImage image, VkFormat format);
-
 	class VulkanTexture
 	{
 	public:
@@ -22,9 +19,13 @@ namespace PhysiXal {
 		void CreateTextureImageView();
 		void DestroyTextureImageView();
 
-		void CreateTextureSampler();
+		static VkImageView GetVulkanTextureImageView() { return s_TextureImageView; }
 
+		// Texture sampler
+		void CreateTextureSampler();
 		void DestroyTextureSampler();
+
+		static VkSampler GetVulkanTextureSampler() { return s_TextureSampler; }
 	private:
 		inline static VkImage s_TextureImage;
 		inline static VkDeviceMemory s_TextureImageMemory;

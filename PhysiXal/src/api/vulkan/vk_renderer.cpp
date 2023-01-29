@@ -1,17 +1,7 @@
 #include "px_pch.h"
 #include "api/vulkan/vk_renderer.h"
 
-#include "api/vulkan/vk_context.h"
-#include "api/vulkan/vk_device.h"
-#include "api/vulkan/vk_swap_chain.h"
-#include "api/vulkan/vk_pipeline.h"
-#include "api/vulkan/vk_render_pass.h"
-#include "api/vulkan/vk_framebuffer.h"
-#include "api/vulkan/vk_command_buffer.h"
-#include "api/vulkan/vk_sync_objects.h"
-#include "api/vulkan/vk_buffer.h"
-#include "api/vulkan/vk_uniform_buffer.h"
-#include "api/vulkan/vk_texture.h"
+#include "api/vulkan/vk_utilities.h"
 
 #include "core/application.h"
 
@@ -19,20 +9,6 @@
 #include <GLFW/glfw3.h>
 
 namespace PhysiXal {
-
-	struct GLFWwindow* windowHandle;
-
-	static VulkanContext* m_Context = nullptr;
-	static VulkanDevice* m_Device = nullptr;
-	static VulkanSwapChain* m_SwapChain = nullptr;
-	static VulkanRenderPass* m_RenderPass = nullptr;
-	static VulkanPipeline* m_Pipeline = nullptr;
-	static VulkanFramebuffer* m_Framebuffer = nullptr;
-	static VulkanCommandBuffer* m_CommandBuffer = nullptr;
-	static VulkanSyncObjects* m_SyncObjects = nullptr;
-	static VulkanBuffer* m_Buffer = nullptr;
-	static VulkanUniformBuffer* m_UniformBuffer = nullptr;
-	static VulkanTexture* m_Texture = nullptr;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Vulkan renderer
@@ -71,7 +47,6 @@ namespace PhysiXal {
 		PX_CORE_WARN("...Shutting down the renderer");
 
 		DestroyRecreatedSwapChain();
-		
 		m_Pipeline->DestroyGraphicsPipeline();
 		m_RenderPass->DestroyRenderPass();
 		m_UniformBuffer->DestroyUnifromBuffers();
