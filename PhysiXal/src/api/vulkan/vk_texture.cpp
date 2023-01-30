@@ -21,12 +21,7 @@ namespace PhysiXal {
 		PX_CORE_INFO("Applying texture image");
 
 		int texWidth, texHeight, texChannels;
-#ifdef PX_PLATFORM_WINDOWS
-		stbi_uc* pixels = stbi_load("../Example/assets/textures/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-#endif
-#ifdef PX_PLATFORM_LINUX
-		stbi_uc* pixels = stbi_load("../../../Example/assets/textures/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-#endif
+		stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 		VkDeviceSize imageSize = texWidth * texHeight * 4;
 
 		if (!pixels) 

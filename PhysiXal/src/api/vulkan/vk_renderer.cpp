@@ -34,6 +34,7 @@ namespace PhysiXal {
 		m_Texture->CreateTextureImage();
 		m_Texture->CreateTextureImageView();
 		m_Texture->CreateTextureSampler();
+		m_Model->LoadModel();
 		m_Buffer->CreateVertexBuffer();
 		m_Buffer->CreateIndexBuffer();
 		m_UniformBuffer->CreateUniformBuffers();

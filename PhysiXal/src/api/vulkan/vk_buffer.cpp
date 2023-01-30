@@ -61,6 +61,8 @@ namespace PhysiXal {
     void VulkanBuffer::CreateVertexBuffer()
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        std::vector<Vertex> vertices = VulkanModel::GetVulkanVertices();
+        std::vector<uint32_t> indices = VulkanModel::GetVulkanIndices();
 
         PX_CORE_INFO("Creating Vulkan vertex buffer");
 
@@ -114,6 +116,7 @@ namespace PhysiXal {
     void VulkanBuffer::CreateIndexBuffer()
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        std::vector<uint32_t> indices = VulkanModel::GetVulkanIndices();
 
         PX_CORE_INFO("Creating Vulkan index buffer");
 

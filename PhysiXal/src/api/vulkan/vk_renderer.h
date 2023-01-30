@@ -4,6 +4,15 @@
 
 namespace PhysiXal {
 
+#ifdef PX_PLATFORM_WINDOWS
+	const std::string MODEL_PATH = "../Example/assets/models/viking_room.obj";
+	const std::string TEXTURE_PATH = "../Example/assets/textures/viking_room.png";
+#endif
+#ifdef PX_PLATFORM_LINUX
+	const std::string MODEL_PATH = "../../../Example/assets/models/viking_room.obj";
+	const std::string TEXTURE_PATH = "../../../Example/assets/textures/viking_room.png";
+#endif
+
 	class VulkanRenderer
 	{
 	public:

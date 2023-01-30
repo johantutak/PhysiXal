@@ -55,6 +55,7 @@ namespace PhysiXal {
         VkBuffer vkIndexBuffer = VulkanBuffer::GetVulkanIndexBuffer();
         std::vector<VkDescriptorSet> vkDescriptorSets = VulkanUniformBuffer::GetVulkanDescriptorSets();
         uint32_t vkCurrentFrame = VulkanRenderer::GetVulkanCurrentFrame();
+        std::vector<uint32_t> indices = VulkanModel::GetVulkanIndices();
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -100,7 +101,7 @@ namespace PhysiXal {
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-        vkCmdBindIndexBuffer(commandBuffer, vkIndexBuffer, 0, VK_INDEX_TYPE_UINT16);
+        vkCmdBindIndexBuffer(commandBuffer, vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipelineLayout, 0, 1, &vkDescriptorSets[vkCurrentFrame], 0, nullptr);
 

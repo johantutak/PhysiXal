@@ -25,6 +25,7 @@ IncludeDir = {}
 IncludeDir["ImGui"] = "PhysiXal/thirdparty/imgui"
 IncludeDir["glm"] = "PhysiXal/thirdparty/glm"
 IncludeDir["stb_image"] = "PhysiXal/thirdparty/stb_image"
+IncludeDir["tinyobjloader"] = "PhysiXal/thirdparty/tinyobjloader"
 
 group "Dependencies"
 	include "PhysiXal/thirdparty/imgui"
@@ -60,7 +61,9 @@ project "PhysiXal"
 		"%{prj.name}/thirdparty/stb_image/**.h",
 		"%{prj.name}/thirdparty/stb_image/**.cpp",
 		"%{prj.name}/thirdparty/glm/glm/**.hpp",
-		"%{prj.name}/thirdparty/glm/glm/**.inl"
+		"%{prj.name}/thirdparty/glm/glm/**.inl",
+		"%{prj.name}/thirdparty/tinyobjloader/**.h",
+		"%{prj.name}/thirdparty/tinyobjloader/**.cpp"
 	}
 
 	defines
@@ -76,7 +79,8 @@ project "PhysiXal"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.tinyobjloader}"
 	}
 
 	links
