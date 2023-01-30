@@ -28,8 +28,9 @@ namespace PhysiXal {
 		m_RenderPass->CreateRenderPass();
 		m_UniformBuffer->CreateDescriptorSetLayout();
 		m_Pipeline->CreateGraphicsPipeline();
-		m_Framebuffer->CreateFramebuffers();
 		m_Device->CreateCommandPool();
+		m_DepthBuffer->CreateDepthResources();
+		m_Framebuffer->CreateFramebuffers();
 		m_Texture->CreateTextureImage();
 		m_Texture->CreateTextureImageView();
 		m_Texture->CreateTextureSampler();
@@ -46,7 +47,7 @@ namespace PhysiXal {
 	{
 		PX_CORE_WARN("...Shutting down the renderer");
 
-		DestroyRecreatedSwapChain();
+		m_SwapChain->DestroyRecreatedSwapChain();
 		m_Pipeline->DestroyGraphicsPipeline();
 		m_RenderPass->DestroyRenderPass();
 		m_UniformBuffer->DestroyUnifromBuffers();
@@ -85,7 +86,7 @@ namespace PhysiXal {
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR) 
 		{
-			RecreateSwapChain();
+			m_SwapChain->RecreateSwapChain();
 			return;
 		}
 		else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) 
@@ -133,7 +134,7 @@ namespace PhysiXal {
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || s_FramebufferResized)
 		{
 			s_FramebufferResized = false;
-			RecreateSwapChain();
+			m_SwapChain->RecreateSwapChain();
 		}
 		else if (result != VK_SUCCESS) 
 		{
@@ -148,37 +149,5 @@ namespace PhysiXal {
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		vkDeviceWaitIdle(vkDevice);
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Swap chain recreation
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	void VulkanRenderer::RecreateSwapChain()
-	{
-		int width = 0, height = 0;
-
-		auto vkWindowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		glfwGetFramebufferSize(vkWindowHandle, &width, &height);
-		while (width == 0 || height == 0) 
-		{
-			glfwGetFramebufferSize(vkWindowHandle, &width, &height);
-			glfwWaitEvents();
-		}
-
-		WaitAndIdle();
-
-		DestroyRecreatedSwapChain();
-
-		m_SwapChain->CreateSwapChain();
-		m_SwapChain->CreateImageViews();
-		m_Framebuffer->CreateFramebuffers();
-	}
-
-	void VulkanRenderer::DestroyRecreatedSwapChain()
-	{
-		m_Framebuffer->DestroyFramebuffers();
-		m_SwapChain->DestroyImageViews();
-		m_SwapChain->DestroySwapChain();
 	}
 }

@@ -17,17 +17,17 @@ namespace PhysiXal {
 		GuiLayer();
 		~GuiLayer();
 
-		virtual void OnAttach() override;
-		virtual void OnDetach() override;
+		//virtual void OnAttach() override;
+		//virtual void OnDetach() override;
 
-		/*virtual void OnGuiRender() override;*/
+		//virtual void OnGuiRender() override;
 
-		void Begin();
-		void End();
+		//void Begin();
+		//void End();
 
 		// #### TEMPORARY ####
-		void GuiDescriptorPool();
-		void GuiRenderPass();
+		//void GuiDescriptorPool();
+		//void GuiRenderPass();
 	private:
 		float m_Time = 0.0f;
 

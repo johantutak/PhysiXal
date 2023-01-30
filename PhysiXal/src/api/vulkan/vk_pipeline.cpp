@@ -33,7 +33,6 @@ namespace PhysiXal {
         auto vertShaderCode = VulkanShader::ReadFile("../../../Example/assets/shaders/base_vert.spv");
         auto fragShaderCode = VulkanShader::ReadFile("../../../Example/assets/shaders/base_frag.spv");
 #endif
-
         VkShaderModule vertShaderModule = VulkanShader::CreateShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = VulkanShader::CreateShaderModule(fragShaderCode);
 
@@ -87,6 +86,14 @@ namespace PhysiXal {
         multisampling.sampleShadingEnable = VK_FALSE;
         multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
+        VkPipelineDepthStencilStateCreateInfo depthStencil{};
+        depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+        depthStencil.depthTestEnable = VK_TRUE;
+        depthStencil.depthWriteEnable = VK_TRUE;
+        depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+        depthStencil.depthBoundsTestEnable = VK_FALSE;
+        depthStencil.stencilTestEnable = VK_FALSE;
+
         VkPipelineColorBlendAttachmentState colorBlendAttachment{};
         colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
         colorBlendAttachment.blendEnable = VK_FALSE;
@@ -116,7 +123,7 @@ namespace PhysiXal {
         pipelineLayoutInfo.setLayoutCount = 1;
         pipelineLayoutInfo.pSetLayouts = &vkDescriptorSetLayout;
 
-        if (vkCreatePipelineLayout(vkDevice, &pipelineLayoutInfo, nullptr, &s_PipelineLayout) != VK_SUCCESS)
+        if (vkCreatePipelineLayout(vkDevice, &pipelineLayoutInfo, nullptr, &s_PipelineLayout) != VK_SUCCESS) 
         {
             PX_CORE_ERROR("Failed to create pipeline layout!");
         }
@@ -132,6 +139,7 @@ namespace PhysiXal {
         pipelineInfo.pViewportState = &viewportState;
         pipelineInfo.pRasterizationState = &rasterizer;
         pipelineInfo.pMultisampleState = &multisampling;
+        pipelineInfo.pDepthStencilState = &depthStencil;
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
         pipelineInfo.layout = s_PipelineLayout;
@@ -139,7 +147,7 @@ namespace PhysiXal {
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &s_GraphicsPipeline) != VK_SUCCESS)
+        if (vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &s_GraphicsPipeline) != VK_SUCCESS) 
         {
             PX_CORE_ERROR("Failed to create graphics pipeline!");
         }

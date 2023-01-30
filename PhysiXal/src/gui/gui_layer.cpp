@@ -7,11 +7,7 @@
 
 #include "core/application.h"
 
-#include "api/vulkan/vk_context.h"
-#include "api/vulkan/vk_device.h"
-#include "api/vulkan/vk_render_pass.h"
-#include "api/vulkan/vk_swap_chain.h"
-#include "api/vulkan/vk_command_buffer.h"
+#include "api/vulkan/vk_utilities.h"
 
 // #### TEMPORARY ####
 #define GLFW_INCLUDE_VULKAN
@@ -28,9 +24,9 @@ namespace PhysiXal {
 	{
 	}
 
-	void GuiLayer::OnAttach()
+	/*void GuiLayer::OnAttach()
 	{
-		/*auto vkInstance = VulkanContext::GetVulkanInstance();
+		auto vkInstance = VulkanContext::GetVulkanInstance();
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
 		VkQueue vkPresentQueue = VulkanDevice::GetVulkanPresentQueue();
@@ -89,18 +85,18 @@ namespace PhysiXal {
 		// Upload Fonts
 		{
 			// Use any command queue
-			VkCommandBuffer GuicommandBuffer = BeginSingleTimeCommands;
-			ImGui_ImplVulkan_CreateFontsTexture(GuicommandBuffer);
-			EndSingleTimeCommands(GuicommandBuffer);
+			VkCommandBuffer GuiCommandBuffer = BeginSingleTimeCommands();
+			ImGui_ImplVulkan_CreateFontsTexture(GuiCommandBuffer);
+			EndSingleTimeCommands(GuiCommandBuffer);
 
 			VkResult(vkDeviceWaitIdle(vkDevice));
 			ImGui_ImplVulkan_DestroyFontUploadObjects();
-		}*/
-	}
+		}
+	}*/
 
-	void GuiLayer::OnDetach()
+	/*void GuiLayer::OnDetach()
 	{
-		/*VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		// Destroy the imgui created structures
 		vkDestroyDescriptorPool(vkDevice, m_GuiPool, nullptr);
@@ -108,25 +104,32 @@ namespace PhysiXal {
 
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();*/
-	}
+		ImGui::DestroyContext();
+	}*/
 
-	/* void ImGuiLayer::OnImGuiRender()
+	/*void RecreateGuiWindow() // #### TO DO ####
+	{
+		ImGui_ImplVulkan_SetMinImageCount(g_MinImageCount);
+		ImGui_ImplVulkanH_CreateWindow(g_Instance, g_PhysicalDevice, g_Device, &g_MainWindowData, g_QueueFamily, g_Allocator, g_SwapChainResizeWidth, g_SwapChainResizeHeight, g_MinImageCount);
+		g_MainWindowData.FrameIndex = 0;
+	}*/
+
+	/*void GuiLayer::OnGuiRender()
 	{
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
 	}*/
 
-	void GuiLayer::Begin()
+	/*void GuiLayer::Begin()
 	{
-		/*ImGui_ImplVulkan_NewFrame();
+		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();*/
-	}
+		ImGui::NewFrame();
+	}*/
 
-	void GuiLayer::End()
+	/*void GuiLayer::End()
 	{
-		/*ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
@@ -140,13 +143,13 @@ namespace PhysiXal {
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 			//glfwMakeContextCurrent(backup_current_context);
-		}*/
-	}
+		}
+	}*/
 
 	// #### TEMPORARY ####
-	void GuiLayer::GuiDescriptorPool()
+	/*void GuiLayer::GuiDescriptorPool()
 	{
-		/*VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		// Create Descriptor Pool
 		VkDescriptorPoolSize pool_sizes[] =
@@ -170,12 +173,12 @@ namespace PhysiXal {
 		pool_info.maxSets = 1000;
 		pool_info.poolSizeCount = std::size(pool_sizes);
 		pool_info.pPoolSizes = pool_sizes;
-		VkResult(vkCreateDescriptorPool(vkDevice, &pool_info, nullptr, &m_GuiPool));*/
-	}
+		VkResult(vkCreateDescriptorPool(vkDevice, &pool_info, nullptr, &m_GuiPool));
+	}*/
 
-	void GuiLayer::GuiRenderPass()
+	/*void GuiLayer::GuiRenderPass()
 	{
-		/*VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
 
 		VkAttachmentDescription attachment = {};
@@ -217,6 +220,6 @@ namespace PhysiXal {
 		if (vkCreateRenderPass(vkDevice, &info, nullptr, &m_GuiRenderPass) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to create GUI's render pass!");
-		}*/
-	}
+		}
+	}*/
 }

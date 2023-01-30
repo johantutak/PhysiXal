@@ -100,12 +100,12 @@ namespace PhysiXal {
 				}
 
 				// Draw overlay (GUI) here
-				m_GuiLayer->Begin();
+				/*m_GuiLayer->Begin();
 				{
 					for (CoreLayer* layer : m_LayerStack)
 						layer->OnGuiRender();
 				}
-				m_GuiLayer->End();
+				m_GuiLayer->End();*/
 			}
 
 			m_Window->OnUpdate();

@@ -2,6 +2,7 @@
 #include "api/vulkan/vk_swap_chain.h"
 
 #include "api/vulkan/vk_utilities.h"
+#include "api/vulkan/vk_renderer.h"
 
 #include "core/application.h"
 
@@ -177,12 +178,12 @@ namespace PhysiXal {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Setting up and creating Vulkan image views");
-
+        
         s_SwapChainImageViews.resize(s_SwapChainImages.size());
 
-        for (size_t i = 0; i < s_SwapChainImages.size(); i++) 
+        for (uint32_t i = 0; i < s_SwapChainImages.size(); i++) 
         {
-            s_SwapChainImageViews[i] = CreateImageView(s_SwapChainImages[i], s_SwapChainImageFormat);
+            s_SwapChainImageViews[i] = CreateImageView(s_SwapChainImages[i], s_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
         }
     }
 
@@ -196,5 +197,39 @@ namespace PhysiXal {
         {
             vkDestroyImageView(vkDevice, imageView, nullptr);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Swap chain recreation
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void VulkanSwapChain::RecreateSwapChain()
+    {
+        auto vkWindowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+        int width = 0, height = 0;
+        glfwGetFramebufferSize(vkWindowHandle, &width, &height);
+        while (width == 0 || height == 0)
+        {
+            glfwGetFramebufferSize(vkWindowHandle, &width, &height);
+            glfwWaitEvents();
+        }
+
+        m_VulkanRenderer->WaitAndIdle();
+
+        DestroyRecreatedSwapChain();
+
+        m_SwapChain->CreateSwapChain();
+        m_SwapChain->CreateImageViews();
+        m_DepthBuffer->CreateDepthResources();
+        m_Framebuffer->CreateFramebuffers();
+    }
+
+    void VulkanSwapChain::DestroyRecreatedSwapChain()
+    {
+        m_DepthBuffer->DestroyDepthResources();
+        m_Framebuffer->DestroyFramebuffers();
+        m_SwapChain->DestroyImageViews();
+        m_SwapChain->DestroySwapChain();
     }
 }

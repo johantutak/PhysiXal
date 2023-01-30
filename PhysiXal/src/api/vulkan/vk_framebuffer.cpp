@@ -18,23 +18,24 @@ namespace PhysiXal {
         VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
         VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        VkImageView vkDepthImageView = VulkanDepthBuffer::GetVulkanDepthImageView();
 
         PX_CORE_INFO("Creating Vulkan framebuffer");
 
         s_Framebuffers.resize(vkSwapChainImageViews.size());
-
-        for (size_t i = 0; i < vkSwapChainImageViews.size(); i++)
+        
+        for (size_t i = 0; i < vkSwapChainImageViews.size(); i++) 
         {
-            VkImageView attachments[] =
-            {
-                vkSwapChainImageViews[i]
+            std::array<VkImageView, 2> attachments = {
+                vkSwapChainImageViews[i],
+                vkDepthImageView
             };
 
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             framebufferInfo.renderPass = vkRenderPass;
-            framebufferInfo.attachmentCount = 1;
-            framebufferInfo.pAttachments = attachments;
+            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.pAttachments = attachments.data();
             framebufferInfo.width = vkSwapChainExtent2D.width;
             framebufferInfo.height = vkSwapChainExtent2D.height;
             framebufferInfo.layers = 1;

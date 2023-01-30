@@ -5,6 +5,9 @@
 
 #include "core/application.h"
 
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 #include <set>
 #include <cstdint>
 #include <limits>
