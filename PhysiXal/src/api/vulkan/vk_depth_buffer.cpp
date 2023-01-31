@@ -20,8 +20,9 @@ namespace PhysiXal {
 
 		VkFormat depthFormat = FindDepthFormat();
 
-		CreateImage(vkSwapChainExtent2D.width, vkSwapChainExtent2D.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_DepthImage, s_DepthImageMemory);
-		s_DepthImageView = CreateImageView(s_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+		CreateImage(vkSwapChainExtent2D.width, vkSwapChainExtent2D.height, 1, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_DepthImage, s_DepthImageMemory);
+		s_DepthImageView = CreateImageView(s_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 	}
 
 	void VulkanDepthBuffer::DestroyDepthResources()

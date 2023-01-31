@@ -76,8 +76,8 @@ namespace PhysiXal {
     }
 
     // Texture
-    void CreateImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-        VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
+    void CreateImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, 
+        VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory) 
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
@@ -87,7 +87,7 @@ namespace PhysiXal {
         imageInfo.extent.width = width;
         imageInfo.extent.height = height;
         imageInfo.extent.depth = 1;
-        imageInfo.mipLevels = 1;
+        imageInfo.mipLevels = mipLevels;
         imageInfo.arrayLayers = 1;
         imageInfo.format = format;
         imageInfo.tiling = tiling;
@@ -96,7 +96,7 @@ namespace PhysiXal {
         imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateImage(vkDevice, &imageInfo, nullptr, &image) != VK_SUCCESS)
+        if (vkCreateImage(vkDevice, &imageInfo, nullptr, &image) != VK_SUCCESS) 
         {
             PX_CORE_ERROR("Failed to create image!");
         }
@@ -117,7 +117,7 @@ namespace PhysiXal {
         vkBindImageMemory(vkDevice, image, imageMemory, 0);
     }
 
-    VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+    VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels) 
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
@@ -128,7 +128,7 @@ namespace PhysiXal {
         viewInfo.format = format;
         viewInfo.subresourceRange.aspectMask = aspectFlags;
         viewInfo.subresourceRange.baseMipLevel = 0;
-        viewInfo.subresourceRange.levelCount = 1;
+        viewInfo.subresourceRange.levelCount = mipLevels;
         viewInfo.subresourceRange.baseArrayLayer = 0;
         viewInfo.subresourceRange.layerCount = 1;
 

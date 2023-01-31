@@ -178,12 +178,12 @@ namespace PhysiXal {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Setting up and creating Vulkan image views");
-        
+
         s_SwapChainImageViews.resize(s_SwapChainImages.size());
 
-        for (uint32_t i = 0; i < s_SwapChainImages.size(); i++) 
+        for (uint32_t i = 0; i < s_SwapChainImages.size(); i++)
         {
-            s_SwapChainImageViews[i] = CreateImageView(s_SwapChainImages[i], s_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+            s_SwapChainImageViews[i] = CreateImageView(s_SwapChainImages[i], s_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
         }
     }
 
