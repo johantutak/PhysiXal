@@ -221,13 +221,15 @@ namespace PhysiXal {
 
         m_SwapChain->CreateSwapChain();
         m_SwapChain->CreateImageViews();
+        m_Device->CreateColorResources();
         m_DepthBuffer->CreateDepthResources();
         m_Framebuffer->CreateFramebuffers();
     }
 
-    void VulkanSwapChain::DestroyRecreatedSwapChain()
+    void VulkanSwapChain::DestroyRecreatedSwapChain() // #### TO DO #### Rename this
     {
         m_DepthBuffer->DestroyDepthResources();
+        m_Device->CreateColorResources();
         m_Framebuffer->DestroyFramebuffers();
         m_SwapChain->DestroyImageViews();
         m_SwapChain->DestroySwapChain();

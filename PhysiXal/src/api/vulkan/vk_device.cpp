@@ -23,7 +23,7 @@ namespace PhysiXal {
         auto vkInstance = VulkanContext::GetVulkanInstance();
 
         PX_CORE_INFO("Finding suitable device (physical)");
-
+        
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(vkInstance, &deviceCount, nullptr);
 
@@ -40,11 +40,12 @@ namespace PhysiXal {
             if (IsDeviceSuitable(device)) 
             {
                 s_PhysicalDevice = device;
+                s_MsaaSamples = GetMaxUsableSampleCount();
                 break;
             }
         }
 
-        if (s_PhysicalDevice == VK_NULL_HANDLE)
+        if (s_PhysicalDevice == VK_NULL_HANDLE) 
         {
             PX_CORE_ERROR("Failed to find a suitable GPU!");
         }
@@ -230,5 +231,34 @@ namespace PhysiXal {
         {
             PX_CORE_ERROR("Failed to create command pool!");
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Multisampling (MSAA)
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void VulkanDevice::CreateColorResources()
+    {
+        VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
+        VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
+
+        PX_CORE_INFO("Creating Vulkan color resources");
+
+        VkFormat colorFormat = vkSwapChainImageFormat;
+
+        CreateImage(vkSwapChainExtent2D.width, vkSwapChainExtent2D.height, 1, s_MsaaSamples, colorFormat, VK_IMAGE_TILING_OPTIMAL,
+            VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_ColorImage, s_ColorImageMemory);
+        s_ColorImageView = CreateImageView(s_ColorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+    }
+
+    void VulkanDevice::DestroyColorResources()
+    {
+
+
+        PX_CORE_WARN("...Destroying Vulkan color resources");
+
+        vkDestroyImageView(s_LogicalDevice, s_ColorImageView, nullptr);
+        vkDestroyImage(s_LogicalDevice, s_ColorImage, nullptr);
+        vkFreeMemory(s_LogicalDevice, s_ColorImageMemory, nullptr);
     }
 }

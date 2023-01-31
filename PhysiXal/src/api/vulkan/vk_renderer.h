@@ -4,6 +4,7 @@
 
 namespace PhysiXal {
 
+	// #### TEMPORARY ####
 #ifdef PX_PLATFORM_WINDOWS
 	const std::string MODEL_PATH = "../Example/assets/models/viking_room.obj";
 	const std::string TEXTURE_PATH = "../Example/assets/textures/viking_room.png";
@@ -12,6 +13,8 @@ namespace PhysiXal {
 	const std::string MODEL_PATH = "../../../Example/assets/models/viking_room.obj";
 	const std::string TEXTURE_PATH = "../../../Example/assets/textures/viking_room.png";
 #endif
+
+	// #### TO DO #### Framebuffer reset in window fix and fix renderer destruction order
 
 	class VulkanRenderer
 	{

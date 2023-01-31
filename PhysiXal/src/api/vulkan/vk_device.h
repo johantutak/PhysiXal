@@ -50,6 +50,13 @@ namespace PhysiXal {
 		void CreateCommandPool();
 
 		static VkCommandPool GetVulkanCommandPool() { return s_CommandPool; }
+
+		// Multisampling (MSAA)
+		void CreateColorResources();
+		void DestroyColorResources();
+
+		static VkSampleCountFlagBits GetVulkanMsaa() { return s_MsaaSamples; }
+		static VkImageView GetVulkanColorImageView() { return s_ColorImageView; };
 	private:
 		inline static VkPhysicalDevice s_PhysicalDevice = VK_NULL_HANDLE;
 		
@@ -61,5 +68,10 @@ namespace PhysiXal {
 		inline static VkSurfaceKHR s_Surface;
 
 		inline static VkCommandPool s_CommandPool;
+
+		inline static VkSampleCountFlagBits s_MsaaSamples = VK_SAMPLE_COUNT_1_BIT;
+		inline static VkImage s_ColorImage;
+		inline static VkDeviceMemory s_ColorImageMemory;
+		inline static VkImageView s_ColorImageView;
 	};
 }

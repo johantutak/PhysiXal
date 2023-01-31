@@ -18,17 +18,18 @@ namespace PhysiXal {
         VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
         VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        VkImageView vkColorImageView = VulkanDevice::GetVulkanColorImageView();
         VkImageView vkDepthImageView = VulkanDepthBuffer::GetVulkanDepthImageView();
 
         PX_CORE_INFO("Creating Vulkan framebuffer");
 
         s_Framebuffers.resize(vkSwapChainImageViews.size());
-        
-        for (size_t i = 0; i < vkSwapChainImageViews.size(); i++) 
-        {
-            std::array<VkImageView, 2> attachments = {
-                vkSwapChainImageViews[i],
-                vkDepthImageView
+
+        for (size_t i = 0; i < vkSwapChainImageViews.size(); i++) {
+            std::array<VkImageView, 3> attachments = {
+                vkColorImageView,
+                vkDepthImageView,
+                vkSwapChainImageViews[i]
             };
 
             VkFramebufferCreateInfo framebufferInfo{};
@@ -42,7 +43,7 @@ namespace PhysiXal {
 
             if (vkCreateFramebuffer(vkDevice, &framebufferInfo, nullptr, &s_Framebuffers[i]) != VK_SUCCESS)
             {
-                PX_CORE_ERROR("Failed to create framebuffer!");
+                PX_CORE_ERROR("Failed to create framebuffer!");;
             }
         }
     }

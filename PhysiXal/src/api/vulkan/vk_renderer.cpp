@@ -29,6 +29,7 @@ namespace PhysiXal {
 		m_UniformBuffer->CreateDescriptorSetLayout();
 		m_Pipeline->CreateGraphicsPipeline();
 		m_Device->CreateCommandPool();
+		m_Device->CreateColorResources();
 		m_DepthBuffer->CreateDepthResources();
 		m_Framebuffer->CreateFramebuffers();
 		m_Texture->CreateTextureImage();
