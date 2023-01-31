@@ -2,6 +2,11 @@
 
 #include <memory>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
+
+#include "api/vulkan/vk_buffer.h"
+
 // From Hazel Engine
 
 /*
@@ -12,7 +17,7 @@
 	*	s for static
 	*	i for indexes and iterators
 	*	e for events
-        *       g for global  
+	*	g for global  
 */
 
 // Platform detection using predefined macros
@@ -84,7 +89,7 @@
 namespace PhysiXal {
 
 
-	// Creates a Scope
+	// Creates a scope
 
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
@@ -94,7 +99,7 @@ namespace PhysiXal {
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
 
-	// Creates a Ref
+	// Creates a ref
 
 	// #### TO DO #### integrate into the real Ref Class
 
@@ -105,4 +110,13 @@ namespace PhysiXal {
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
+}
+
+// Creates a hash
+namespace std {
+	template<> struct hash<PhysiXal::Vertex> {
+		size_t operator()(PhysiXal::Vertex const& vertex) const {
+			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
+		}
+	};
 }

@@ -22,7 +22,7 @@ namespace PhysiXal {
         bufferInfo.usage = usage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateBuffer(vkDevice, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+        if (vkCreateBuffer(vkDevice, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) 
         {
             PX_CORE_ERROR("Failed to create buffer!");
         }
@@ -35,7 +35,7 @@ namespace PhysiXal {
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
-        if (vkAllocateMemory(vkDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
+        if (vkAllocateMemory(vkDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) 
         {
             PX_CORE_ERROR("Failed to allocate buffer memory!");
         }
@@ -61,12 +61,10 @@ namespace PhysiXal {
     void VulkanBuffer::CreateVertexBuffer()
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        std::vector<Vertex> vertices = VulkanModel::GetVulkanVertices();
-        std::vector<uint32_t> indices = VulkanModel::GetVulkanIndices();
 
         PX_CORE_INFO("Creating Vulkan vertex buffer");
 
-        VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+        VkDeviceSize bufferSize = sizeof(m_Model->GetVulkanVertices()[0]) * m_Model->GetVulkanVertices().size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -74,7 +72,7 @@ namespace PhysiXal {
 
         void* data;
         vkMapMemory(vkDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, vertices.data(), (size_t)bufferSize);
+        memcpy(data, m_Model->GetVulkanVertices().data(), (size_t)bufferSize);
         vkUnmapMemory(vkDevice, stagingBufferMemory);
 
         CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_VertexBuffer, s_VertexBufferMemory);
@@ -116,11 +114,10 @@ namespace PhysiXal {
     void VulkanBuffer::CreateIndexBuffer()
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        std::vector<uint32_t> indices = VulkanModel::GetVulkanIndices();
 
         PX_CORE_INFO("Creating Vulkan index buffer");
 
-        VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+        VkDeviceSize bufferSize = sizeof(m_Model->GetVulkanIndices()[0]) * m_Model->GetVulkanIndices().size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -128,7 +125,7 @@ namespace PhysiXal {
 
         void* data;
         vkMapMemory(vkDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, indices.data(), (size_t)bufferSize);
+        memcpy(data, m_Model->GetVulkanIndices().data(), (size_t)bufferSize);
         vkUnmapMemory(vkDevice, stagingBufferMemory);
 
         CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_IndexBuffer, s_IndexBufferMemory);

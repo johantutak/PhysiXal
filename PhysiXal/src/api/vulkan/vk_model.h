@@ -1,5 +1,7 @@
 #pragma once
 
+#include "api/vulkan/vk_buffer.h"
+
 #include <vulkan/vulkan.h>
 
 namespace PhysiXal {
@@ -10,10 +12,10 @@ namespace PhysiXal {
 		// Model
 		void LoadModel();
 
-        static std::vector<Vertex> GetVulkanVertices() { return s_Vertices; }
+		static std::vector<Vertex> GetVulkanVertices() { return s_Vertices; }
 		static std::vector<uint32_t> GetVulkanIndices() { return s_Indices; }
 	private:
 		static inline std::vector<Vertex> s_Vertices;
-    	static inline std::vector<uint32_t> s_Indices;
+		static inline std::vector<uint32_t> s_Indices;
 	};
 }
