@@ -28,12 +28,12 @@ PhysiXal Engine is in active development. Here is a short list of what is suppor
 Currently PhysiXal supports:
 
 - Computer OS:
-  - ![Windows supported](resources/images/badge/Windows win-64.svg)
-  - ![Linux supported](https://img.shields.io/badge/Linux-Debian-green.svg)
-  - ![MacOS not supported](https://img.shields.io/badge/MacOS-Not%20Supported-red.svg)
+  - ![Windows supported](/resources/images/badge/Windows-win-64.svg)
+  - ![Linux supported](/resources/images/badge/Linux-Debian.svg)
+  - ![MacOS not supported](/resources/images/badge/MacOS-Not-Supported.svg)
 - Mobile OS:
-  - ![Android not supported](https://img.shields.io/badge/Android-Not%20Supported-red.svg)
-  - ![IOS not supported](https://img.shields.io/badge/IOS-Not%20Supported-red.svg)
+  - ![Android not supported](/resources/images/badge/Android-Not-Supported.svg)
+  - ![IOS not supported](/resources/images/badge/IOS-Not-Supported.svg)
 
 Windows and Linux is currently supported with plans for MacOS and Android/IOS support in the future.
 
@@ -53,12 +53,12 @@ If the repository was cloned non-recursively previously, use `git submodule upda
 
 Create a new directory called vendor and a other within it called bin.
 
-Download [Premake](https://premake.github.io/download.html) from the website for your system.
+Download [Premake](https://premake.github.io/download) from the website for your system.
 
 Follow the steps relevant to your operating system.
 
 
-![Windows](https://img.shields.io/badge/Windows-win--64-green.svg):
+![Windows](/resources/images/badge/Windows-win-64.svg):
 
 Extract the downloaded file and put it in `vendor/bin` and create new directory called `premake`.
 Extract the file and only put `premake5.exe` and `LISENSE.txt` in `vendor/bin/premake` since it's the only files needed.
@@ -76,7 +76,7 @@ Download the latest [Vulkan](https://vulkan.lunarg.com) SDK version from LunarG'
 Install the SDK.
 
 
-![Linux](https://img.shields.io/badge/Linux-Debian-green.svg):
+![Linux](/resources/images/badge/Linux-Debian.svg):
 
 Extract the downloaded file and put it in `vendor/bin` and create new directory called `premake`. 
 Extract the file and only put all files in `vendor/bin/premake`.
@@ -97,11 +97,11 @@ Make `lnx_build_debug.sh` executable by navigating to `ThePhysiXalEngine/scripts
 
 Debug configuration is only supported at the moment.
 
-#### Only tested on ![Ubuntu 22.04 LTS](https://img.shields.io/ubuntu/v/jellyfish) on wayland aswell as X11 (Xorg).
+#### Only tested on ![Ubuntu 22.04 LTS](/resources/images/badge/Ubuntu-jammy.svg) on wayland aswell as X11 (Xorg).
 
 PhysiXal Engine uses a few Vulkan/GLFW API features and needs to be installed.
 
-PhysiXal Engine has extra development dependencies needed for ![Linux](https://img.shields.io/badge/Linux-Debian-green.svg). The following packages are needed to compile the project:   
+PhysiXal Engine has extra development dependencies needed for ![Linux](/resources/images/badge/Linux-Debian.svg). The following packages are needed to compile the project:   
     
     libxrandr
     libxinerama
