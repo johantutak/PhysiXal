@@ -28,7 +28,7 @@ PhysiXal Engine is in active development. Here is a short list of what is suppor
 Currently PhysiXal supports:
 
 - Computer OS:
-  - ![Windows supported](https://img.shields.io/badge/Windows-win--64-green.svg)
+  - ![Windows supported](resources/images/badge/Windows win-64.svg)
   - ![Linux supported](https://img.shields.io/badge/Linux-Debian-green.svg)
   - ![MacOS not supported](https://img.shields.io/badge/MacOS-Not%20Supported-red.svg)
 - Mobile OS:
