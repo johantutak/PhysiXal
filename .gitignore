@@ -11,6 +11,8 @@ PhysiXal.files
 PhysiXal.includes
 *.code-workspace
 .vscode/c_cpp_properties.json
+.vscode/settings.json
+.hidden
 
 # PhysiXal files
 *.log

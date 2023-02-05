@@ -16,6 +16,8 @@
 #include "api/vulkan/vk_depth_buffer.h"
 #include "api/vulkan/vk_model.h"
 
+#include "gui/gui.h"
+
 namespace PhysiXal {
 
 	// Vulkan pointers
@@ -33,6 +35,8 @@ namespace PhysiXal {
 	static VulkanTexture* m_Texture = nullptr;
 	static VulkanDepthBuffer* m_DepthBuffer = nullptr;
 	static VulkanModel* m_Model = nullptr;
+
+	static Gui* m_Gui = nullptr;
 
 	// Proxy functions
 	VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,

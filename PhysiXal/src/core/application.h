@@ -9,7 +9,7 @@
 
 #include "core/timestep.h"
 
-#include "gui/gui_layer.h"
+#include "gui/gui.h"
 
 int main(int argc, char** argv);
 
@@ -44,7 +44,7 @@ namespace PhysiXal {
 	private:
 		Scope<Window> m_Window;
 
-		GuiLayer* m_GuiLayer;
+		//GuiLayer* m_GuiLayer;
 
 		bool m_Running = true;
 		bool m_Minimized = false;

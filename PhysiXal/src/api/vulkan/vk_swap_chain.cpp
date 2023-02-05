@@ -121,7 +121,7 @@ namespace PhysiXal {
     {
         for (const auto& availableFormat : availableFormats)
         {
-            if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
             {
                 return availableFormat;
             }
@@ -231,7 +231,7 @@ namespace PhysiXal {
         m_DepthBuffer->DestroyDepthResources();
         m_Device->CreateColorResources();
         m_Framebuffer->DestroyFramebuffers();
-        m_SwapChain->DestroyImageViews();
-        m_SwapChain->DestroySwapChain();
+        DestroyImageViews();
+        DestroySwapChain();
     }
 }

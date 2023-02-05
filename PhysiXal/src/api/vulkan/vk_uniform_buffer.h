@@ -26,6 +26,7 @@ namespace PhysiXal {
 		void DestroyDescriptorPool();
 		void CreateDescriptorSets();
 
+		static VkDescriptorPool GetVulkanDescriptorPool() { return s_DescriptorPool; }
 		static std::vector<VkDescriptorSet> GetVulkanDescriptorSets() { return s_DescriptorSets; }
 
 		// Uniform buffer

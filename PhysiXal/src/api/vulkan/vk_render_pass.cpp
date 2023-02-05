@@ -28,9 +28,7 @@ namespace PhysiXal {
         colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-
-        // Change to VK_IMAGE_LAYOUT_PRESENT_SRC_KHR when multiple render passes are supported and ImGui is implemented
-        colorAttachment.finalLayout = /* VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL */ VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
         VkAttachmentDescription depthAttachment{};
         depthAttachment.format = FindDepthFormat();

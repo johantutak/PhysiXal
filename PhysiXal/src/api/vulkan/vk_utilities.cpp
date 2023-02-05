@@ -36,7 +36,7 @@ namespace PhysiXal {
     VkCommandBuffer BeginSingleTimeCommands()
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
+        VkCommandPool vkCommandPool = VulkanCommandBuffer::GetVulkanCommandPool();
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -59,7 +59,7 @@ namespace PhysiXal {
     void EndSingleTimeCommands(VkCommandBuffer commandBuffer)
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        VkCommandPool vkCommandPool = VulkanDevice::GetVulkanCommandPool();
+        VkCommandPool vkCommandPool = VulkanCommandBuffer::GetVulkanCommandPool();
         VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
 
         vkEndCommandBuffer(commandBuffer);

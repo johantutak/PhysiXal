@@ -46,11 +46,6 @@ namespace PhysiXal {
 
 		static VkSurfaceKHR GetVulkanSurface() { return s_Surface; }
 
-		// Command pool
-		void CreateCommandPool();
-
-		static VkCommandPool GetVulkanCommandPool() { return s_CommandPool; }
-
 		// Multisampling (MSAA)
 		void CreateColorResources();
 		void DestroyColorResources();
@@ -66,8 +61,6 @@ namespace PhysiXal {
 		inline static VkQueue s_PresentQueue;
 
 		inline static VkSurfaceKHR s_Surface;
-
-		inline static VkCommandPool s_CommandPool;
 
 		inline static VkSampleCountFlagBits s_MsaaSamples = VK_SAMPLE_COUNT_1_BIT;
 		inline static VkImage s_ColorImage;

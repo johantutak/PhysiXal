@@ -6,6 +6,8 @@
 
 #include "renderer/renderer.h"
 
+#include "api/vulkan/vk_utilities.h"
+
 #include <GLFW/glfw3.h>
 
 namespace PhysiXal {
@@ -35,8 +37,7 @@ namespace PhysiXal {
 		// Add func to execute command queue to compile all shaders
 
 		// Initialize the GUI
-		m_GuiLayer = new GuiLayer();
-		PushOverlay(m_GuiLayer);
+		m_Gui->GuiInit();
 	}
 
 	Application::~Application()
@@ -98,14 +99,6 @@ namespace PhysiXal {
 					for (CoreLayer* layer : m_LayerStack)
 						layer->OnUpdate(timestep);
 				}
-
-				// Draw overlay (GUI) here
-				/*m_GuiLayer->Begin();
-				{
-					for (CoreLayer* layer : m_LayerStack)
-						layer->OnGuiRender();
-				}
-				m_GuiLayer->End();*/
 			}
 
 			m_Window->OnUpdate();

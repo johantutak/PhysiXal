@@ -18,6 +18,7 @@ namespace PhysiXal {
 	{
 		PX_CORE_INFO("Initializing the renderer");
 
+		// Vulkan
 		m_Context->CreateContext();
 		m_Context->SetupDebugMessenger();
 		m_Device->CreateSurface();
@@ -28,7 +29,7 @@ namespace PhysiXal {
 		m_RenderPass->CreateRenderPass();
 		m_UniformBuffer->CreateDescriptorSetLayout();
 		m_Pipeline->CreateGraphicsPipeline();
-		m_Device->CreateCommandPool();
+		m_CommandBuffer->CreateCommandPool();
 		m_Device->CreateColorResources();
 		m_DepthBuffer->CreateDepthResources();
 		m_Framebuffer->CreateFramebuffers();
@@ -49,6 +50,10 @@ namespace PhysiXal {
 	{
 		PX_CORE_WARN("...Shutting down the renderer");
 
+		// GUI
+		m_Gui->GuiShutdown();
+
+		// Vulkan
 		m_SwapChain->DestroyRecreatedSwapChain();
 		m_Pipeline->DestroyGraphicsPipeline();
 		m_RenderPass->DestroyRenderPass();
@@ -61,7 +66,7 @@ namespace PhysiXal {
 		m_Buffer->DestroyIndexBuffer();
 		m_Buffer->DestroyVertexBuffer();
 		m_SyncObjects->DestroySyncObjects();
-		m_CommandBuffer->DestroyCommandBuffers();
+		m_CommandBuffer->DestroyCommandPool();
 		m_Device->DestroyDevice();
 		m_Device->DestroySurface();
 		m_Context->DestroyContext();
@@ -97,10 +102,9 @@ namespace PhysiXal {
 		}
 
 		m_UniformBuffer->UpdateUniformBuffer(s_CurrentFrame);
+		m_CommandBuffer->RecordCommandBuffers(vkCommandBuffers[s_CurrentFrame], imageIndex);
 
 		vkResetFences(vkDevice, 1, &vkInFlightFences[s_CurrentFrame]);
-		vkResetCommandBuffer(vkCommandBuffers[s_CurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);
-		m_CommandBuffer->RecordCommandBuffers(vkCommandBuffers[s_CurrentFrame], imageIndex);
 
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

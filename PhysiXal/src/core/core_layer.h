@@ -24,8 +24,6 @@ namespace PhysiXal {
 
 		virtual void OnUpdate(Timestep ts) {}
 
-		virtual void OnGuiRender() {}
-
 		virtual void OnEvent(Event& event) {}
 
 		const std::string& GetName() const { return m_DebugName; }

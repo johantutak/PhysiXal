@@ -22,8 +22,7 @@
 
 // ---- UI ---------------------------------------------------
 
-#include <imgui/imgui.h>
-#include "gui/gui_layer.h"
+#include "gui/gui.h"
 
 // ---- Renderer ---------------------------------------------
 

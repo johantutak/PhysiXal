@@ -215,25 +215,6 @@ namespace PhysiXal {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  Command pool
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void VulkanDevice::CreateCommandPool()
-    {
-        QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(s_PhysicalDevice);
-
-        VkCommandPoolCreateInfo poolInfo{};
-        poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-        poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-        poolInfo.queueFamilyIndex = queueFamilyIndices.m_GraphicsFamily.value();
-
-        if (vkCreateCommandPool(s_LogicalDevice, &poolInfo, nullptr, &s_CommandPool) != VK_SUCCESS)
-        {
-            PX_CORE_ERROR("Failed to create command pool!");
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Multisampling (MSAA)
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
