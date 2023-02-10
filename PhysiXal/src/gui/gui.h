@@ -1,9 +1,5 @@
 #pragma once
 
-#include "events/app_event.h"
-#include "events/key_event.h"
-#include "events/mouse_event.h"
-
 #include <vulkan/vulkan.h>
 
 namespace PhysiXal {
@@ -11,14 +7,18 @@ namespace PhysiXal {
 	class Gui
 	{
 	public:
-		void GuiInit();
-		void GuiShutdown();
-		
-		void GuiBegin();
-		void GuiEnd(VkCommandBuffer commandBuffer);
+		// GUI
+		static void Init();
+		static void Shutdown();
 
-		void GuiOnRender();
-	private:
+		static void Begin();
+		static void End();
 
+		// #### TO DO #### Replace GuiLayer this function 
+		//static void Draw(static VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+		static void OnRender();
+
+		static void OnRebuild();
 	};
 }

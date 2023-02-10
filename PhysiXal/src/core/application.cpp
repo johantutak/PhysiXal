@@ -6,7 +6,7 @@
 
 #include "renderer/renderer.h"
 
-#include "api/vulkan/vk_utilities.h"
+#include "gui/gui.h"
 
 #include <GLFW/glfw3.h>
 
@@ -37,11 +37,14 @@ namespace PhysiXal {
 		// Add func to execute command queue to compile all shaders
 
 		// Initialize the GUI
-		m_Gui->GuiInit();
+		Gui::Init();
 	}
 
 	Application::~Application()
 	{
+		// Shutdown the GUI
+		Gui::Shutdown();
+
 		// Shutdown the renderer
 		Renderer::Shutdown();
 
@@ -93,12 +96,18 @@ namespace PhysiXal {
 
 			if (!m_Minimized)
 			{
-				// Draw frame here
-				Renderer::BeginFrame();
 				{
 					for (CoreLayer* layer : m_LayerStack)
 						layer->OnUpdate(timestep);
 				}
+
+				// Draw GUI frame here
+				Gui::Begin();
+				Gui::OnRender();
+				Gui::End();
+
+				// Draw frame here
+				Renderer::DrawFrame();
 			}
 
 			m_Window->OnUpdate();

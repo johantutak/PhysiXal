@@ -2,6 +2,7 @@
 #include "api/vulkan/vk_command_buffer.h"
 
 #include "api/vulkan/vk_utilities.h"
+#include "api/vulkan/vk_initializers.h"
 #include "api/vulkan/vk_renderer.h"
 
 #define GLFW_INCLUDE_VULKAN
@@ -13,24 +14,35 @@ namespace PhysiXal {
     // Command buffer
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void VulkanCommandBuffer::CreateCommandBuffers()
+    void VulkanCommandBuffer::CreateCommandBuffers() 
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+        std::vector<VkImageView> vkSwapChainImages = VulkanSwapChain::GetVulkanImageViews();
 
-        PX_CORE_INFO("Creating Vulkan command buffers");
+        PX_CORE_INFO("Allocating Vulkan command buffers");
 
-        s_CommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+        s_CommandBuffers.resize(vkSwapChainImages.size());
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool = s_CommandPool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandBufferCount = (uint32_t)s_CommandBuffers.size();
-
+        
         if (vkAllocateCommandBuffers(vkDevice, &allocInfo, s_CommandBuffers.data()) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to allocate command buffer!");
         }
+    }
+
+
+    void VulkanCommandBuffer::DestroyCommandBuffers()
+    {
+        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
+        PX_CORE_WARN("...Freeing up Vulkan command buffers");
+
+        vkFreeCommandBuffers(vkDevice, s_CommandPool, static_cast<uint32_t>(s_CommandBuffers.size()), s_CommandBuffers.data());
     }
 
     void VulkanCommandBuffer::RecordCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex)
@@ -47,7 +59,6 @@ namespace PhysiXal {
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
         if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) 
         {
@@ -62,7 +73,7 @@ namespace PhysiXal {
         renderPassInfo.renderArea.extent = vkSwapChainExtent2D;
 
         std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = { {0.1f, 0.1f, 0.1f, 1.0f} };
+        clearValues[0].color = { {0.02f, 0.02f, 0.02f, 1.0f} };
         clearValues[1].depthStencil = { 1.0f, 0 };
 
         renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
@@ -96,11 +107,6 @@ namespace PhysiXal {
 
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Model->GetVulkanIndices().size()), 1, 0, 0, 0);
 
-        // Draw GUI here
-		m_Gui->GuiBegin();
-        m_Gui->GuiOnRender();
-		m_Gui->GuiEnd(commandBuffer);
-
         vkCmdEndRenderPass(commandBuffer);
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) 
@@ -117,6 +123,8 @@ namespace PhysiXal {
     {
         VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
+
+        PX_CORE_INFO("Creating Vulkan command pool");
 
         QueueFamilyIndices queueFamilyIndices = m_Device->FindQueueFamilies(vkPhysicalDevice);
 
@@ -135,8 +143,8 @@ namespace PhysiXal {
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
-        PX_CORE_WARN("...Destroying Vulkan command buffers");
-        
+        PX_CORE_WARN("...Destroying Vulkan command pool");
+
         // Destroys command buffers that are in the pool
         vkDestroyCommandPool(vkDevice, s_CommandPool, nullptr);
     }

@@ -26,8 +26,10 @@ namespace PhysiXal {
 		static VkInstance GetVulkanInstance() { return s_VulkanInstance; }
 		
 		// Debug messenger
-		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 		void SetupDebugMessenger();
+		void DestroyDebugMessenger();
+
+		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 		
 		// Extensions and validation layers
 		std::vector<const char*> GetRequiredExtensions();

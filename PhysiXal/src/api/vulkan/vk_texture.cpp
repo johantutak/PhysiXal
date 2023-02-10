@@ -2,6 +2,7 @@
 #include "api/vulkan/vk_texture.h"
 
 #include "api/vulkan/vk_utilities.h"
+#include "api/vulkan/vk_initializers.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -158,8 +159,7 @@ namespace PhysiXal {
 
 		PX_CORE_WARN("...Destroying Vulkan texture image views");
 
-		vkDestroyImage(vkDevice, s_TextureImage, nullptr);
-		vkFreeMemory(vkDevice, s_TextureImageMemory, nullptr);
+		vkDestroyImageView(vkDevice, s_TextureImageView, nullptr);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

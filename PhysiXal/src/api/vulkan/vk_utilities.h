@@ -16,29 +16,9 @@
 #include "api/vulkan/vk_depth_buffer.h"
 #include "api/vulkan/vk_model.h"
 
-#include "gui/gui.h"
-
 namespace PhysiXal {
 
-	// Vulkan pointers
-	static VulkanRenderer* m_VulkanRenderer = nullptr;
-	static VulkanContext* m_Context = nullptr;
-	static VulkanDevice* m_Device = nullptr;
-	static VulkanSwapChain* m_SwapChain = nullptr;
-	static VulkanRenderPass* m_RenderPass = nullptr;
-	static VulkanPipeline* m_Pipeline = nullptr;
-	static VulkanFramebuffer* m_Framebuffer = nullptr;
-	static VulkanCommandBuffer* m_CommandBuffer = nullptr;
-	static VulkanSyncObjects* m_SyncObjects = nullptr;
-	static VulkanBuffer* m_Buffer = nullptr;
-	static VulkanUniformBuffer* m_UniformBuffer = nullptr;
-	static VulkanTexture* m_Texture = nullptr;
-	static VulkanDepthBuffer* m_DepthBuffer = nullptr;
-	static VulkanModel* m_Model = nullptr;
-
-	static Gui* m_Gui = nullptr;
-
-	// Proxy functions
+	// Utility (Vulkan) functions
 	VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
 		const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
 	void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);

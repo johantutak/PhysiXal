@@ -2,6 +2,7 @@
 #include "api/vulkan/vk_shader.h"
 
 #include "api/vulkan/vk_utilities.h"
+#include "api/vulkan/vk_initializers.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>

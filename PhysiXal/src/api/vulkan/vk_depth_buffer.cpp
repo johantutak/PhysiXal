@@ -2,6 +2,7 @@
 #include "vk_depth_buffer.h"
 
 #include "api/vulkan/vk_utilities.h"
+#include "api/vulkan/vk_initializers.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>

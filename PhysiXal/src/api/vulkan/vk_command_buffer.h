@@ -11,6 +11,7 @@ namespace PhysiXal {
 	public:
 		// Command buffer
 		void CreateCommandBuffers();
+		void DestroyCommandBuffers();
 
 		static std::vector<VkCommandBuffer> GetVulkanCommandBuffers() { return s_CommandBuffers; }
 

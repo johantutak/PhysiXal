@@ -2,6 +2,9 @@
 #include "api/vulkan/vk_renderer.h"
 
 #include "api/vulkan/vk_utilities.h"
+#include "api/vulkan/vk_initializers.h"
+
+#include "api/imgui/imgui_initializers.h"
 
 #include "core/application.h"
 
@@ -18,14 +21,13 @@ namespace PhysiXal {
 	{
 		PX_CORE_INFO("Initializing the renderer");
 
-		// Vulkan
 		m_Context->CreateContext();
 		m_Context->SetupDebugMessenger();
 		m_Device->CreateSurface();
 		m_Device->PickPhysicalDevice();
 		m_Device->CreateLogicalDevice();
 		m_SwapChain->CreateSwapChain();
-		m_SwapChain->CreateImageViews();
+		m_SwapChain->CreateImageViews();	
 		m_RenderPass->CreateRenderPass();
 		m_UniformBuffer->CreateDescriptorSetLayout();
 		m_Pipeline->CreateGraphicsPipeline();
@@ -50,11 +52,7 @@ namespace PhysiXal {
 	{
 		PX_CORE_WARN("...Shutting down the renderer");
 
-		// GUI
-		m_Gui->GuiShutdown();
-
-		// Vulkan
-		m_SwapChain->DestroyRecreatedSwapChain();
+		m_SwapChain->DestroySwapChain();
 		m_Pipeline->DestroyGraphicsPipeline();
 		m_RenderPass->DestroyRenderPass();
 		m_UniformBuffer->DestroyUnifromBuffers();
@@ -66,13 +64,15 @@ namespace PhysiXal {
 		m_Buffer->DestroyIndexBuffer();
 		m_Buffer->DestroyVertexBuffer();
 		m_SyncObjects->DestroySyncObjects();
+		m_CommandBuffer->DestroyCommandBuffers();
 		m_CommandBuffer->DestroyCommandPool();
 		m_Device->DestroyDevice();
+		m_Context->DestroyDebugMessenger();
 		m_Device->DestroySurface();
 		m_Context->DestroyContext();
 	}
 
-	void VulkanRenderer::BeginFrame()
+	void VulkanRenderer::DrawFrame()
 	{
 		PX_CORE_INFO("Drawing frame!");
 	
@@ -81,6 +81,7 @@ namespace PhysiXal {
 		VkSwapchainKHR vkSwapChain = VulkanSwapChain::GetVulkanSwapChain();
 		std::vector<VkSemaphore> vkImageSemaphores = VulkanSyncObjects::GetVulkanImageSemaphores();
 		std::vector<VkCommandBuffer> vkCommandBuffers = VulkanCommandBuffer::GetVulkanCommandBuffers();
+		std::vector<VkCommandBuffer> vkGuiCommandBuffers = GuiVulkan::GetGuiCommandBuffers();
 		std::vector<VkSemaphore> vkRenderSemaphores = VulkanSyncObjects::GetVulkanRenderSemaphores();
 		VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
 		VkQueue vkPresentQueue = VulkanDevice::GetVulkanPresentQueue();
@@ -100,22 +101,29 @@ namespace PhysiXal {
 		{
 			PX_CORE_ERROR("Failed to acquire swap chain image!");
 		}
+		
+		//vkResetCommandBuffer(vkCommandBuffers[s_CurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+		
+		m_CommandBuffer->RecordCommandBuffers(vkCommandBuffers[s_CurrentFrame], imageIndex);
+		m_Gui->GuiDraw(vkGuiCommandBuffers[s_CurrentFrame], imageIndex);
 
 		m_UniformBuffer->UpdateUniformBuffer(s_CurrentFrame);
-		m_CommandBuffer->RecordCommandBuffers(vkCommandBuffers[s_CurrentFrame], imageIndex);
 
+		// Only reset the fence if we are submitting work
 		vkResetFences(vkDevice, 1, &vkInFlightFences[s_CurrentFrame]);
 
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+		std::array<VkCommandBuffer, 2> submitCommandBuffers = { vkCommandBuffers[s_CurrentFrame], vkGuiCommandBuffers[s_CurrentFrame] };
 
 		VkSemaphore waitSemaphores[] = { vkImageSemaphores[s_CurrentFrame] };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &vkCommandBuffers[s_CurrentFrame];
+		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
+		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
 		VkSemaphore signalSemaphores[] = { vkRenderSemaphores[s_CurrentFrame] };
 		submitInfo.signalSemaphoreCount = 1;

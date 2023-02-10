@@ -2,6 +2,7 @@
 #include "api/vulkan/vk_framebuffer.h"
 
 #include "api/vulkan/vk_utilities.h"
+#include "api/vulkan/vk_initializers.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -21,7 +22,7 @@ namespace PhysiXal {
         VkImageView vkColorImageView = VulkanDevice::GetVulkanColorImageView();
         VkImageView vkDepthImageView = VulkanDepthBuffer::GetVulkanDepthImageView();
 
-        PX_CORE_INFO("Creating Vulkan framebuffer");
+        PX_CORE_INFO("Creating Vulkan framebuffers");
 
         s_Framebuffers.resize(vkSwapChainImageViews.size());
 
@@ -43,7 +44,7 @@ namespace PhysiXal {
 
             if (vkCreateFramebuffer(vkDevice, &framebufferInfo, nullptr, &s_Framebuffers[i]) != VK_SUCCESS)
             {
-                PX_CORE_ERROR("Failed to create framebuffer!");;
+                PX_CORE_ERROR("Failed to create framebuffer!");
             }
         }
     }
@@ -52,7 +53,7 @@ namespace PhysiXal {
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
-        PX_CORE_WARN("...Destroying Vulkan framebuffer");
+        PX_CORE_WARN("...Destroying Vulkan framebuffers");
 
         for (auto framebuffer : s_Framebuffers) 
         {

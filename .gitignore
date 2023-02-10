@@ -13,6 +13,7 @@ PhysiXal.includes
 .vscode/c_cpp_properties.json
 .vscode/settings.json
 .hidden
+Example/imgui.ini
 
 # PhysiXal files
 *.log

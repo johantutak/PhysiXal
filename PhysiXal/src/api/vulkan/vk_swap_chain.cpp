@@ -2,7 +2,10 @@
 #include "api/vulkan/vk_swap_chain.h"
 
 #include "api/vulkan/vk_utilities.h"
+#include "api/vulkan/vk_initializers.h"
 #include "api/vulkan/vk_renderer.h"
+
+#include "api/imgui/imgui_initializers.h"
 
 #include "core/application.h"
 
@@ -79,13 +82,22 @@ namespace PhysiXal {
         s_SwapChainExtent = extent;
     }
 
-    void VulkanSwapChain::DestroySwapChain()
+    void VulkanSwapChain::DestroyCurrentSwapChain()
     {
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan swap chain");
 
         vkDestroySwapchainKHR(vkDevice, s_SwapChain, nullptr);
+    }
+
+    void VulkanSwapChain::DestroySwapChain()
+    {
+        m_DepthBuffer->DestroyDepthResources();
+        m_Device->DestroyColorResources();
+        m_Framebuffer->DestroyFramebuffers();
+        DestroyImageViews();
+        DestroyCurrentSwapChain();
     }
 
     SwapChainSupportDetails VulkanSwapChain::QuerySwapChainSupport(VkPhysicalDevice device)
@@ -121,7 +133,7 @@ namespace PhysiXal {
     {
         for (const auto& availableFormat : availableFormats)
         {
-            if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
             {
                 return availableFormat;
             }
@@ -217,21 +229,21 @@ namespace PhysiXal {
 
         m_VulkanRenderer->WaitAndIdle();
 
-        DestroyRecreatedSwapChain();
+        // Dear ImGUI
+        m_GuiVulkan->DestroyGuiFramebuffers();
+        m_GuiVulkan->DestroyGuiCommandBuffers();
+        //m_GuiVulkan->DestroyGuiCommandPool();
+        m_GuiVulkan->DestroyGuiRenderPass();
+
+        DestroySwapChain();
 
         m_SwapChain->CreateSwapChain();
         m_SwapChain->CreateImageViews();
         m_Device->CreateColorResources();
         m_DepthBuffer->CreateDepthResources();
         m_Framebuffer->CreateFramebuffers();
-    }
 
-    void VulkanSwapChain::DestroyRecreatedSwapChain() // #### TO DO #### Rename this
-    {
-        m_DepthBuffer->DestroyDepthResources();
-        m_Device->CreateColorResources();
-        m_Framebuffer->DestroyFramebuffers();
-        DestroyImageViews();
-        DestroySwapChain();
+        // We also need to take care of the UI
+        m_Gui->GuiOnRebuild();
     }
 }

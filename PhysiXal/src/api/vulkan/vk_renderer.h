@@ -23,7 +23,7 @@ namespace PhysiXal {
 		void Init();
 		void Shutdown();
 
-		void BeginFrame();
+		void DrawFrame();
 
 		void WaitAndIdle();
 

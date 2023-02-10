@@ -17,9 +17,9 @@ namespace PhysiXal {
 		s_Renderer->Shutdown();
 	}
 
-	void Renderer::BeginFrame()
+	void Renderer::DrawFrame()
 	{
-		s_Renderer->BeginFrame();
+		s_Renderer->DrawFrame();
 	}
 
 	void Renderer::WaitAndIdle()

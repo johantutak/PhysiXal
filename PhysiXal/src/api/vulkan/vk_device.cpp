@@ -2,6 +2,7 @@
 #include "api/vulkan/vk_device.h"
 
 #include "api/vulkan/vk_utilities.h"
+#include "api/vulkan/vk_initializers.h"
 
 #include "core/application.h"
 

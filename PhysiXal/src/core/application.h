@@ -44,8 +44,6 @@ namespace PhysiXal {
 	private:
 		Scope<Window> m_Window;
 
-		//GuiLayer* m_GuiLayer;
-
 		bool m_Running = true;
 		bool m_Minimized = false;
 		LayerStack	m_LayerStack;

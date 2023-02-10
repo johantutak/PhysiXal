@@ -18,6 +18,7 @@ namespace PhysiXal {
 	public:
 		// Swap chain
 		void CreateSwapChain();
+		void DestroyCurrentSwapChain();
 		void DestroySwapChain();
 
 		static SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
@@ -38,7 +39,6 @@ namespace PhysiXal {
 
 		// Swap chain recreation
 		void RecreateSwapChain();
-		void DestroyRecreatedSwapChain();
 	private:
 		inline static VkSwapchainKHR s_SwapChain;
 		inline static std::vector<VkImage> s_SwapChainImages;
