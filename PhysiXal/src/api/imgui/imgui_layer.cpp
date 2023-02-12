@@ -11,12 +11,14 @@
 
 #include "api/vulkan/vk_initializers.h"
 
+#include "core/timestep.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 namespace PhysiXal {
 
-
+	static Timestep* m_TimeStep = nullptr;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Dear ImGUI
@@ -173,8 +175,17 @@ namespace PhysiXal {
 
 	void GuiLayer::GuiOnRender()
 	{
+		Application& app = Application::Get();
+
 		static bool showDemoWindow = true;
 		ImGui::ShowDemoWindow(&showDemoWindow);
+		
+		ImGui::Begin("FPS / Frame time");
+		ImGui::Text("Frames per second:     %.0f: fps\n", app.GetTimeStep().GetFramesPerSecond());
+		
+		ImGui::Text("Frame time (ms):   %.4f: sec\n", app.GetTimeStep().GetSeconds());
+		ImGui::Text("Frame time (sec): %.4f: ms\n", app.GetTimeStep().GetMilliseconds());
+		ImGui::End();
 	}
 
 	void GuiLayer::GuiOnRebuild()

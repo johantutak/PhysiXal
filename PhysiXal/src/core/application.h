@@ -37,6 +37,9 @@ namespace PhysiXal {
 		inline Window& GetWindow() { return *m_Window; }
 
 		static Application& Get() { return *s_Instance; }
+
+		Timestep GetTimeStep() const { return m_TimeStep; }
+		float GetTime() const; // TODO: This should be in "Platform"
 	private:
 		void Run();
 		bool OnWindowClose(WindowCloseEvent& e);
@@ -46,8 +49,11 @@ namespace PhysiXal {
 
 		bool m_Running = true;
 		bool m_Minimized = false;
-		LayerStack	m_LayerStack;
+		LayerStack m_LayerStack;
+		
 		float m_LastFrameTime = 0.0f;
+		Timestep m_FrameTime;
+		Timestep m_TimeStep;
 	private:
 		static Application* s_Instance;
 		

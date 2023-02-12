@@ -88,17 +88,16 @@ namespace PhysiXal {
 	{
 		while (m_Running)
 		{
-			// #### TEMPORARY #### 
-			// Add class that is general rather than api specific like exmaple -> (Platform::GetTime();)
-			float time = (float)glfwGetTime();
-			Timestep timestep = time - m_LastFrameTime;
+			float time = GetTime();
+			m_FrameTime = time - m_LastFrameTime;
+			m_TimeStep = glm::min<float>(m_FrameTime, 0.0333f);
 			m_LastFrameTime = time;
 
 			if (!m_Minimized)
 			{
 				{
 					for (CoreLayer* layer : m_LayerStack)
-						layer->OnUpdate(timestep);
+						layer->OnUpdate(m_FrameTime);
 				}
 
 				// Draw GUI frame here
@@ -133,5 +132,10 @@ namespace PhysiXal {
 		m_Minimized = false;
 
 		return false;
+	}
+
+	float Application::GetTime() const
+	{
+		return (float)glfwGetTime();
 	}
 }
