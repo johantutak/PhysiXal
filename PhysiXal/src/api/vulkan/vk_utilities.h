@@ -23,6 +23,9 @@ namespace PhysiXal {
 		const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
 	void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
 
+	const char* VulkanDeviceTypeToString(VkPhysicalDeviceType type);
+	const char* VulkanVendorIDToString(uint32_t vendorID);
+
 	VkCommandBuffer BeginSingleTimeCommands();
 	void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
 

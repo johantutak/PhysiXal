@@ -50,6 +50,9 @@ namespace PhysiXal {
         {
             PX_CORE_ERROR("Failed to find a suitable GPU!");
         }
+
+        // #### TEMOPRARY ####
+        m_Device->PrintStats(s_PhysicalDevice);
     }
 
     bool VulkanDevice::IsDeviceSuitable(VkPhysicalDevice device)
@@ -123,6 +126,30 @@ namespace PhysiXal {
         }
 
         return indices;
+    }
+
+    void VulkanDevice::PrintStats(VkPhysicalDevice &device) 
+    {
+        VkPhysicalDeviceProperties properties;
+        vkGetPhysicalDeviceProperties(device, &properties);
+
+        uint32_t vk_major = VK_VERSION_MAJOR(properties.apiVersion);
+        uint32_t vk_minor = VK_VERSION_MINOR(properties.apiVersion);
+        uint32_t vk_patch = VK_VERSION_PATCH(properties.apiVersion);
+
+        uint32_t driver_major = VK_VERSION_MAJOR(properties.driverVersion);
+        uint32_t driver_minor = VK_VERSION_MINOR(properties.driverVersion);
+        uint32_t driver_patch = VK_VERSION_PATCH(properties.driverVersion);
+
+        PX_CORE_INFO("......!%");
+        PX_CORE_INFO(" #### DEVICE INFO ####");
+        PX_CORE_INFO("DEVICE (GPU): {0}", properties.deviceName);
+        PX_CORE_INFO("TYPE: {0}", VulkanDeviceTypeToString(properties.deviceType));
+        PX_CORE_INFO("VENDOR: {0}", VulkanVendorIDToString(properties.vendorID));
+        PX_CORE_INFO("DEVICE ID: {0}", properties.deviceID);
+        PX_CORE_INFO("API VERSION: {0}.{1}.{2}", vk_major, vk_minor, vk_patch);
+        PX_CORE_INFO("DRIVER VERSION: {0}.{1}.{2}", driver_major, driver_minor, driver_patch);
+        PX_CORE_INFO("!%......");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

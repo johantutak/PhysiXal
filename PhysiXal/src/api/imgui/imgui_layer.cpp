@@ -10,6 +10,7 @@
 #include "core/application.h"
 
 #include "api/vulkan/vk_initializers.h"
+#include "api/vulkan/vk_utilities.h"
 
 #include "core/timestep.h"
 
@@ -175,16 +176,28 @@ namespace PhysiXal {
 
 	void GuiLayer::GuiOnRender()
 	{
+		// #### ImGui::Begin("Performance (GPU)"); helpers ####
 		Application& app = Application::Get();
+		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
+
+		VkPhysicalDeviceProperties properties;
+        vkGetPhysicalDeviceProperties(vkPhysicalDevice, &properties);
+		// #### ImGui::Begin("Performance (GPU)"); helpers ####
 
 		static bool showDemoWindow = true;
 		ImGui::ShowDemoWindow(&showDemoWindow);
 		
-		ImGui::Begin("FPS / Frame time");
-		ImGui::Text("Frames per second:     %.0f: fps\n", app.GetTimeStep().GetFramesPerSecond());
+		ImGui::Begin("Performance (GPU)");
+
+		ImGui::Text("VENDOR: %s\n", VulkanVendorIDToString(properties.vendorID));
+		ImGui::Text("DEVICE (GPU): %s\n", properties.deviceName);
+		ImGui::Text("TYPE: %s\n", VulkanDeviceTypeToString(properties.deviceType));
+
+		ImGui::Text("\n");
+		ImGui::Text("Frames per Second: %.0f: FPS\n", app.GetTimeStep().GetFramesPerSecond());
+		ImGui::Text("Frame Time (sec): %.4f: sec\n", app.GetTimeStep().GetSeconds());
+		ImGui::Text("Frame Time (ms): %.4f: ms\n", app.GetTimeStep().GetMilliseconds());
 		
-		ImGui::Text("Frame time (ms):   %.4f: sec\n", app.GetTimeStep().GetSeconds());
-		ImGui::Text("Frame time (sec): %.4f: ms\n", app.GetTimeStep().GetMilliseconds());
 		ImGui::End();
 	}
 

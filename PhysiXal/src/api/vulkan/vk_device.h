@@ -31,6 +31,8 @@ namespace PhysiXal {
 
 		static VkPhysicalDevice GetVulkanPhysicalDevice() { return s_PhysicalDevice; }
 
+		void PrintStats(VkPhysicalDevice &device);
+
 		// Logical Device
 		void CreateLogicalDevice();
 		void DestroyDevice();
