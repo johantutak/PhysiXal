@@ -144,17 +144,28 @@ namespace PhysiXal {
 
     VkPresentModeKHR VulkanSwapChain::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
     {
+        // #### TEMPORARY #### Quick fix to get VSync to work on Linux with Intel integarted GPU
+
         // Use VK_PRESENT_MODE_MAILBOX_KHR is faster and more energy consuming than traditional vSync
         // Or use VK_PRESENT_MODE_FIFO_KHR for traditional vSync
         for (const auto& availablePresentMode : availablePresentModes)
         {
+#ifdef PX_PLATFORM_WINDOWS
             if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
             {
                 return availablePresentMode;
             }
+#endif
+#ifdef PX_PLATFORM_LINUX
+            if (availablePresentMode == VK_PRESENT_MODE_FIFO_KHR)
+            {
+                return availablePresentMode;
+            }
+#endif
         }
-
+#ifdef PX_PLATFORM_WINDOWS
         return VK_PRESENT_MODE_FIFO_KHR;
+#endif
     }
 
     VkExtent2D VulkanSwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)

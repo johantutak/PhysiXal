@@ -182,19 +182,26 @@ namespace PhysiXal {
 
 		VkPhysicalDeviceProperties properties;
         vkGetPhysicalDeviceProperties(vkPhysicalDevice, &properties);
+
+		uint32_t vk_major = VK_VERSION_MAJOR(properties.apiVersion);
+        uint32_t vk_minor = VK_VERSION_MINOR(properties.apiVersion);
+        uint32_t vk_patch = VK_VERSION_PATCH(properties.apiVersion);
 		// #### ImGui::Begin("Performance (GPU)"); helpers ####
 
-		static bool showDemoWindow = true;
-		ImGui::ShowDemoWindow(&showDemoWindow);
+		//static bool showDemoWindow = true;
+		//ImGui::ShowDemoWindow(&showDemoWindow);
 		
 		ImGui::Begin("Performance (GPU)");
 
 		ImGui::Text("VENDOR: %s\n", VulkanVendorIDToString(properties.vendorID));
 		ImGui::Text("DEVICE (GPU): %s\n", properties.deviceName);
 		ImGui::Text("TYPE: %s\n", VulkanDeviceTypeToString(properties.deviceType));
+		ImGui::Text("API VERSION (major): %u\n", vk_major);
+		ImGui::Text("API VERSION (minor): %u\n", vk_minor);
+		ImGui::Text("API VERSION (patch): %u\n", vk_patch);
 
 		ImGui::Text("\n");
-		ImGui::Text("Frames per Second: %.0f: FPS\n", app.GetTimeStep().GetFramesPerSecond());
+		ImGui::Text("FPS: %.0f: frames\n", app.GetTimeStep().GetFramesPerSecond());
 		ImGui::Text("Frame Time (sec): %.4f: sec\n", app.GetTimeStep().GetSeconds());
 		ImGui::Text("Frame Time (ms): %.4f: ms\n", app.GetTimeStep().GetMilliseconds());
 		
