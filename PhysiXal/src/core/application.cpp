@@ -10,6 +10,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "debug/system_statistics.h"
+
 namespace PhysiXal {
 
 	// From Hazel & Little Vulkan Engine
@@ -32,6 +34,10 @@ namespace PhysiXal {
 
 		// Initialize the renderer
 		Renderer::Init();
+
+		// Get system statistics 
+		SystemStatistics* m_Stats = nullptr;
+		m_Stats->PrintStats();
 
 		// #### TODO ####
 		// Add func to execute command queue to compile all shaders

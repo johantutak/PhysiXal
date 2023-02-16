@@ -1,9 +1,5 @@
 #include "px_pch.h"
-#include "camera/camera.h"
-
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/glm.hpp>
+#include "scene/camera.h"
 
 #include <cassert>
 #include <limits>
@@ -14,30 +10,30 @@ namespace PhysiXal {
 	// Camera
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LveCamera::setOrthographicProjection(float left, float right, float top, float bottom, float near, float far) 
+    void Camera::SetOrthographicProjection(float left, float right, float top, float bottom, float near, float far) 
     {
-        projectionMatrix = glm::mat4{1.0f};
+        /*projectionMatrix = glm::mat4{1.0f};
         projectionMatrix[0][0] = 2.f / (right - left);
         projectionMatrix[1][1] = 2.f / (bottom - top);
         projectionMatrix[2][2] = 1.f / (far - near);
         projectionMatrix[3][0] = -(right + left) / (right - left);
         projectionMatrix[3][1] = -(bottom + top) / (bottom - top);
-        projectionMatrix[3][2] = -near / (far - near);
+        projectionMatrix[3][2] = -near / (far - near);*/
     }
 
-    void LveCamera::setPerspectiveProjection(float fovy, float aspect, float near, float far) 
+    void Camera::SetPerspectiveProjection(float fovy, float aspect, float near, float far) 
     {
-        assert(glm::abs(aspect - std::numeric_limits<float>::epsilon()) > 0.0f);
+       /*assert(glm::abs(aspect - std::numeric_limits<float>::epsilon()) > 0.0f);
         const float tanHalfFovy = tan(fovy / 2.f);
         projectionMatrix = glm::mat4{0.0f};
         projectionMatrix[0][0] = 1.f / (aspect * tanHalfFovy);
         projectionMatrix[1][1] = 1.f / (tanHalfFovy);
         projectionMatrix[2][2] = far / (far - near);
         projectionMatrix[2][3] = 1.f;
-        projectionMatrix[3][2] = -(far * near) / (far - near);
+        projectionMatrix[3][2] = -(far * near) / (far - near);*/
     }
 
-    void LveCamera::setViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up) 
+    void Camera::SetViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up) 
     {
         const glm::vec3 w{glm::normalize(direction)};
         const glm::vec3 u{glm::normalize(glm::cross(w, up))};
@@ -55,7 +51,7 @@ namespace PhysiXal {
         viewMatrix[2][2] = w.z;
         viewMatrix[3][0] = -glm::dot(u, position);
         viewMatrix[3][1] = -glm::dot(v, position);
-        iewMatrix[3][2] = -glm::dot(w, position);
+        viewMatrix[3][2] = -glm::dot(w, position);
 
         inverseViewMatrix = glm::mat4{1.f};
         inverseViewMatrix[0][0] = u.x;
@@ -72,12 +68,12 @@ namespace PhysiXal {
         inverseViewMatrix[3][2] = position.z;
     }
 
-    void LveCamera::setViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up) 
+    void Camera::SetViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up) 
     {
-        setViewDirection(position, target - position, up);
+        SetViewDirection(position, target - position, up);
     }
 
-    void LveCamera::setViewYXZ(glm::vec3 position, glm::vec3 rotation) 
+    void Camera::SetViewYXZ(glm::vec3 position, glm::vec3 rotation) 
     {
         const float c3 = glm::cos(rotation.z);
         const float s3 = glm::sin(rotation.z);

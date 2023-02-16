@@ -14,6 +14,8 @@
 
 #include "core/timestep.h"
 
+#include "debug/cpu_id.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -176,34 +178,39 @@ namespace PhysiXal {
 
 	void GuiLayer::GuiOnRender()
 	{
-		// #### ImGui::Begin("Performance (GPU)"); helpers ####
+		// #### ImGui::Begin("Performance (DEVICE)"); helpers ####
 		Application& app = Application::Get();
-		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
 
+		CPUInfo cinfo;
+
+		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
 		VkPhysicalDeviceProperties properties;
         vkGetPhysicalDeviceProperties(vkPhysicalDevice, &properties);
 
 		uint32_t vk_major = VK_VERSION_MAJOR(properties.apiVersion);
         uint32_t vk_minor = VK_VERSION_MINOR(properties.apiVersion);
         uint32_t vk_patch = VK_VERSION_PATCH(properties.apiVersion);
-		// #### ImGui::Begin("Performance (GPU)"); helpers ####
+		// #### ImGui::Begin("Performance (DEVICE)"); helpers ####
 
 		//static bool showDemoWindow = true;
 		//ImGui::ShowDemoWindow(&showDemoWindow);
 		
-		ImGui::Begin("Performance (GPU)");
+		ImGui::Begin("Performance (DEVICE)"); // #### TO DO #### Add CPU/GPU speed, usage and tempreture
 
+		ImGui::Text("VENDOR: %s\n", cinfo.vendor().c_str());
+		ImGui::Text("DEVICE (CPU): %s\n", cinfo.model().c_str());
+		ImGui::Text("CORES/THREADS: %u\n", cinfo.cores());
+
+		//ImGui::Text("MEMORY (RAM): %#\n", ); #### TO DO ####
+
+		ImGui::Text("\n");
 		ImGui::Text("VENDOR: %s\n", VulkanVendorIDToString(properties.vendorID));
 		ImGui::Text("DEVICE (GPU): %s\n", properties.deviceName);
 		ImGui::Text("TYPE: %s\n", VulkanDeviceTypeToString(properties.deviceType));
-		ImGui::Text("API VERSION (major): %u\n", vk_major);
-		ImGui::Text("API VERSION (minor): %u\n", vk_minor);
-		ImGui::Text("API VERSION (patch): %u\n", vk_patch);
+		ImGui::Text("API VERSION: %u.%u.%u\n", vk_major, vk_minor, vk_patch);
 
 		ImGui::Text("\n");
-		ImGui::Text("FPS: %.0f: frames\n", app.GetTimeStep().GetFramesPerSecond());
-		ImGui::Text("Frame Time (sec): %.4f: sec\n", app.GetTimeStep().GetSeconds());
-		ImGui::Text("Frame Time (ms): %.4f: ms\n", app.GetTimeStep().GetMilliseconds());
+		ImGui::Text("FRAME TIME: %.4f: ms/frame - %.4f: sec/frame - (%.0f FPS) \n", app.GetTimeStep().GetMilliseconds(), app.GetTimeStep().GetSeconds(), app.GetTimeStep().GetFramesPerSecond());
 		
 		ImGui::End();
 	}
