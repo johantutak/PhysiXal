@@ -150,22 +150,19 @@ namespace PhysiXal {
         // Or use VK_PRESENT_MODE_FIFO_KHR for traditional vSync
         for (const auto& availablePresentMode : availablePresentModes)
         {
-#ifdef PX_PLATFORM_WINDOWS
-            if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
-            {
-                return availablePresentMode;
-            }
-#endif
-#ifdef PX_PLATFORM_LINUX
             if (availablePresentMode == VK_PRESENT_MODE_FIFO_KHR)
             {
                 return availablePresentMode;
             }
-#endif
-        }
-#ifdef PX_PLATFORM_WINDOWS
+#if 0
+            if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+            {
+                return availablePresentMode;
+            }
+        } // if this code is used, the removal of for loops current } needs to be done
         return VK_PRESENT_MODE_FIFO_KHR;
 #endif
+        }
     }
 
     VkExtent2D VulkanSwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)

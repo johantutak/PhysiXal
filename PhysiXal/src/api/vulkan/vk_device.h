@@ -25,7 +25,9 @@ namespace PhysiXal {
 		// Physical Device
 		void PickPhysicalDevice();
 		
+		int RateDeviceSuitability(VkPhysicalDevice device);
 		bool IsDeviceSuitable(VkPhysicalDevice device);
+
 		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
 		static QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 

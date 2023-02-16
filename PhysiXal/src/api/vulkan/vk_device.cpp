@@ -13,22 +13,25 @@
 #include <cstdint>
 #include <limits>
 
+// #### TEMPORARY ####
+#include <map>
+
 namespace PhysiXal {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Physical Device
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void VulkanDevice::PickPhysicalDevice() 
+    void VulkanDevice::PickPhysicalDevice()
     {
         auto vkInstance = VulkanContext::GetVulkanInstance();
 
         PX_CORE_INFO("Finding suitable device (physical)");
-        
+
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(vkInstance, &deviceCount, nullptr);
 
-        if (deviceCount == 0) 
+        if (deviceCount == 0)
         {
             PX_CORE_ERROR("Failed to find GPUs with Vulkan support!");
         }
@@ -36,23 +39,75 @@ namespace PhysiXal {
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(vkInstance, &deviceCount, devices.data());
 
-        for (const auto& device : devices) 
+        // Use an ordered map to automatically sort candidates by increasing score
+        std::multimap<int, VkPhysicalDevice> candidates;
+
+        if (deviceCount > 1)
         {
-            if (IsDeviceSuitable(device)) 
+            for (const auto& device : devices)
             {
-                s_PhysicalDevice = device;
-                s_MsaaSamples = GetMaxUsableSampleCount();
-                break;
+                int score = RateDeviceSuitability(device);
+                candidates.insert(std::make_pair(score, device));
+            }
+
+            // Check if the best candidate is suitable at all
+            if (candidates.rbegin()->first > 0)
+            {
+                s_PhysicalDevice = candidates.rbegin()->second;
+            }
+            else
+            {
+                PX_CORE_ERROR("Failed to find a suitable GPU!");
+            }
+        }
+        else // #### TO DO #### Better optimization for finding device and giveing priority to DISCRETE GPU.
+        {
+            for (const auto& device : devices)
+            {
+                if (IsDeviceSuitable(device))
+                {
+                    s_PhysicalDevice = device;
+                    s_MsaaSamples = GetMaxUsableSampleCount();
+                    break;
+                }
+
+                PX_CORE_TRACE("Could not find discrete GPU.");
+
+                if (s_PhysicalDevice == VK_NULL_HANDLE)
+                {
+                    PX_CORE_ERROR("Failed to find a suitable GPU!");
+                }
             }
         }
 
-        if (s_PhysicalDevice == VK_NULL_HANDLE) 
+        m_Device->PrintStats(s_PhysicalDevice);
+    }
+
+    int VulkanDevice::RateDeviceSuitability(VkPhysicalDevice device)
+    {
+        VkPhysicalDeviceProperties deviceProperties;
+        VkPhysicalDeviceFeatures deviceFeatures;
+        vkGetPhysicalDeviceProperties(device, &deviceProperties);
+        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+        int score = 0;
+
+        // Discrete GPUs have a significant performance advantage
+        if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) 
         {
-            PX_CORE_ERROR("Failed to find a suitable GPU!");
+            score += 1000;
         }
 
-        // #### TEMOPRARY ####
-        m_Device->PrintStats(s_PhysicalDevice);
+        // Maximum possible size of textures affects graphics quality
+        score += deviceProperties.limits.maxImageDimension2D;
+
+        // Application can't function without geometry shaders
+        if (!deviceFeatures.geometryShader) 
+        {
+            return 0;
+        }
+
+        return score;
     }
 
     bool VulkanDevice::IsDeviceSuitable(VkPhysicalDevice device)
@@ -62,7 +117,8 @@ namespace PhysiXal {
         bool extensionsSupported = CheckDeviceExtensionSupport(device);
 
         bool swapChainAdequate = false;
-        if (extensionsSupported) {
+        if (extensionsSupported)
+        {
             SwapChainSupportDetails swapChainSupport = VulkanSwapChain::QuerySwapChainSupport(device);
             swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
         }
