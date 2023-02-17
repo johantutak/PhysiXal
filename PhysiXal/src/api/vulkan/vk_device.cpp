@@ -42,6 +42,7 @@ namespace PhysiXal {
         // Use an ordered map to automatically sort candidates by increasing score
         std::multimap<int, VkPhysicalDevice> candidates;
 
+#ifdef PX_PLATFORM_WINDOWS // #### TEMPORARY #### #### TO DO #### Fix this to choose correct GPU in Linux, currently with integarted GPU gets (llvmpipe)
         if (deviceCount > 1)
         {
             for (const auto& device : devices)
@@ -60,7 +61,7 @@ namespace PhysiXal {
                 PX_CORE_ERROR("Failed to find a suitable GPU!");
             }
         }
-        else // #### TO DO #### Better optimization for finding device and giveing priority to DISCRETE GPU.
+        else // #### TO DO #### Better optimization for finding device and giveing priority to DISCRETE GPU
         {
             for (const auto& device : devices)
             {
@@ -71,7 +72,7 @@ namespace PhysiXal {
                     break;
                 }
 
-                PX_CORE_TRACE("Could not find discrete GPU.");
+                //PX_CORE_TRACE("Could not find discrete GPU."); // #### TO DO #### GEt this message to show when discreate GPU not found
 
                 if (s_PhysicalDevice == VK_NULL_HANDLE)
                 {
@@ -79,6 +80,23 @@ namespace PhysiXal {
                 }
             }
         }
+#endif
+#ifdef PX_PLATFORM_LINUX // #### TEMPORARY #### #### TO DO #### Merge everything and get it to work on all platforms
+        for (const auto& device : devices)
+            {
+                if (IsDeviceSuitable(device))
+                {
+                    s_PhysicalDevice = device;
+                    s_MsaaSamples = GetMaxUsableSampleCount();
+                    break;
+                }
+
+                if (s_PhysicalDevice == VK_NULL_HANDLE)
+                {
+                    PX_CORE_ERROR("Failed to find a suitable GPU!");
+                }
+            }
+#endif
     }
 
     int VulkanDevice::RateDeviceSuitability(VkPhysicalDevice device)
