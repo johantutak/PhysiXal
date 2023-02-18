@@ -21,6 +21,8 @@ namespace PhysiXal {
 
     void VulkanUniformBuffer::CreateDescriptorSetLayout()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Creating Vulkan descriptor set layout");
@@ -53,6 +55,8 @@ namespace PhysiXal {
 
     void VulkanUniformBuffer::DestroyDescriptorSetLayout()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan descriptor set layout");
@@ -66,6 +70,8 @@ namespace PhysiXal {
 
     void VulkanUniformBuffer::CreateDescriptorPool()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Creating Vulkan descriptor pool");
@@ -90,6 +96,8 @@ namespace PhysiXal {
     
     void VulkanUniformBuffer::DestroyDescriptorPool()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan descriptor pool");
@@ -99,6 +107,8 @@ namespace PhysiXal {
 
     void VulkanUniformBuffer::CreateDescriptorSets()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         VkImageView vkTextureImageView = VulkanTexture::GetVulkanTextureImageView();
         VkSampler vkTextureSampler = VulkanTexture::GetVulkanTextureSampler();
@@ -157,6 +167,8 @@ namespace PhysiXal {
 
     void VulkanUniformBuffer::CreateUniformBuffers()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Creating Vulkan unifrom buffers");
@@ -176,6 +188,8 @@ namespace PhysiXal {
 
     void VulkanUniformBuffer::DestroyUnifromBuffers()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan unifrom buffers");

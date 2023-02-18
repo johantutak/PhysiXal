@@ -15,6 +15,8 @@ namespace PhysiXal {
 
     void VulkanFramebuffer::CreateFramebuffers()
     {
+        PX_PROFILE_FUNCTION();
+
         std::vector<VkImageView> vkSwapChainImageViews = VulkanSwapChain::GetVulkanImageViews();
         VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
         VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
@@ -51,6 +53,8 @@ namespace PhysiXal {
 
     void VulkanFramebuffer::DestroyFramebuffers()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan framebuffers");

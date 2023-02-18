@@ -19,6 +19,8 @@ namespace PhysiXal {
 
 	void VulkanRenderer::Init()
 	{
+		PX_PROFILE_FUNCTION();
+
 		PX_CORE_INFO("Initializing the renderer");
 
 		m_Context->CreateContext();
@@ -50,6 +52,8 @@ namespace PhysiXal {
 	
 	void VulkanRenderer::Shutdown()
 	{
+		PX_PROFILE_FUNCTION();
+
 		PX_CORE_WARN("...Shutting down the renderer");
 
 		m_SwapChain->DestroySwapChain();
@@ -74,6 +78,8 @@ namespace PhysiXal {
 
 	void VulkanRenderer::DrawFrame()
 	{
+		PX_PROFILE_SCOPE("Renderer Draw");
+
 		PX_CORE_INFO("Drawing frame!");
 	
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
@@ -160,6 +166,8 @@ namespace PhysiXal {
 
 	void VulkanRenderer::WaitAndIdle()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		vkDeviceWaitIdle(vkDevice);

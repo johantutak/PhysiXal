@@ -13,21 +13,29 @@ namespace PhysiXal {
 
 	void Gui::Init()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Gui->GuiInit();
 	}
 
 	void Gui::Shutdown()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Gui->GuiShutdown();
 	}
 
 	void Gui::Begin()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Gui->GuiBegin();
 	}
 
 	void Gui::End()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Gui->GuiEnd();
 	}
 
@@ -38,6 +46,8 @@ namespace PhysiXal {
 
 	void Gui::OnRender()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Gui->GuiOnRender();
 	}
 

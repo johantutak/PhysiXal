@@ -15,6 +15,8 @@ namespace PhysiXal {
 		// #### Descriptor pool ####
 	void GuiVulkan::CreateGuiDescriptorPool()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_INFO("Creating Dear ImGUI (Vulkan) descriptor pool");
@@ -49,6 +51,8 @@ namespace PhysiXal {
 
 	void GuiVulkan::DestroyGuiDescriptorPool()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_WARN("...Destroying Dear ImGUI (Vulkan) descriptor pool");
@@ -59,6 +63,8 @@ namespace PhysiXal {
 		// #### Render pass ####
 	void GuiVulkan::CreateGuiRenderPass()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
 
@@ -108,6 +114,8 @@ namespace PhysiXal {
 
 	void GuiVulkan::DestroyGuiRenderPass()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_WARN("...Destroying Dear ImGUI (Vulkan) render pass");
@@ -118,6 +126,8 @@ namespace PhysiXal {
 		// #### Command buffer ####
 	void GuiVulkan::CreateGuiCommandBuffers()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		std::vector<VkImageView> vkSwapChainImages = VulkanSwapChain::GetVulkanImageViews();
 		VkCommandPool vkCommandPool = VulkanCommandBuffer::GetVulkanCommandPool();
@@ -140,6 +150,8 @@ namespace PhysiXal {
 
 	void GuiVulkan::DestroyGuiCommandBuffers()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		VkCommandPool vkCommandPool = VulkanCommandBuffer::GetVulkanCommandPool();
 
@@ -151,6 +163,8 @@ namespace PhysiXal {
 		// #### Command pool ####
 	void GuiVulkan::CreateGuiCommandPool()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
@@ -171,6 +185,8 @@ namespace PhysiXal {
 
 	void GuiVulkan::DestroyGuiCommandPool()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_WARN("...Destroying Dear ImGUI (Vulkan) command pool");
@@ -182,6 +198,8 @@ namespace PhysiXal {
 		// #### Framebuffer ####
 	void GuiVulkan::CreateGuiFramebuffers()
 	{
+		PX_PROFILE_FUNCTION();
+
 		std::vector<VkImageView> vkSwapChainImageViews = VulkanSwapChain::GetVulkanImageViews();
 		VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
@@ -215,6 +233,8 @@ namespace PhysiXal {
 
 	void GuiVulkan::DestroyGuiFramebuffers()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_WARN("...Destroying Dear ImGUI (Vulkan) framebuffers");

@@ -11,7 +11,7 @@
 
 #include "core/timestep.h"
 
-#include "debug/cpu_id.h"
+#include "utilities/cpu_id.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -26,6 +26,8 @@ namespace PhysiXal {
 
 	void ImGuiWidgets::PerformanceStats()
 	{
+		PX_PROFILE_FUNCTION();
+
         Application& app = Application::Get();
 
 		CPUInfo cinfo;

@@ -23,10 +23,13 @@ namespace PhysiXal {
 	WinWindow::WinWindow(const WindowSpecification& props)
 		: m_Specification(props)
 	{
+		PX_PROFILE_FUNCTION();
 	}
 
 	WinWindow::~WinWindow()
 	{
+		PX_PROFILE_FUNCTION();
+
 		Shutdown();
 	}
 
@@ -40,12 +43,16 @@ namespace PhysiXal {
 
 		if (s_GLFWWindowCount == 0)
 		{
+			PX_PROFILE_SCOPE("glfwInit");
+
 			int success = glfwInit();
 			PX_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
 		{
+			PX_PROFILE_SCOPE("glfwCreateWindow");
+
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 			m_Window = glfwCreateWindow((int)m_Specification.Width, (int)m_Specification.Height, m_Data.Title.c_str(), nullptr, nullptr);

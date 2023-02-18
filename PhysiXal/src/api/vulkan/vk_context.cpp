@@ -15,6 +15,8 @@ namespace PhysiXal {
 
 	void VulkanContext::CreateContext()
 	{
+		PX_PROFILE_FUNCTION();
+
 		PX_CORE_INFO("Creating Vulkan context");
 
 		PX_CORE_ASSERT(glfwVulkanSupported(), "GLFW must support Vulkan!");
@@ -62,6 +64,8 @@ namespace PhysiXal {
 		
 	void VulkanContext::DestroyContext()
 	{
+		PX_PROFILE_FUNCTION();
+
 		PX_CORE_WARN("...Destroying Vulkan context");
 
 		vkDestroyInstance(s_VulkanInstance, nullptr);
@@ -73,6 +77,8 @@ namespace PhysiXal {
 
 	void VulkanContext::SetupDebugMessenger()
 	{
+		PX_PROFILE_FUNCTION();
+
 		PX_CORE_INFO("Seting up Vulkan Debug messenger");
 
 		if (!s_EnableValidation) return;
@@ -88,6 +94,8 @@ namespace PhysiXal {
 
 	void VulkanContext::DestroyDebugMessenger()
 	{
+		PX_PROFILE_FUNCTION();
+
 		PX_CORE_WARN("...Destroying Vulkan Debug messenger");
 
 		if (s_EnableValidation)

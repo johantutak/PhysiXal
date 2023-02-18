@@ -13,6 +13,8 @@ namespace PhysiXal {
 
 	VkCommandBuffer GuiBeginSingleTimeCommands()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		VkCommandPool vkGuiCommandPool = GuiVulkan::GetGuiCommandPool();
 
@@ -36,6 +38,8 @@ namespace PhysiXal {
 
 	void GuiEndSingleTimeCommands(VkCommandBuffer commandBuffer)
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
 		VkCommandPool vkGuiCommandPool = GuiVulkan::GetGuiCommandPool();

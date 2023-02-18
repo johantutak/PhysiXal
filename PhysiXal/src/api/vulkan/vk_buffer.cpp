@@ -61,6 +61,8 @@ namespace PhysiXal {
 
     void VulkanBuffer::CreateVertexBuffer()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Creating Vulkan vertex buffer");
@@ -83,6 +85,8 @@ namespace PhysiXal {
 
     void VulkanBuffer::DestroyVertexBuffer()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan vertex buffer");
@@ -114,6 +118,8 @@ namespace PhysiXal {
 
     void VulkanBuffer::CreateIndexBuffer()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Creating Vulkan index buffer");
@@ -139,6 +145,8 @@ namespace PhysiXal {
 
     void VulkanBuffer::DestroyIndexBuffer()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan index buffer");

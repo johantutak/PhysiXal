@@ -19,6 +19,8 @@ class GameApp : public PhysiXal::Application
 
 PhysiXal::Application* PhysiXal::CreateApplication()
 {
+	PX_PROFILE_FUNCTION();
+
 	PhysiXal::ApplicationSpecification specification;
 	specification.Name = "PhysiXal Engine";
 	specification.WindowWidth = 1600;

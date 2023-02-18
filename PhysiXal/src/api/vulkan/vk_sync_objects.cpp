@@ -15,6 +15,8 @@ namespace PhysiXal {
 
 	void VulkanSyncObjects::CreateSyncObjects()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_INFO("Creating sync objects");
@@ -43,6 +45,8 @@ namespace PhysiXal {
 
 	void VulkanSyncObjects::DestroySyncObjects()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_WARN("...Destroying sync objects");

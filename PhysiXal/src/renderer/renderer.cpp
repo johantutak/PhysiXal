@@ -9,21 +9,29 @@ namespace PhysiXal {
 
 	void Renderer::Init()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Renderer->Init();
 	}
 
 	void Renderer::Shutdown()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Renderer->Shutdown();
 	}
 
 	void Renderer::DrawFrame()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Renderer->DrawFrame();
 	}
 
 	void Renderer::WaitAndIdle()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Renderer->WaitAndIdle();
 	}
 }

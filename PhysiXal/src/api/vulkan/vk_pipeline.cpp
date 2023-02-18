@@ -20,6 +20,8 @@ namespace PhysiXal {
 
     void VulkanPipeline::CreateGraphicsPipeline()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         VkSampleCountFlagBits vkMsaaSamples = VulkanDevice::GetVulkanMsaa();
         VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
@@ -160,6 +162,8 @@ namespace PhysiXal {
 
     void VulkanPipeline::DestroyGraphicsPipeline()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Shutting down the graphics pipeline");

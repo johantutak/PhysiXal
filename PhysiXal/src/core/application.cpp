@@ -10,7 +10,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "debug/system_statistics.h"
+#include "utilities/system_statistics.h"
 
 namespace PhysiXal {
 
@@ -20,6 +20,9 @@ namespace PhysiXal {
 
 	Application::Application(const ApplicationSpecification& specification)
 	{
+
+		PX_PROFILE_FUNCTION();
+
 		PX_ASSERT(!s_Instance, "Application already exists");
 		s_Instance = this;
 
@@ -48,6 +51,8 @@ namespace PhysiXal {
 
 	Application::~Application()
 	{
+		PX_PROFILE_FUNCTION();
+
 		// Shutdown the GUI
 		Gui::Shutdown();
 
@@ -94,6 +99,8 @@ namespace PhysiXal {
 	{
 		while (m_Running)
 		{
+			PX_PROFILE_SCOPE("Run Loop");
+
 			float time = GetTime();
 			m_FrameTime = time - m_LastFrameTime;
 			m_TimeStep = glm::min<float>(m_FrameTime, 0.0333f);
@@ -102,6 +109,8 @@ namespace PhysiXal {
 			if (!m_Minimized)
 			{
 				{
+					PX_PROFILE_SCOPE("LayerStack OnUpdate");
+
 					for (CoreLayer* layer : m_LayerStack)
 						layer->OnUpdate(m_FrameTime);
 				}

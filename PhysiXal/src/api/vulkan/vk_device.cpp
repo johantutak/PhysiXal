@@ -24,6 +24,8 @@ namespace PhysiXal {
 
     void VulkanDevice::PickPhysicalDevice()
     {
+        PX_PROFILE_FUNCTION();
+
         auto vkInstance = VulkanContext::GetVulkanInstance();
 
         PX_CORE_INFO("Finding suitable device (physical)");
@@ -206,6 +208,8 @@ namespace PhysiXal {
     
     void VulkanDevice::CreateLogicalDevice()
     {
+        PX_PROFILE_FUNCTION();
+
         PX_CORE_INFO("Finding suitable device (logical)");
 
         QueueFamilyIndices indices = FindQueueFamilies(s_PhysicalDevice);
@@ -259,6 +263,8 @@ namespace PhysiXal {
     
     void VulkanDevice::DestroyDevice()
     {
+        PX_PROFILE_FUNCTION();
+
         PX_CORE_WARN("...Unloading the device (logical)");
 
         vkDestroyDevice(s_LogicalDevice, nullptr);
@@ -270,6 +276,8 @@ namespace PhysiXal {
 
     void VulkanDevice::CreateSurface()
     {
+        PX_PROFILE_FUNCTION();
+
         auto vkInstance = VulkanContext::GetVulkanInstance();
         auto vkWindowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
@@ -283,6 +291,8 @@ namespace PhysiXal {
 
     void VulkanDevice::DestroySurface()
     {
+        PX_PROFILE_FUNCTION();
+
         auto vkInstance = VulkanContext::GetVulkanInstance();
 
         PX_CORE_WARN("...Destroying Vulkan surface");
@@ -296,6 +306,8 @@ namespace PhysiXal {
 
     void VulkanDevice::CreateColorResources()
     {
+        PX_PROFILE_FUNCTION();
+
         VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
         VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
 
@@ -310,7 +322,7 @@ namespace PhysiXal {
 
     void VulkanDevice::DestroyColorResources()
     {
-
+        PX_PROFILE_FUNCTION();
 
         PX_CORE_WARN("...Destroying Vulkan color resources");
 

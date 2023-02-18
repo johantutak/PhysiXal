@@ -15,6 +15,8 @@ namespace PhysiXal {
 
 	void VulkanDepthBuffer::CreateDepthResources()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
 		VkSampleCountFlagBits vkMsaaSamples = VulkanDevice::GetVulkanMsaa();
 
@@ -29,6 +31,8 @@ namespace PhysiXal {
 
 	void VulkanDepthBuffer::DestroyDepthResources()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_WARN("...Destroying Vulkan depth buffer");

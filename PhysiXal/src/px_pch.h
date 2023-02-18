@@ -17,6 +17,7 @@
 #include <core/core.h>
 #include "log/log.h"
 #include <events/event.h>
+#include "debug/profiler/instrumentor.h"
 
 #ifdef PX_PLATFORM_WINDOWS
 	#include <windows.h>

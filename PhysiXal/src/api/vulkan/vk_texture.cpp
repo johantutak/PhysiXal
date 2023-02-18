@@ -17,10 +17,14 @@ namespace PhysiXal {
 
 	void VulkanTexture::CreateTextureImage()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_INFO("Applying texture image");
 		
+		PX_PROFILE_SCOPE("stbi_load - VulkanTexture::CreateTextureImage()");
+
 		int texWidth, texHeight, texChannels;
 		stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 		VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -57,6 +61,8 @@ namespace PhysiXal {
 
 	void VulkanTexture::DestroyTextureImage()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_WARN("...Erasing texture image");
@@ -148,6 +154,8 @@ namespace PhysiXal {
 
 	void VulkanTexture::CreateTextureImageView()
 	{
+		PX_PROFILE_FUNCTION();
+
 		PX_CORE_INFO("Setting up and creating Vulkan texture image views");
 
 		s_TextureImageView = CreateImageView(s_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, s_MipLevels);
@@ -155,6 +163,8 @@ namespace PhysiXal {
 
 	void VulkanTexture::DestroyTextureImageView()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_WARN("...Destroying Vulkan texture image views");
@@ -168,6 +178,8 @@ namespace PhysiXal {
 
 	void VulkanTexture::CreateTextureSampler()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
 
@@ -203,6 +215,8 @@ namespace PhysiXal {
 
 	void VulkanTexture::DestroyTextureSampler()
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
 		PX_CORE_WARN("...Destroying Vulkan texture sampler");

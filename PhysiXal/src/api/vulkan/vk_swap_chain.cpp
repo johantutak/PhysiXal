@@ -20,6 +20,8 @@ namespace PhysiXal {
 
     void VulkanSwapChain::CreateSwapChain()
     {
+        PX_PROFILE_FUNCTION();
+
         VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
         VkSurfaceKHR vkSurface = VulkanDevice::GetVulkanSurface();
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
@@ -84,6 +86,8 @@ namespace PhysiXal {
 
     void VulkanSwapChain::DestroyCurrentSwapChain()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan swap chain");
@@ -93,6 +97,8 @@ namespace PhysiXal {
 
     void VulkanSwapChain::DestroySwapChain()
     {
+        PX_PROFILE_FUNCTION();
+
         m_DepthBuffer->DestroyDepthResources();
         m_Device->DestroyColorResources();
         m_Framebuffer->DestroyFramebuffers();
@@ -195,6 +201,8 @@ namespace PhysiXal {
 
     void VulkanSwapChain::CreateImageViews()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Setting up and creating Vulkan image views");
@@ -209,6 +217,8 @@ namespace PhysiXal {
 
     void VulkanSwapChain::DestroyImageViews()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan image views");

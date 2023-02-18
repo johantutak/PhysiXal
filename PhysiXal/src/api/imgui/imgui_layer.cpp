@@ -26,6 +26,8 @@ namespace PhysiXal {
 
 	void GuiLayer::GuiInit()
 	{
+		PX_PROFILE_FUNCTION();
+
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 		auto vkInstance = VulkanContext::GetVulkanInstance();
@@ -108,6 +110,8 @@ namespace PhysiXal {
 
 	void GuiLayer::GuiShutdown()
 	{
+		PX_PROFILE_FUNCTION();
+
 		PX_CORE_WARN("...Shutting down the GUI (Dear ImGUI)");
 
 		ImGui_ImplVulkan_Shutdown();
@@ -123,6 +127,8 @@ namespace PhysiXal {
 
 	void GuiLayer::GuiBegin()
 	{
+		PX_PROFILE_FUNCTION();
+
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -130,6 +136,8 @@ namespace PhysiXal {
 
 	void GuiLayer::GuiEnd()
 	{	
+		PX_PROFILE_FUNCTION();
+
 		ImGui::Render();
 
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -143,6 +151,8 @@ namespace PhysiXal {
 
 	void GuiLayer::GuiDraw(VkCommandBuffer commandBuffer, uint32_t imageIndex)
 	{
+		PX_PROFILE_FUNCTION();
+
 		VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
 		uint32_t vkCurrentFrame = VulkanRenderer::GetVulkanCurrentFrame();
 
@@ -175,6 +185,8 @@ namespace PhysiXal {
 
 	void GuiLayer::GuiOnRender()
 	{
+		PX_PROFILE_FUNCTION();
+
 		//static bool showDemoWindow = ture;
 		//ImGui::ShowDemoWindow(&showDemoWindow);
 		

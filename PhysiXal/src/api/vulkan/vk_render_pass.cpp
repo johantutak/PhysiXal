@@ -15,6 +15,8 @@ namespace PhysiXal {
 
     void VulkanRenderPass::CreateRenderPass()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
         VkSampleCountFlagBits vkMsaaSamples = VulkanDevice::GetVulkanMsaa();
@@ -96,6 +98,8 @@ namespace PhysiXal {
 
     void VulkanRenderPass::DestroyRenderPass()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan render pass");

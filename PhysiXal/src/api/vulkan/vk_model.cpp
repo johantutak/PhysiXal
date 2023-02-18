@@ -17,12 +17,16 @@ namespace PhysiXal {
 
     void VulkanModel::LoadModel()
     {
+        PX_PROFILE_FUNCTION();
+
         PX_CORE_INFO("Loading model");
 
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
         std::string warn, err;
+
+        PX_PROFILE_SCOPE("tinyobj::LoadObj - VulkanModel::LoadModel()");
 
         if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) 
         {

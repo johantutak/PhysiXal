@@ -1,5 +1,5 @@
 #include "px_pch.h"
-#include "debug/cpu_id.h"
+#include "utilities/cpu_id.h"
 
 #define MAX_INTEL_TOP_LVL 4
 

@@ -1,10 +1,10 @@
 #include "px_pch.h"
-#include "debug/system_statistics.h"
+#include "utilities/system_statistics.h"
 
 #include "api/vulkan/vk_utilities.h"
 #include "api/vulkan/vk_initializers.h"
 
-#include "debug/cpu_id.h"
+#include "utilities/cpu_id.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>

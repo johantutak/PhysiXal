@@ -2,6 +2,8 @@
 
 #include "core/core.h"
 
+#include "debug/profiler/instrumentor.h"
+
 #include <sstream>
 #include <string>
 #include <functional>

@@ -16,6 +16,8 @@ namespace PhysiXal {
 
     void VulkanCommandBuffer::CreateCommandBuffers() 
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
         std::vector<VkImageView> vkSwapChainImages = VulkanSwapChain::GetVulkanImageViews();
 
@@ -38,6 +40,8 @@ namespace PhysiXal {
 
     void VulkanCommandBuffer::DestroyCommandBuffers()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Freeing up Vulkan command buffers");
@@ -47,6 +51,8 @@ namespace PhysiXal {
 
     void VulkanCommandBuffer::RecordCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex)
     {
+        PX_PROFILE_SCOPE("Renderer Prep");
+
         VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
         std::vector<VkFramebuffer> vkFramebuffer = VulkanFramebuffer::GetVulkanFramebuffers();
         VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
@@ -121,6 +127,8 @@ namespace PhysiXal {
 
     void VulkanCommandBuffer::CreateCommandPool()
     {
+        PX_PROFILE_FUNCTION();
+
         VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
@@ -141,6 +149,8 @@ namespace PhysiXal {
 
     void VulkanCommandBuffer::DestroyCommandPool()
     {
+        PX_PROFILE_FUNCTION();
+
         VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_WARN("...Destroying Vulkan command pool");
