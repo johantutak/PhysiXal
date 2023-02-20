@@ -1,8 +1,8 @@
 -- ###################################################################
---						The PhysiXal Engine
+--						PhysiXal Engine
 -- ###################################################################
 
-workspace "ThePhysiXalEngine"
+workspace "PhysiXalEngine"
 	architecture "x86_64"
 	startproject "Editor"
 
@@ -20,14 +20,26 @@ workspace "ThePhysiXalEngine"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Extract Vulkan to Development enviroment (install directory )
+VULKAN_SDK = os.getenv("VULKAN_SDK")
+
 -- Include directories reletive to root folder (solution directory)
 IncludeDir = {}
+IncludeDir["GLFW"] = "engine/thirdparty/GLFW/include"
+IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 IncludeDir["ImGui"] = "engine/thirdparty/imgui"
 IncludeDir["glm"] = "engine/thirdparty/glm"
 IncludeDir["stb_image"] = "engine/thirdparty/stb_image"
 IncludeDir["tinyobjloader"] = "engine/thirdparty/tinyobjloader"
 
+LibraryDir = {}
+LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
+
+Library = {}
+Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
+
 group "Dependencies"
+	include "engine/thirdparty/GLFW"
 	include "engine/thirdparty/imgui"
 group ""
 
@@ -76,7 +88,8 @@ project "Engine"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/thirdparty/spdlog/include",
-		"%{IncludeDir.Glad}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}",
@@ -85,24 +98,25 @@ project "Engine"
 
 	links
 	{
+		"GLFW",
+		"%{Library.Vulkan}",
 		"ImGui"
 	}
-
+	
 	flags { "NoPCH" }
 
-	filter "system:linux"
-        cppdialect "C++17"
-        staticruntime "on"
-        systemversion "latest"
+	filter "system:windows"
+		cppdialect "C++17"
+		staticruntime "on"
+		systemversion "latest"
 
-		removefiles { "thirdparty/GLFW/**",
-					  "src/core/platform/win/**.h",
-		              "src/core/platform/win/**.cpp" }
-
-        defines 
-        {
-            "PX_PLATFORM_LINUX"
-        }
+		removefiles { "src/core/platform/lnx/**.h",
+		              "src/core/platform/lnx/**.cpp" }
+		
+		defines
+		{
+			"PX_PLATFORM_WINDOWS"
+		}
 
 		filter "configurations:Debug"
 			defines "PX_DEBUG"
@@ -114,7 +128,7 @@ project "Engine"
 			runtime "Release"
 			optimize "on"
 
-    	filter "configurations:Dist"
+		filter "configurations:Dist"
 			defines "PX_DIST"
 			runtime "Release"
 			optimize "on"
@@ -150,40 +164,27 @@ project "Editor"
 		"engine/thirdparty/spdlog/include",
 		"engine/src",
 		"engine/thirdparty",
+		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.glm}"
 	}
 
 	links 
 	{
-		"Engine"
+		"engine"
 	}
-
-	filter "system:linux"
+	
+	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "on"
 		systemversion "latest"
 
 		links 
 		{
-			"glfw",
-
-			"ImGui",
-			
-			"Xrandr",
-			"Xxf86vm",
-			"Xi",
-			"X11",
-			"dl",
-			"pthread",
-			
-			"stdc++fs",		--GCC versions 5.3 through 8.x need stdc++fs for std::filesystem
-
-			"vulkan"
 		}
 
-    	defines 
+		defines 
     	{
-    		"PX_PLATFORM_LINUX"
+    		"PX_PLATFORM_WINDOWS"
     	}
 		
 		filter "configurations:Debug"
