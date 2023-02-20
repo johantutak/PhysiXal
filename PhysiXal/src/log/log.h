@@ -7,11 +7,10 @@
 
 namespace PhysiXal {
 
-	// From Hazel Engine
-
 	class Log
 	{
 	public:
+		// Log
 		static void Init();
 
 		static Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }

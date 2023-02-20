@@ -2,10 +2,9 @@
 
 namespace PhysiXal {
 
-	// From Hazel Engine
-
 	typedef enum class KeyCode : uint16_t
 	{
+		// Key codes
 		// From glfw3.h
 		Space = 32,
 		Apostrophe = 39, /* ' */

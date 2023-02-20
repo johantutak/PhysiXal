@@ -16,8 +16,6 @@ namespace PhysiXal {
 	// For the future, a better strategy might be to buffer events in an event
 	// bus and process them during the "event" part of the update stage.
 
-	// From Hazel Engine
-
 	enum class EventType
 	{
 		None = 0,
@@ -46,6 +44,7 @@ namespace PhysiXal {
 	class Event
 	{
 	public:
+		// Event
 		virtual ~Event() = default;
 
 		bool Handled = false;

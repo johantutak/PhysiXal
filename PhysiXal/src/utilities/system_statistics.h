@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace PhysiXal {
+namespace PhysiXal::Utilities {
 
 	class SystemStatistics
 	{

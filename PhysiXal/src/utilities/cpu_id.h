@@ -64,7 +64,7 @@ private:
     bool   mIsAVX2;
 };
 
-//#### EXAMPLE #### How to use with example below
+//#### EXAMPLE #### How to use with examples below
 
 #if 0
 

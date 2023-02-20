@@ -1,10 +1,11 @@
 #pragma once
 
-#include "core/physixal.h"
+#include "physixal.h"
 
-class ExampleGame : public PhysiXal::CoreLayer
+class ExampleGame : public PhysiXal::Layer
 {
 public:
+	// Example game
 	ExampleGame();
 	virtual ~ExampleGame();
 

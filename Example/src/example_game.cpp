@@ -1,7 +1,7 @@
 #include "example_game.h"
 
 ExampleGame::ExampleGame()
-	: CoreLayer("ExampleGame")
+	: Layer("ExampleGame")
 {
 	PX_PROFILE_FUNCTION();
 

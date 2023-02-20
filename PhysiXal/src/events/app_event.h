@@ -4,11 +4,10 @@
 
 namespace PhysiXal {
 
-	// From Hazel Engine
-
 	class WindowResizeEvent : public Event
 	{
 	public:
+		// Application events
 		WindowResizeEvent(unsigned int width, unsigned int height)
 			: m_Width(width), m_Height(height) {}
 

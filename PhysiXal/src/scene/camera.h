@@ -17,10 +17,10 @@ namespace PhysiXal {
         void SetViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up = glm::vec3{0.f, -1.f, 0.f});
         void SetViewYXZ(glm::vec3 position, glm::vec3 rotation);
 
-        const glm::mat4& setProjection() const { return projectionMatrix; }
-        const glm::mat4& setView() const { return viewMatrix; }
-        const glm::mat4& setInverseView() const { return inverseViewMatrix; }
-        const glm::vec3 setPosition() const { return glm::vec3(inverseViewMatrix[3]); }
+        const glm::mat4& SetProjection() const { return projectionMatrix; }
+        const glm::mat4& SetView() const { return viewMatrix; }
+        const glm::mat4& SetInverseView() const { return inverseViewMatrix; }
+        const glm::vec3 SetPosition() const { return glm::vec3(inverseViewMatrix[3]); }
 	private:
         glm::mat4 projectionMatrix{1.f};
         glm::mat4 viewMatrix{1.f};

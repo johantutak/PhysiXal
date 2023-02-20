@@ -9,6 +9,7 @@ namespace PhysiXal {
     class LinuxInput : public Input
     {
     protected:
+        // Linux input
         virtual bool IsKeyPressedImpl(KeyCode key) override;
 
         virtual bool IsMouseButtonPressedImpl(MouseCode button) override;

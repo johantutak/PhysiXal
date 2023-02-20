@@ -7,6 +7,7 @@ namespace PhysiXal {
 	class Renderer
 	{
 	public:
+		// Renderer
 		static void Init();
 		static void Shutdown();
 

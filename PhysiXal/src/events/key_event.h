@@ -7,11 +7,10 @@
 
 namespace PhysiXal {
 
-	// From Hazel Engine
-
 	class KeyEvent : public Event
 	{
 	public:
+		// Key event
 		KeyCode GetKeyCode() const { return m_KeyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
@@ -25,6 +24,7 @@ namespace PhysiXal {
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
+		// Key pressed event
 		KeyPressedEvent(KeyCode keycode, int repeatCount)
 			: KeyEvent(keycode), m_RepeatCount(repeatCount) {}
 
@@ -45,6 +45,7 @@ namespace PhysiXal {
 	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
+		// Key released event
 		KeyReleasedEvent(KeyCode keycode)
 			: KeyEvent(keycode) {}
 
@@ -61,6 +62,7 @@ namespace PhysiXal {
 	class KeyTypedEvent : public KeyEvent
 	{
 	public:
+		// Key typed event
 		KeyTypedEvent(KeyCode keycode)
 			: KeyEvent(keycode) {}
 

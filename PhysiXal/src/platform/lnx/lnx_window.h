@@ -6,14 +6,13 @@
 #include "GLFW/glfw3.h"
 
 namespace PhysiXal {
-
-    // From Hazel & Little Vulkan Engine
     
 #ifdef PX_PLATFORM_LINUX
     
     class LnxWindow : public Window
     {
     public:
+		// Linux window
 		LnxWindow(const WindowSpecification& specification);
 		virtual ~LnxWindow();
 
@@ -23,7 +22,7 @@ namespace PhysiXal {
 		unsigned int GetWidth() const override { return m_Data.Width; }
 		unsigned int GetHeight() const override { return m_Data.Height; }
 
-		// Window attributes
+			// Window attributes
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 
 		virtual void* GetNativeWindow() const { return m_Window; }

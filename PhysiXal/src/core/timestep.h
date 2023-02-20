@@ -2,11 +2,10 @@
 
 namespace PhysiXal {
 
-	// From Hazel Engine
-
 	class Timestep
 	{
 	public:
+		// Timestep (Delta time)
 		Timestep(float time = 0.0f)
 			: m_Time(time)
 		{

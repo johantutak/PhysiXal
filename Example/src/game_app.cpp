@@ -1,11 +1,12 @@
-#include "core/physixal.h"
+#include "physixal.h"
 #include "core/entry_point.h"
 
 #include "example_game.h"
 
 class GameApp : public PhysiXal::Application
 {
-	public:
+public:
+	// Game application
 	GameApp(const PhysiXal::ApplicationSpecification& specification)
 		: Application(specification)
 	{

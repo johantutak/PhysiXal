@@ -8,10 +8,12 @@
 
 #pragma once
 
+// ---- Core -------------------------------------------------
+
 #include "core/core.h"
 
 #include "core/application.h"
-#include "core/core_layer.h"
+#include "core/layer.h"
 #include "log/log.h"
 
 #include "core/timestep.h"

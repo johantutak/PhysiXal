@@ -5,8 +5,6 @@
 
 namespace PhysiXal {
 
-	// From Hazel & Little Vulkan Engine
-
 	struct WindowSpecification
 	{
 		std::string Title = "PhysiXal Engine";
@@ -18,6 +16,7 @@ namespace PhysiXal {
 	class Window
 	{
 	public:
+		// Window
 		using EventCallbackFn = std::function<void(Event&)>;
 
 		virtual ~Window() {}

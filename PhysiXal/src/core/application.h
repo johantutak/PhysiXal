@@ -15,8 +15,6 @@ int main(int argc, char** argv);
 
 namespace PhysiXal {
 
-	// From Hazel & Little Vulkan Engine
-
 	struct ApplicationSpecification
 	{
 		std::string Name = "PhysiXal";
@@ -26,13 +24,14 @@ namespace PhysiXal {
 	class Application
 	{
 	public:
+		// Application
 		Application(const ApplicationSpecification& specification);
 		virtual	~Application();
 
 		void OnEvent(Event& e);
 
-		void PushLayer(CoreLayer* layer);
-		void PushOverlay(CoreLayer* layer);
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
 
 		inline Window& GetWindow() { return *m_Window; }
 

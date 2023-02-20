@@ -14,7 +14,9 @@
 
 namespace PhysiXal {
 
-	// From Hazel & Little Vulkan Engine
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Application
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Application* Application::s_Instance = nullptr;
 
@@ -39,7 +41,7 @@ namespace PhysiXal {
 		Renderer::Init();
 
 		// Get system statistics 
-		SystemStatistics* m_Stats = nullptr;
+		Utilities::SystemStatistics* m_Stats = nullptr;
 		m_Stats->PrintStats();
 
 		// #### TODO ####
@@ -83,13 +85,13 @@ namespace PhysiXal {
 		}
 	}
 
-	void Application::PushLayer(CoreLayer* layer)
+	void Application::PushLayer(Layer* layer)
 	{ 
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
-	void Application::PushOverlay(CoreLayer* layer)
+	void Application::PushOverlay(Layer* layer)
 	{
 		m_LayerStack.PushOverlay(layer);
 		layer->OnAttach();
@@ -111,7 +113,7 @@ namespace PhysiXal {
 				{
 					PX_PROFILE_SCOPE("LayerStack OnUpdate");
 
-					for (CoreLayer* layer : m_LayerStack)
+					for (Layer* layer : m_LayerStack)
 						layer->OnUpdate(m_FrameTime);
 				}
 

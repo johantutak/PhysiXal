@@ -12,6 +12,7 @@ namespace PhysiXal {
 	class MouseMovedEvent : public Event
 	{
 	public:
+		// Mouse moved event
 		MouseMovedEvent(float x, float y)
 			: m_MouseX{ x }, m_MouseY(y) {}
 
@@ -34,6 +35,7 @@ namespace PhysiXal {
 	class MouseScrolledEvent : public Event
 	{
 	public:
+		// Mouse scrolled event
 		MouseScrolledEvent(float xOffset, float yOffset)
 			: m_XOffset(xOffset), m_YOffset(yOffset) {}
 
@@ -69,6 +71,7 @@ namespace PhysiXal {
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
+		// Mouse button pressed event
 		MouseButtonPressedEvent(MouseCode button)
 			: MouseButtonEvent(button) {}
 
@@ -85,6 +88,7 @@ namespace PhysiXal {
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
+		// mouse button released event
 		MouseButtonReleasedEvent(MouseCode button)
 			: MouseButtonEvent(button) {}
 

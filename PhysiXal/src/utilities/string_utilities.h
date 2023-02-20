@@ -1,7 +1,8 @@
 #pragma once
 
-namespace PhysiXal::Utils {
+namespace PhysiXal::Utilities {
 
+	// String utilities
 	std::string GetFilename(const std::string& filepath);
 	std::string GetExtension(const std::string& filename);
 	std::string RemoveExtension(const std::string& filename);

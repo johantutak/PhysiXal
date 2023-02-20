@@ -2,8 +2,7 @@
 
 namespace PhysiXal {
 
-	// From Hazel Engine
-
+	// Mouse codes
 	typedef enum class MouseCode : uint16_t
 	{
 		// From glfw3.h

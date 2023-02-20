@@ -12,12 +12,12 @@ namespace PhysiXal {
 	// Next up is the LayerStack class. (Ordered list of layers = layer stack).
 	// Layers determine what order things are drawn in and so on.
 
-	class CoreLayer
+	class Layer
 	{
 	public:
-
-		CoreLayer(const std::string& name = "Layer");
-		virtual ~CoreLayer() = default;
+		// Layer
+		Layer(const std::string& name = "Layer");
+		virtual ~Layer() = default;
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}

@@ -6,13 +6,12 @@
 
 namespace PhysiXal {
 
-	// From Hazel Engine
-
 	class Input
 	{
 	protected:
 		Input() = default;
 	public:
+		// Input
 		Input(const Input&) = delete;
 		Input& operator=(const Input&) = delete;
 	public:
