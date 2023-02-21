@@ -7,8 +7,6 @@
 
 namespace PhysiXal {
     
-#ifdef PX_PLATFORM_WINDOWS
-    
 	class WinWindow : public Window
 	{
 	public:
@@ -42,5 +40,4 @@ namespace PhysiXal {
 
 		WindowData m_Data;
 	};
-#endif
 }

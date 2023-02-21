@@ -11,8 +11,6 @@ namespace PhysiXal {
 	// Windows input
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef PX_PLATFORM_WINDOWS
-
 	bool WindowsInput::IsKeyPressedImpl(KeyCode key)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
@@ -47,5 +45,4 @@ namespace PhysiXal {
 		auto [x, y] = GetMousePositionImpl();
 		return y;
 	}
-#endif
 }

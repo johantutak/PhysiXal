@@ -13,8 +13,6 @@ namespace PhysiXal {
 	// Windows window
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-#ifdef PX_PLATFORM_WINDOWS
-    
 	static uint8_t s_GLFWWindowCount = 0;
 
 	static void GLFWErrorCallback(int error, const char* description)
@@ -99,5 +97,4 @@ namespace PhysiXal {
 	{
 		glfwPollEvents();
 	}
-#endif
 }

@@ -19,6 +19,10 @@ namespace PhysiXal::Utilities {
     {
         CPUInfo cinfo;
 
+        MEMORYSTATUSEX statex;
+        statex.dwLength = sizeof(statex);
+        GlobalMemoryStatusEx(&statex);
+
         VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
         vkGetPhysicalDeviceProperties(vkPhysicalDevice, &s_Properties);
 
@@ -38,6 +42,11 @@ namespace PhysiXal::Utilities {
         PX_CORE_TRACE("CORES/THREADS: {0}", cinfo.cores());
         PX_CORE_TRACE("LOGICAL CORES: {0}", cinfo.logicalCpus());
         PX_CORE_TRACE("HYPER THREADED CPU: {0}", cinfo.isHyperThreaded());
+
+        PX_CORE_TRACE("");
+
+        PX_CORE_TRACE(" #### DEVICE INFO (MEMORY (RAM)) ####");
+        PX_CORE_TRACE("MEMORY (RAM): {0} Gigabyte", (float)statex.ullTotalPhys / (1024 * 1024 * 1024));
 
         PX_CORE_TRACE("");
 

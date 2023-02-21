@@ -40,7 +40,7 @@ namespace PhysiXal {
 		// Initialize the renderer
 		Renderer::Init();
 
-		// Get system statistics 
+		// Get system statistics
 		Utilities::SystemStatistics* m_Stats = nullptr;
 		m_Stats->PrintStats();
 

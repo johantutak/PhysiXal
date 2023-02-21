@@ -1,9 +1,7 @@
 #include "px_pch.h"
 #include "core/input/input.h"
 
-#ifdef PX_PLATFORM_WINDOWS
 #include "platform/win/win_input.h"
-#endif
 
 namespace PhysiXal {
 
