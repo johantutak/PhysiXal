@@ -17,8 +17,6 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_INFO("Creating sync objects");
 
 		s_ImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -34,9 +32,9 @@ namespace PhysiXal {
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			if (vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &s_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(vkDevice, &semaphoreInfo, nullptr, &s_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
-				vkCreateFence(vkDevice, &fenceInfo, nullptr, &s_InFlightFences[i]) != VK_SUCCESS)
+			if (vkCreateSemaphore(VulkanDevice::GetVulkanDevice(), &semaphoreInfo, nullptr, &s_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
+				vkCreateSemaphore(VulkanDevice::GetVulkanDevice(), &semaphoreInfo, nullptr, &s_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
+				vkCreateFence(VulkanDevice::GetVulkanDevice(), &fenceInfo, nullptr, &s_InFlightFences[i]) != VK_SUCCESS)
 			{
 				PX_CORE_ERROR("Failed to create synchronization objects for a frame!");
 			}
@@ -47,15 +45,13 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_WARN("...Destroying sync objects");
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			vkDestroySemaphore(vkDevice, s_ImageAvailableSemaphores[i], nullptr);
-			vkDestroySemaphore(vkDevice, s_RenderFinishedSemaphores[i], nullptr);
-			vkDestroyFence(vkDevice, s_InFlightFences[i], nullptr);
+			vkDestroySemaphore(VulkanDevice::GetVulkanDevice(), s_ImageAvailableSemaphores[i], nullptr);
+			vkDestroySemaphore(VulkanDevice::GetVulkanDevice(), s_RenderFinishedSemaphores[i], nullptr);
+			vkDestroyFence(VulkanDevice::GetVulkanDevice(), s_InFlightFences[i], nullptr);
 		}
 	}
 }

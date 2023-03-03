@@ -17,34 +17,34 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        std::vector<VkImageView> vkSwapChainImageViews = VulkanSwapChain::GetVulkanImageViews();
-        VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
-        VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        VkImageView vkColorImageView = VulkanDevice::GetVulkanColorImageView();
-        VkImageView vkDepthImageView = VulkanDepthBuffer::GetVulkanDepthImageView();
-
         PX_CORE_INFO("Creating Vulkan framebuffers");
 
-        s_Framebuffers.resize(vkSwapChainImageViews.size());
+        s_Framebuffers.resize(VulkanSwapChain::GetVulkanImageViews().size());
 
-        for (size_t i = 0; i < vkSwapChainImageViews.size(); i++) {
+        for (size_t i = 0; i < VulkanSwapChain::GetVulkanImageViews().size(); i++) {
             std::array<VkImageView, 3> attachments = {
-                vkColorImageView,
-                vkDepthImageView,
-                vkSwapChainImageViews[i]
+                VulkanDevice::GetVulkanColorImageView(),
+                VulkanDepthBuffer::GetVulkanDepthImageView(),
+                VulkanSwapChain::GetVulkanImageViews()[i]
             };
 
+            // VkFrameBuffer maps attachments to a renderpass
+            //
+            // Needs Vulkans
+            //  
+            // Render pass
+            // Color and depth attachments which is based on size
+            // Current render size from the extent
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-            framebufferInfo.renderPass = vkRenderPass;
+            framebufferInfo.renderPass = VulkanRenderPass::GetVulkanRenderPass();
             framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
             framebufferInfo.pAttachments = attachments.data();
-            framebufferInfo.width = vkSwapChainExtent2D.width;
-            framebufferInfo.height = vkSwapChainExtent2D.height;
+            framebufferInfo.width = VulkanSwapChain::GetVulkanSwapChainExtent().width;
+            framebufferInfo.height = VulkanSwapChain::GetVulkanSwapChainExtent().height;
             framebufferInfo.layers = 1;
 
-            if (vkCreateFramebuffer(vkDevice, &framebufferInfo, nullptr, &s_Framebuffers[i]) != VK_SUCCESS)
+            if (vkCreateFramebuffer(VulkanDevice::GetVulkanDevice(), &framebufferInfo, nullptr, &s_Framebuffers[i]) != VK_SUCCESS)
             {
                 PX_CORE_ERROR("Failed to create framebuffer!");
             }

@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	PX_CORE_INFO("Initializing Log (core).");
 	PX_INFO("Initializing Application (client).");
 
-	PX_PROFILE_BEGIN_SESSION("Startup", "../profiling/startup.json", );
+	PX_PROFILE_BEGIN_SESSION("Startup", "../profiling/startup.json");
 	auto app = PhysiXal::CreateApplication();
 	PX_PROFILE_END_SESSION();
 
@@ -23,4 +23,7 @@ int main(int argc, char** argv)
 	PX_PROFILE_BEGIN_SESSION("Shutdown", "../profiling/shutdown.json");
 	delete app;
 	PX_PROFILE_END_SESSION();
+
+	PX_WARN("...Shutting down Application (client).");
+	PX_CORE_WARN("...Shutting down Log (core).");
 }

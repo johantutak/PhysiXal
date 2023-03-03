@@ -11,6 +11,8 @@
 
 #include "gui/gui.h"
 
+#include "scene/camera.h"
+
 int main(int argc, char** argv);
 
 namespace PhysiXal {
@@ -38,13 +40,16 @@ namespace PhysiXal {
 		static Application& Get() { return *s_Instance; }
 
 		Timestep GetTimeStep() const { return m_TimeStep; }
-		float GetTime() const; // TODO: This should be in "Platform"
+		float GetTime() const; // TODO: This should be in "Platform / own header"
+
+		Camera* GetCamera() const { return m_Camera; }
 	private:
 		void Run();
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 	private:
 		Scope<Window> m_Window;
+		Camera* m_Camera{};
 
 		bool m_Running = true;
 		bool m_Minimized = false;

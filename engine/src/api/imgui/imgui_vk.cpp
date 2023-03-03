@@ -17,8 +17,6 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_INFO("Creating Dear ImGUI (Vulkan) descriptor pool");
 
 		VkDescriptorPoolSize poolSizes[] =
@@ -43,7 +41,7 @@ namespace PhysiXal {
 		poolInfo.poolSizeCount = std::size(poolSizes);
 		poolInfo.pPoolSizes = poolSizes;
 
-		if (vkCreateDescriptorPool(vkDevice, &poolInfo, nullptr, &s_GuiDescriptorPool) != VK_SUCCESS)
+		if (vkCreateDescriptorPool(VulkanDevice::GetVulkanDevice(), &poolInfo, nullptr, &s_GuiDescriptorPool) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to create Dear ImGUI's descriptor pool!");
 		}
@@ -53,11 +51,9 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_WARN("...Destroying Dear ImGUI (Vulkan) descriptor pool");
 
-		vkDestroyDescriptorPool(vkDevice, s_GuiDescriptorPool, nullptr);
+		vkDestroyDescriptorPool(VulkanDevice::GetVulkanDevice(), s_GuiDescriptorPool, nullptr);
 	}
 
 		// #### Render pass ####
@@ -65,13 +61,10 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
-
 		PX_CORE_INFO("Creating Dear ImGUI (Vulkan) render pass");
 
 		VkAttachmentDescription colorAttachment = {};
-		colorAttachment.format = vkSwapChainImageFormat;
+		colorAttachment.format = VulkanSwapChain::GetVulkanImageFormat();
 		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
 		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -106,7 +99,7 @@ namespace PhysiXal {
 		renderPassInfo.dependencyCount = 1;
 		renderPassInfo.pDependencies = &dependency;
 
-		if (vkCreateRenderPass(vkDevice, &renderPassInfo, nullptr, &s_GuiRenderPass) != VK_SUCCESS)
+		if (vkCreateRenderPass(VulkanDevice::GetVulkanDevice(), &renderPassInfo, nullptr, &s_GuiRenderPass) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to create Dear ImGUI's render pass!");
 		}
@@ -116,11 +109,9 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_WARN("...Destroying Dear ImGUI (Vulkan) render pass");
 
-		vkDestroyRenderPass(vkDevice, s_GuiRenderPass, nullptr);
+		vkDestroyRenderPass(VulkanDevice::GetVulkanDevice(), s_GuiRenderPass, nullptr);
 	}
 
 		// #### Command buffer ####
@@ -128,21 +119,17 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		std::vector<VkImageView> vkSwapChainImages = VulkanSwapChain::GetVulkanImageViews();
-		VkCommandPool vkCommandPool = VulkanCommandBuffer::GetVulkanCommandPool();
-
 		PX_CORE_INFO("Allocating Dear ImGUI (Vulkan) command buffers");
 
-		s_GuiCommandBuffers.resize(vkSwapChainImages.size());
+		s_GuiCommandBuffers.resize(VulkanSwapChain::GetVulkanImageViews().size());
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.commandPool = s_GuiCommandPool; //vkCommandPool;
+		allocInfo.commandPool = s_GuiCommandPool;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandBufferCount = (uint32_t)s_GuiCommandBuffers.size();
 
-		if (vkAllocateCommandBuffers(vkDevice, &allocInfo, s_GuiCommandBuffers.data()) != VK_SUCCESS)
+		if (vkAllocateCommandBuffers(VulkanDevice::GetVulkanDevice(), &allocInfo, s_GuiCommandBuffers.data()) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to allocate Dear ImGUI's command buffers!");
 		}
@@ -152,12 +139,9 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		VkCommandPool vkCommandPool = VulkanCommandBuffer::GetVulkanCommandPool();
-
 		PX_CORE_WARN("...Freeing up Dear ImGUI (Vulkan) command buffers");
 
-		vkFreeCommandBuffers(vkDevice, s_GuiCommandPool /*vkCommandPool*/, static_cast<uint32_t>(s_GuiCommandBuffers.size()), s_GuiCommandBuffers.data());
+		vkFreeCommandBuffers(VulkanDevice::GetVulkanDevice(), s_GuiCommandPool, static_cast<uint32_t>(s_GuiCommandBuffers.size()), s_GuiCommandBuffers.data());
 	}
 
 		// #### Command pool ####
@@ -165,19 +149,16 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_INFO("Creating Dear ImGUI (Vulkan) command pool");
 
-		QueueFamilyIndices queueFamilyIndices = m_Device->FindQueueFamilies(vkPhysicalDevice);
+		QueueFamilyIndices queueFamilyIndices = m_Device->FindQueueFamilies(VulkanDevice::GetVulkanPhysicalDevice());
 
 		VkCommandPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		poolInfo.queueFamilyIndex = queueFamilyIndices.m_GraphicsFamily.value();
 
-		if (vkCreateCommandPool(vkDevice, &poolInfo, nullptr, &s_GuiCommandPool) != VK_SUCCESS)
+		if (vkCreateCommandPool(VulkanDevice::GetVulkanDevice(), &poolInfo, nullptr, &s_GuiCommandPool) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to create Dear ImGUI's command pool!");
 		}
@@ -187,12 +168,10 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_WARN("...Destroying Dear ImGUI (Vulkan) command pool");
 
 		// Destroys command buffers that are in the pool
-		vkDestroyCommandPool(vkDevice, s_GuiCommandPool, nullptr);
+		vkDestroyCommandPool(VulkanDevice::GetVulkanDevice(), s_GuiCommandPool, nullptr);
 	}
 
 		// #### Framebuffer ####
@@ -200,31 +179,26 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		std::vector<VkImageView> vkSwapChainImageViews = VulkanSwapChain::GetVulkanImageViews();
-		VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		VkImageView vkColorImageView = VulkanDevice::GetVulkanColorImageView();
-
 		PX_CORE_INFO("Creating Dear ImGUI (Vulkan) framebuffers");
 
-		for (size_t i = 0; i < vkSwapChainImageViews.size(); i++) {
+		for (size_t i = 0; i < VulkanSwapChain::GetVulkanImageViews().size(); i++) {
 			std::array<VkImageView, 1> attachment = {
-			vkSwapChainImageViews[i]
+			VulkanSwapChain::GetVulkanImageViews()[i]
 			};
 
-			s_GuiFramebuffers.resize(vkSwapChainImageViews.size());
+			s_GuiFramebuffers.resize(VulkanSwapChain::GetVulkanImageViews().size());
 
 			VkFramebufferCreateInfo framebufferInfo = {};
 			framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 			framebufferInfo.renderPass = s_GuiRenderPass;
 			framebufferInfo.attachmentCount = 1;
 			framebufferInfo.pAttachments = attachment.data();
-			framebufferInfo.width = vkSwapChainExtent2D.width;
-			framebufferInfo.height = vkSwapChainExtent2D.height;
+			framebufferInfo.width = VulkanSwapChain::GetVulkanSwapChainExtent().width;
+			framebufferInfo.height = VulkanSwapChain::GetVulkanSwapChainExtent().height;
 			framebufferInfo.layers = 1;
 
 
-			if (vkCreateFramebuffer(vkDevice, &framebufferInfo, nullptr, &s_GuiFramebuffers[i]) != VK_SUCCESS)
+			if (vkCreateFramebuffer(VulkanDevice::GetVulkanDevice(), &framebufferInfo, nullptr, &s_GuiFramebuffers[i]) != VK_SUCCESS)
 			{
 				PX_CORE_ERROR("Failed to create Dear ImGUI's framebuffer!");
 			}
@@ -235,13 +209,11 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_WARN("...Destroying Dear ImGUI (Vulkan) framebuffers");
 
 		for (auto framebuffer : s_GuiFramebuffers)
 		{
-			vkDestroyFramebuffer(vkDevice, framebuffer, nullptr);
+			vkDestroyFramebuffer(VulkanDevice::GetVulkanDevice(), framebuffer, nullptr);
 		}
 	}
 }

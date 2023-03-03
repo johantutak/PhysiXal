@@ -17,14 +17,12 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
-		VkSampleCountFlagBits vkMsaaSamples = VulkanDevice::GetVulkanMsaa();
-
 		PX_CORE_INFO("Creating Vulkan depth buffer");
 
 		VkFormat depthFormat = FindDepthFormat();
 
-		CreateImage(vkSwapChainExtent2D.width, vkSwapChainExtent2D.height, 1, vkMsaaSamples, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+		CreateImage(VulkanSwapChain::GetVulkanSwapChainExtent().width, VulkanSwapChain::GetVulkanSwapChainExtent().height, 1, VulkanDevice::GetVulkanMsaa(), depthFormat,
+			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_DepthImage, s_DepthImageMemory);
 		s_DepthImageView = CreateImageView(s_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 	}
@@ -33,13 +31,11 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_WARN("...Destroying Vulkan depth buffer");
 
-		vkDestroyImageView(vkDevice, s_DepthImageView, nullptr);
-		vkDestroyImage(vkDevice, s_DepthImage, nullptr);
-		vkFreeMemory(vkDevice, s_DepthImageMemory, nullptr);
+		vkDestroyImageView(VulkanDevice::GetVulkanDevice(), s_DepthImageView, nullptr);
+		vkDestroyImage(VulkanDevice::GetVulkanDevice(), s_DepthImage, nullptr);
+		vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_DepthImageMemory, nullptr);
 	}
 
 	bool VulkanDepthBuffer::HasStencilComponent(VkFormat format)

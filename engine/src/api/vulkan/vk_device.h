@@ -42,12 +42,6 @@ namespace PhysiXal {
 		static VkQueue GetVulkanGraphicsQueue() { return s_GraphicsQueue; }
 		static VkQueue GetVulkanPresentQueue() { return s_PresentQueue; }
 
-		// Surface
-		void CreateSurface();
-		void DestroySurface();
-
-		static VkSurfaceKHR GetVulkanSurface() { return s_Surface; }
-
 		// Multisampling (MSAA)
 		void CreateColorResources();
 		void DestroyColorResources();
@@ -61,8 +55,6 @@ namespace PhysiXal {
 
 		inline static VkQueue s_GraphicsQueue;
 		inline static VkQueue s_PresentQueue;
-
-		inline static VkSurfaceKHR s_Surface;
 
 		inline static VkSampleCountFlagBits s_MsaaSamples = VK_SAMPLE_COUNT_1_BIT;
 		inline static VkImage s_ColorImage;

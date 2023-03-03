@@ -22,12 +22,9 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        VkSampleCountFlagBits vkMsaaSamples = VulkanDevice::GetVulkanMsaa();
-        VkRenderPass vkRenderPass = VulkanRenderPass::GetVulkanRenderPass();
-        VkDescriptorSetLayout vkDescriptorSetLayout = VulkanUniformBuffer::GetVulkanDescriptorSetLayout();
-
         PX_CORE_INFO("Creating the layout of the graphics pipeline");
+
+        VkDescriptorSetLayout vkDescriptorSetLayout = VulkanUniformBuffer::GetVulkanDescriptorSetLayout();
 
         auto vertShaderCode = VulkanShader::ReadFile("../editor/assets/shaders/base_vert.spv");
         auto fragShaderCode = VulkanShader::ReadFile("../editor/assets/shaders/base_frag.spv");
@@ -83,7 +80,7 @@ namespace PhysiXal {
         VkPipelineMultisampleStateCreateInfo multisampling{};
         multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
         multisampling.sampleShadingEnable = VK_FALSE;
-        multisampling.rasterizationSamples = vkMsaaSamples;
+        multisampling.rasterizationSamples = VulkanDevice::GetVulkanMsaa();
 
         VkPipelineDepthStencilStateCreateInfo depthStencil{};
         depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -122,7 +119,7 @@ namespace PhysiXal {
         pipelineLayoutInfo.setLayoutCount = 1;
         pipelineLayoutInfo.pSetLayouts = &vkDescriptorSetLayout;
 
-        if (vkCreatePipelineLayout(vkDevice, &pipelineLayoutInfo, nullptr, &s_PipelineLayout) != VK_SUCCESS) 
+        if (vkCreatePipelineLayout(VulkanDevice::GetVulkanDevice(), &pipelineLayoutInfo, nullptr, &s_PipelineLayout) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create pipeline layout!");
         }
@@ -142,32 +139,30 @@ namespace PhysiXal {
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
         pipelineInfo.layout = s_PipelineLayout;
-        pipelineInfo.renderPass = vkRenderPass;
+        pipelineInfo.renderPass = VulkanRenderPass::GetVulkanRenderPass();
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &s_GraphicsPipeline) != VK_SUCCESS) 
+        if (vkCreateGraphicsPipelines(VulkanDevice::GetVulkanDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &s_GraphicsPipeline) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create graphics pipeline!");
         }
 
-        vkDestroyShaderModule(vkDevice, fragShaderModule, nullptr);
-        vkDestroyShaderModule(vkDevice, vertShaderModule, nullptr);
+        vkDestroyShaderModule(VulkanDevice::GetVulkanDevice(), fragShaderModule, nullptr);
+        vkDestroyShaderModule(VulkanDevice::GetVulkanDevice(), vertShaderModule, nullptr);
     }
 
     void VulkanPipeline::DestroyGraphicsPipeline()
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_WARN("...Shutting down the graphics pipeline");
 
-        vkDestroyPipeline(vkDevice, s_GraphicsPipeline, nullptr);
+        vkDestroyPipeline(VulkanDevice::GetVulkanDevice(), s_GraphicsPipeline, nullptr);
 
         PX_CORE_WARN("...Destroying the layout of the graphics pipeline");
 
-        vkDestroyPipelineLayout(vkDevice, s_PipelineLayout, nullptr);
+        vkDestroyPipelineLayout(VulkanDevice::GetVulkanDevice(), s_PipelineLayout, nullptr);
     }
 }
 

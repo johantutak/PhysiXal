@@ -88,17 +88,14 @@ namespace PhysiXal {
     // Command buffer
     VkCommandBuffer BeginSingleTimeCommands()
     {
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        VkCommandPool vkCommandPool = VulkanCommandBuffer::GetVulkanCommandPool();
-
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandPool = vkCommandPool;
+        allocInfo.commandPool = VulkanCommandBuffer::GetVulkanCommandPool();
         allocInfo.commandBufferCount = 1;
 
         VkCommandBuffer commandBuffer;
-        vkAllocateCommandBuffers(vkDevice, &allocInfo, &commandBuffer);
+        vkAllocateCommandBuffers(VulkanDevice::GetVulkanDevice(), &allocInfo, &commandBuffer);
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -111,10 +108,6 @@ namespace PhysiXal {
 
     void EndSingleTimeCommands(VkCommandBuffer commandBuffer)
     {
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        VkCommandPool vkCommandPool = VulkanCommandBuffer::GetVulkanCommandPool();
-        VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
-
         vkEndCommandBuffer(commandBuffer);
 
         VkSubmitInfo submitInfo{};
@@ -122,18 +115,16 @@ namespace PhysiXal {
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &commandBuffer;
 
-        vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-        vkQueueWaitIdle(vkGraphicsQueue);
+        vkQueueSubmit(VulkanDevice::GetVulkanGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
+        vkQueueWaitIdle(VulkanDevice::GetVulkanGraphicsQueue());
 
-        vkFreeCommandBuffers(vkDevice, vkCommandPool, 1, &commandBuffer);
+        vkFreeCommandBuffers(VulkanDevice::GetVulkanDevice(), VulkanCommandBuffer::GetVulkanCommandPool(), 1, &commandBuffer);
     }
 
     // Texture
     void CreateImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, VkImageTiling tiling,
         VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
     {
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         VkImageCreateInfo imageInfo{};
         imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
         imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -149,31 +140,29 @@ namespace PhysiXal {
         imageInfo.samples = numSamples;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateImage(vkDevice, &imageInfo, nullptr, &image) != VK_SUCCESS) 
+        if (vkCreateImage(VulkanDevice::GetVulkanDevice(), &imageInfo, nullptr, &image) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create image!");
         }
 
         VkMemoryRequirements memRequirements;
-        vkGetImageMemoryRequirements(vkDevice, image, &memRequirements);
+        vkGetImageMemoryRequirements(VulkanDevice::GetVulkanDevice(), image, &memRequirements);
 
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = m_Buffer->FindMemoryType(memRequirements.memoryTypeBits, properties);
 
-        if (vkAllocateMemory(vkDevice, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
+        if (vkAllocateMemory(VulkanDevice::GetVulkanDevice(), &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to allocate image memory!");
         }
 
-        vkBindImageMemory(vkDevice, image, imageMemory, 0);
+        vkBindImageMemory(VulkanDevice::GetVulkanDevice(), image, imageMemory, 0);
     }
 
     VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels) 
     {
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.image = image;
@@ -186,7 +175,7 @@ namespace PhysiXal {
         viewInfo.subresourceRange.layerCount = 1;
 
         VkImageView imageView;
-        if (vkCreateImageView(vkDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
+        if (vkCreateImageView(VulkanDevice::GetVulkanDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create texture image view!");
         }
@@ -197,12 +186,10 @@ namespace PhysiXal {
     // Depth buffer
     VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) 
     {
-        VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
-
         for (VkFormat format : candidates) 
         {
             VkFormatProperties props;
-            vkGetPhysicalDeviceFormatProperties(vkPhysicalDevice, format, &props);
+            vkGetPhysicalDeviceFormatProperties(VulkanDevice::GetVulkanPhysicalDevice(), format, &props);
 
             if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) 
             {
@@ -228,10 +215,8 @@ namespace PhysiXal {
     
     VkSampleCountFlagBits GetMaxUsableSampleCount() 
     {
-        VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
-
         VkPhysicalDeviceProperties physicalDeviceProperties;
-        vkGetPhysicalDeviceProperties(vkPhysicalDevice, &physicalDeviceProperties);
+        vkGetPhysicalDeviceProperties(VulkanDevice::GetVulkanPhysicalDevice(), &physicalDeviceProperties);
 
         VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
         if (counts & VK_SAMPLE_COUNT_64_BIT) { return VK_SAMPLE_COUNT_64_BIT; }

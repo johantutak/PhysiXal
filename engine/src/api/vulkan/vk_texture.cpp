@@ -19,8 +19,6 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_INFO("Applying texture image");
 		
 		PX_PROFILE_SCOPE("stbi_load - VulkanTexture::CreateTextureImage()");
@@ -40,9 +38,9 @@ namespace PhysiXal {
 		m_Buffer->CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 		void* data;
-		vkMapMemory(vkDevice, stagingBufferMemory, 0, imageSize, 0, &data);
+		vkMapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
 		memcpy(data, pixels, static_cast<size_t>(imageSize));
-		vkUnmapMemory(vkDevice, stagingBufferMemory);
+		vkUnmapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory);
 
 		stbi_image_free(pixels);
 
@@ -53,8 +51,8 @@ namespace PhysiXal {
 		CopyBufferToImage(stagingBuffer, s_TextureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 		//transitioned to VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL while generating mipmaps
 
-		vkDestroyBuffer(vkDevice, stagingBuffer, nullptr);
-		vkFreeMemory(vkDevice, stagingBufferMemory, nullptr);
+		vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), stagingBuffer, nullptr);
+		vkFreeMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory, nullptr);
 
 		GenerateMipmaps(s_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, s_MipLevels);
 	}
@@ -63,12 +61,10 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_WARN("...Erasing texture image");
 
-		vkDestroyImage(vkDevice, s_TextureImage, nullptr);
-		vkFreeMemory(vkDevice, s_TextureImageMemory, nullptr);
+		vkDestroyImage(VulkanDevice::GetVulkanDevice(), s_TextureImage, nullptr);
+		vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_TextureImageMemory, nullptr);
 	}
 
 	void VulkanTexture::TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels)
@@ -165,11 +161,9 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_WARN("...Destroying Vulkan texture image views");
 
-		vkDestroyImageView(vkDevice, s_TextureImageView, nullptr);
+		vkDestroyImageView(VulkanDevice::GetVulkanDevice(), s_TextureImageView, nullptr);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,13 +174,10 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
-
 		PX_CORE_INFO("Creating Vulkan texture sampler");
 
 		VkPhysicalDeviceProperties properties{};
-		vkGetPhysicalDeviceProperties(vkPhysicalDevice, &properties);
+		vkGetPhysicalDeviceProperties(VulkanDevice::GetVulkanPhysicalDevice(), &properties);
 
 		VkSamplerCreateInfo samplerInfo{};
 		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -207,7 +198,7 @@ namespace PhysiXal {
 		//samplerInfo.minLod = static_cast<float>(s_MipLevels / 2); // Test to see if LOD Mipmaps works
 		samplerInfo.mipLodBias = 0.0f;
 
-		if (vkCreateSampler(vkDevice, &samplerInfo, nullptr, &s_TextureSampler) != VK_SUCCESS)
+		if (vkCreateSampler(VulkanDevice::GetVulkanDevice(), &samplerInfo, nullptr, &s_TextureSampler) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to create texture sampler!");
 		}
@@ -217,11 +208,9 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
 		PX_CORE_WARN("...Destroying Vulkan texture sampler");
 
-		vkDestroySampler(vkDevice, s_TextureSampler, nullptr);
+		vkDestroySampler(VulkanDevice::GetVulkanDevice(), s_TextureSampler, nullptr);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,13 +219,11 @@ namespace PhysiXal {
 
 	void VulkanTexture::GenerateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels)
 	{
-		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
-
 		PX_CORE_INFO("Generating Mipmaps");
 
 		// Check if image format supports linear blitting
 		VkFormatProperties formatProperties;
-		vkGetPhysicalDeviceFormatProperties(vkPhysicalDevice, imageFormat, &formatProperties);
+		vkGetPhysicalDeviceFormatProperties(VulkanDevice::GetVulkanPhysicalDevice(), imageFormat, &formatProperties);
 
 		if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT)) 
 		{

@@ -24,6 +24,12 @@ namespace PhysiXal {
 		void DestroyContext();
 
 		static VkInstance GetVulkanInstance() { return s_VulkanInstance; }
+
+		// Surface
+		void CreateSurface();
+		void DestroySurface();
+
+		static VkSurfaceKHR GetVulkanSurface() { return s_Surface; }
 		
 		// Debug messenger
 		void SetupDebugMessenger();
@@ -36,6 +42,8 @@ namespace PhysiXal {
 		bool CheckValidationLayerSupport();
 	private:
 		inline static VkInstance s_VulkanInstance;
+
+		inline static VkSurfaceKHR s_Surface;
 
 		inline static VkDebugUtilsMessengerEXT s_DebugMessenger;
 		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, 

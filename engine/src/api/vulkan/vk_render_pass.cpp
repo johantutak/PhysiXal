@@ -17,25 +17,29 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
-        VkSampleCountFlagBits vkMsaaSamples = VulkanDevice::GetVulkanMsaa();
-
         PX_CORE_INFO("Creating Vulkan render pass");
 
+        // Attachments are used to insert images
+
+        // Sample count goes from 1 - 64
+
+        // VK_IMAGE_LAYOUT_PRESENT_SRC_KHR if only one render pass is in use
+        // VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL if multiple render passes are in use
+        // and the other one renders over this one
         VkAttachmentDescription colorAttachment{};
-        colorAttachment.format = vkSwapChainImageFormat;
-        colorAttachment.samples = vkMsaaSamples;
+        colorAttachment.format = VulkanSwapChain::GetVulkanImageFormat();
+        colorAttachment.samples = VulkanDevice::GetVulkanMsaa();
         colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
         colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; // VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
+        // For the depth attachment the FindDepthFormat class is used
         VkAttachmentDescription depthAttachment{};
         depthAttachment.format = FindDepthFormat();
-        depthAttachment.samples = vkMsaaSamples;
+        depthAttachment.samples = VulkanDevice::GetVulkanMsaa();
         depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -44,7 +48,7 @@ namespace PhysiXal {
         depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
         VkAttachmentDescription colorAttachmentResolve{};
-        colorAttachmentResolve.format = vkSwapChainImageFormat;
+        colorAttachmentResolve.format = VulkanSwapChain::GetVulkanImageFormat();
         colorAttachmentResolve.samples = VK_SAMPLE_COUNT_1_BIT;
         colorAttachmentResolve.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachmentResolve.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -53,6 +57,8 @@ namespace PhysiXal {
         colorAttachmentResolve.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
+        // Enumerate the attachments for a subpass 
+        // At least one subpass is needed
         VkAttachmentReference colorAttachmentRef{};
         colorAttachmentRef.attachment = 0;
         colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -90,7 +96,7 @@ namespace PhysiXal {
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
 
-        if (vkCreateRenderPass(vkDevice, &renderPassInfo, nullptr, &s_RenderPass) != VK_SUCCESS) 
+        if (vkCreateRenderPass(VulkanDevice::GetVulkanDevice(), &renderPassInfo, nullptr, &s_RenderPass) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create render pass!");
         }
@@ -100,11 +106,9 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_WARN("...Destroying Vulkan render pass");
 
-        vkDestroyRenderPass(vkDevice, s_RenderPass, nullptr);
+        vkDestroyRenderPass(VulkanDevice::GetVulkanDevice(), s_RenderPass, nullptr);
     }
 }
 

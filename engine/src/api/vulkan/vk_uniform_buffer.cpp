@@ -23,8 +23,6 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_INFO("Creating Vulkan descriptor set layout");
 
         VkDescriptorSetLayoutBinding uboLayoutBinding{};
@@ -47,7 +45,7 @@ namespace PhysiXal {
         layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
         layoutInfo.pBindings = bindings.data();
 
-        if (vkCreateDescriptorSetLayout(vkDevice, &layoutInfo, nullptr, &s_DescriptorSetLayout) != VK_SUCCESS) 
+        if (vkCreateDescriptorSetLayout(VulkanDevice::GetVulkanDevice(), &layoutInfo, nullptr, &s_DescriptorSetLayout) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create descriptor set layout!");
         }
@@ -57,11 +55,9 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_WARN("...Destroying Vulkan descriptor set layout");
         
-        vkDestroyDescriptorSetLayout(vkDevice, s_DescriptorSetLayout, nullptr);
+        vkDestroyDescriptorSetLayout(VulkanDevice::GetVulkanDevice(), s_DescriptorSetLayout, nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,8 +67,6 @@ namespace PhysiXal {
     void VulkanUniformBuffer::CreateDescriptorPool()
     {
         PX_PROFILE_FUNCTION();
-
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Creating Vulkan descriptor pool");
 
@@ -88,7 +82,7 @@ namespace PhysiXal {
         poolInfo.pPoolSizes = poolSizes.data();
         poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
-        if (vkCreateDescriptorPool(vkDevice, &poolInfo, nullptr, &s_DescriptorPool) != VK_SUCCESS) 
+        if (vkCreateDescriptorPool(VulkanDevice::GetVulkanDevice(), &poolInfo, nullptr, &s_DescriptorPool) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create descriptor pool!");
         }
@@ -98,20 +92,14 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_WARN("...Destroying Vulkan descriptor pool");
 
-        vkDestroyDescriptorPool(vkDevice, s_DescriptorPool, nullptr);
+        vkDestroyDescriptorPool(VulkanDevice::GetVulkanDevice(), s_DescriptorPool, nullptr);
     }
 
     void VulkanUniformBuffer::CreateDescriptorSets()
     {
         PX_PROFILE_FUNCTION();
-
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-        VkImageView vkTextureImageView = VulkanTexture::GetVulkanTextureImageView();
-        VkSampler vkTextureSampler = VulkanTexture::GetVulkanTextureSampler();
 
         PX_CORE_INFO("Creating Vulkan descriptor sets");
         
@@ -123,7 +111,7 @@ namespace PhysiXal {
         allocInfo.pSetLayouts = layouts.data();
 
         s_DescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-        if (vkAllocateDescriptorSets(vkDevice, &allocInfo, s_DescriptorSets.data()) != VK_SUCCESS) 
+        if (vkAllocateDescriptorSets(VulkanDevice::GetVulkanDevice(), &allocInfo, s_DescriptorSets.data()) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to allocate descriptor sets!");
         }
@@ -136,8 +124,8 @@ namespace PhysiXal {
 
             VkDescriptorImageInfo imageInfo{};
             imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = vkTextureImageView;
-            imageInfo.sampler = vkTextureSampler;
+            imageInfo.imageView = VulkanTexture::GetVulkanTextureImageView();
+            imageInfo.sampler = VulkanTexture::GetVulkanTextureSampler();
 
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
@@ -157,7 +145,7 @@ namespace PhysiXal {
             descriptorWrites[1].descriptorCount = 1;
             descriptorWrites[1].pImageInfo = &imageInfo;
 
-            vkUpdateDescriptorSets(vkDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+            vkUpdateDescriptorSets(VulkanDevice::GetVulkanDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         }
     }
 
@@ -168,8 +156,6 @@ namespace PhysiXal {
     void VulkanUniformBuffer::CreateUniformBuffers()
     {
         PX_PROFILE_FUNCTION();
-
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
 
         PX_CORE_INFO("Creating Vulkan unifrom buffers");
 
@@ -182,7 +168,7 @@ namespace PhysiXal {
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             m_Buffer->CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, s_UniformBuffers[i], s_UniformBuffersMemory[i]);
 
-            vkMapMemory(vkDevice, s_UniformBuffersMemory[i], 0, bufferSize, 0, &s_UniformBuffersMapped[i]);
+            vkMapMemory(VulkanDevice::GetVulkanDevice(), s_UniformBuffersMemory[i], 0, bufferSize, 0, &s_UniformBuffersMapped[i]);
         }
     }
 
@@ -190,20 +176,16 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_WARN("...Destroying Vulkan unifrom buffers");
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroyBuffer(vkDevice, s_UniformBuffers[i], nullptr);
-            vkFreeMemory(vkDevice, s_UniformBuffersMemory[i], nullptr);
+            vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), s_UniformBuffers[i], nullptr);
+            vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_UniformBuffersMemory[i], nullptr);
         }
     }
 
     void VulkanUniformBuffer::UpdateUniformBuffer(uint32_t currentImage)
     {
-        VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
-
         static auto startTime = std::chrono::high_resolution_clock::now();
 
         auto currentTime = std::chrono::high_resolution_clock::now();
@@ -212,7 +194,7 @@ namespace PhysiXal {
         UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.proj = glm::perspective(glm::radians(45.0f), vkSwapChainExtent2D.width / (float)vkSwapChainExtent2D.height, 0.1f, 10.0f);
+        ubo.proj = glm::perspective(glm::radians(45.0f), VulkanSwapChain::GetVulkanSwapChainExtent().width / (float)VulkanSwapChain::GetVulkanSwapChainExtent().height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 
         memcpy(s_UniformBuffersMapped[currentImage], &ubo, sizeof(ubo));

@@ -4,8 +4,6 @@
 #include "api/vulkan/vk_utilities.h"
 #include "api/vulkan/vk_initializers.h"
 
-#include "core/application.h"
-
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -26,20 +24,20 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        auto vkInstance = VulkanContext::GetVulkanInstance();
-
         PX_CORE_INFO("Finding suitable device (physical)");
 
+        // Get the number of devices
         uint32_t deviceCount = 0;
-        vkEnumeratePhysicalDevices(vkInstance, &deviceCount, nullptr);
+        vkEnumeratePhysicalDevices(VulkanContext::GetVulkanInstance(), &deviceCount, nullptr);
 
         if (deviceCount == 0)
         {
             PX_CORE_ERROR("Failed to find GPUs with Vulkan support!");
         }
 
+        // Get the actual device
         std::vector<VkPhysicalDevice> devices(deviceCount);
-        vkEnumeratePhysicalDevices(vkInstance, &deviceCount, devices.data());
+        vkEnumeratePhysicalDevices(VulkanContext::GetVulkanInstance(), &deviceCount, devices.data());
 
         // Use an ordered map to automatically sort candidates by increasing score
         std::multimap<int, VkPhysicalDevice> candidates;
@@ -48,6 +46,7 @@ namespace PhysiXal {
         {
             for (const auto& device : devices)
             {
+                // Pick device
                 int score = RateDeviceSuitability(device);
                 candidates.insert(std::make_pair(score, device));
             }
@@ -68,12 +67,17 @@ namespace PhysiXal {
             {
                 if (IsDeviceSuitable(device))
                 {
+                    // Pick device
                     s_PhysicalDevice = device;
                     s_MsaaSamples = GetMaxUsableSampleCount();
+
+                    if (device == !VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+                    {
+                        return PX_CORE_ASSERT("Could not find discrete GPU."); // #### TO DO #### Get this message to show when discreate GPU is not found
+                    }
+
                     break;
                 }
-
-                //PX_CORE_TRACE("Could not find discrete GPU."); // #### TO DO #### GEt this message to show when discreate GPU not found
 
                 if (s_PhysicalDevice == VK_NULL_HANDLE)
                 {
@@ -81,6 +85,8 @@ namespace PhysiXal {
                 }
             }
         }
+
+        
     }
 
     int VulkanDevice::RateDeviceSuitability(VkPhysicalDevice device)
@@ -149,6 +155,7 @@ namespace PhysiXal {
 
     QueueFamilyIndices VulkanDevice::FindQueueFamilies(VkPhysicalDevice device)
     {
+        // Add each family index to a list
         QueueFamilyIndices indices;
 
         uint32_t queueFamilyCount = 0;
@@ -166,7 +173,7 @@ namespace PhysiXal {
             }
 
             VkBool32 presentSupport = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, s_Surface, &presentSupport);
+            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, VulkanContext::GetVulkanSurface(), &presentSupport);
 
             if (presentSupport) 
             {
@@ -202,6 +209,7 @@ namespace PhysiXal {
         float queuePriority = 1.0f;
         for (uint32_t queueFamily : uniqueQueueFamilies) 
         {
+            // Put it all together.
             VkDeviceQueueCreateInfo queueCreateInfo{};
             queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
             queueCreateInfo.queueFamilyIndex = queueFamily;
@@ -224,6 +232,7 @@ namespace PhysiXal {
         createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
         createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
+        // If validation layers are enabled supply them here
         if (s_EnableValidation) 
         {
             createInfo.enabledLayerCount = static_cast<uint32_t>(ValidationLayers.size());
@@ -234,6 +243,7 @@ namespace PhysiXal {
             createInfo.enabledLayerCount = 0;
         }
 
+        // Create the device
         if (vkCreateDevice(s_PhysicalDevice, &createInfo, nullptr, &s_LogicalDevice) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create logical device!");
@@ -249,37 +259,8 @@ namespace PhysiXal {
 
         PX_CORE_WARN("...Unloading the device (logical)");
 
+        // Destruction of the logical device
         vkDestroyDevice(s_LogicalDevice, nullptr);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  Surface
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void VulkanDevice::CreateSurface()
-    {
-        PX_PROFILE_FUNCTION();
-
-        auto vkInstance = VulkanContext::GetVulkanInstance();
-        auto vkWindowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-
-        PX_CORE_INFO("Creating Vulkan surface");
-
-        if (glfwCreateWindowSurface(vkInstance, vkWindowHandle, nullptr, &s_Surface) != VK_SUCCESS)
-        {
-            PX_CORE_ERROR("Failed to create window surface!");
-        }
-    }
-
-    void VulkanDevice::DestroySurface()
-    {
-        PX_PROFILE_FUNCTION();
-
-        auto vkInstance = VulkanContext::GetVulkanInstance();
-
-        PX_CORE_WARN("...Destroying Vulkan surface");
-
-        vkDestroySurfaceKHR(vkInstance, s_Surface, nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -290,14 +271,11 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkFormat vkSwapChainImageFormat = VulkanSwapChain::GetVulkanImageFormat();
-        VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
-
         PX_CORE_INFO("Creating Vulkan color resources");
 
-        VkFormat colorFormat = vkSwapChainImageFormat;
+        VkFormat colorFormat = VulkanSwapChain::GetVulkanImageFormat();
 
-        CreateImage(vkSwapChainExtent2D.width, vkSwapChainExtent2D.height, 1, s_MsaaSamples, colorFormat, VK_IMAGE_TILING_OPTIMAL,
+        CreateImage(VulkanSwapChain::GetVulkanSwapChainExtent().width, VulkanSwapChain::GetVulkanSwapChainExtent().height, 1, s_MsaaSamples, colorFormat, VK_IMAGE_TILING_OPTIMAL,
             VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_ColorImage, s_ColorImageMemory);
         s_ColorImageView = CreateImageView(s_ColorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
     }

@@ -11,6 +11,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#include "scene/camera.h"
+
 namespace PhysiXal {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,30 +25,79 @@ namespace PhysiXal {
 
 		PX_CORE_INFO("Initializing the renderer");
 
+		// Create the context (instance)
 		m_Context->CreateContext();
+
+		// Create the debug messenger
 		m_Context->SetupDebugMessenger();
-		m_Device->CreateSurface();
+
+		// Create presentation surface
+		m_Context->CreateSurface();
+
+		// Enumerate physical devices, get their properties, find queue family/families supporting graphics and present
 		m_Device->PickPhysicalDevice();
+
+		// Create logical device and queues
 		m_Device->CreateLogicalDevice();
+
+		// Create swap chain
 		m_SwapChain->CreateSwapChain();
+
+		// Create image views
 		m_SwapChain->CreateImageViews();	
+
+		// Create render pass
 		m_RenderPass->CreateRenderPass();
+
+		// Create descriptor set layout
 		m_UniformBuffer->CreateDescriptorSetLayout();
+
+		// Create pipeline
 		m_Pipeline->CreateGraphicsPipeline();
+
+		// Create command pool
 		m_CommandBuffer->CreateCommandPool();
+
+		// Create color resources for multisampling (MSAA)
 		m_Device->CreateColorResources();
+
+		// Create depth resources for the depth buffer 
 		m_DepthBuffer->CreateDepthResources();
+
+		// Create Framebuffers
 		m_Framebuffer->CreateFramebuffers();
+
+		// Create texture image
 		m_Texture->CreateTextureImage();
+
+		// Create texture image views
 		m_Texture->CreateTextureImageView();
+
+		// Create texture sampler for LOD
 		m_Texture->CreateTextureSampler();
+
+		// Load model (.obj) to renderer
 		m_Model->LoadModel();
+
+		// Create vertex buffer
 		m_Buffer->CreateVertexBuffer();
+
+		// Create index buffer
 		m_Buffer->CreateIndexBuffer();
+
+		// Create uniform buffer
 		m_UniformBuffer->CreateUniformBuffers();
+
+		// Create descriptor pool
 		m_UniformBuffer->CreateDescriptorPool();
+
+		// Create descriptor sets
 		m_UniformBuffer->CreateDescriptorSets();
+
+		// Create command buffers
 		m_CommandBuffer->CreateCommandBuffers();
+
+		// Create synchronization objects as in semaphores for image acquisition and rendering completion and render fence
 		m_SyncObjects->CreateSyncObjects();
 	}
 	
@@ -56,23 +107,58 @@ namespace PhysiXal {
 
 		PX_CORE_WARN("...Shutting down the renderer");
 
+		// Destruction of the swap chain and collection of other functions connected to it
 		m_SwapChain->DestroySwapChain();
+
+		// Destruction of the pipeline
 		m_Pipeline->DestroyGraphicsPipeline();
+
+		// Destruction of the render pass 
 		m_RenderPass->DestroyRenderPass();
+
+		// Destruction of the uniform buffers
 		m_UniformBuffer->DestroyUnifromBuffers();
+
+		// Destruction of the descriptor pool
 		m_UniformBuffer->DestroyDescriptorPool();
+
+		// Destruction of the texture sampler for LOD
 		m_Texture->DestroyTextureSampler();
+
+		// Destruction the texture image view
 		m_Texture->DestroyTextureImageView();
+
+		// Destruction of the texture image
 		m_Texture->DestroyTextureImage();
+
+		// Destruction of the descriptor set layout
 		m_UniformBuffer->DestroyDescriptorSetLayout();
+
+		// Destruction of the index buffer
 		m_Buffer->DestroyIndexBuffer();
+
+		// Destruction of the vertex buffer
 		m_Buffer->DestroyVertexBuffer();
+
+		// Destruction of the synchronization objects which includes the semaphores and render fence
 		m_SyncObjects->DestroySyncObjects();
+
+		// Destruction of the command buffers
 		m_CommandBuffer->DestroyCommandBuffers();
+
+		// Destruction of the command pool
 		m_CommandBuffer->DestroyCommandPool();
+
+		// Destruction of the logical device
 		m_Device->DestroyDevice();
+
+		// Destruction of the debug messenger
 		m_Context->DestroyDebugMessenger();
-		m_Device->DestroySurface();
+
+		// Destruction of the surface
+		m_Context->DestroySurface();
+
+		// Destruction of the context (instance)
 		m_Context->DestroyContext();
 	}
 
@@ -81,24 +167,15 @@ namespace PhysiXal {
 		PX_PROFILE_SCOPE("Renderer Draw");
 
 		PX_CORE_INFO("Drawing frame!");
-	
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		std::vector<VkFence> vkInFlightFences = VulkanSyncObjects::GetVulkanFences();
-		VkSwapchainKHR vkSwapChain = VulkanSwapChain::GetVulkanSwapChain();
-		std::vector<VkSemaphore> vkImageSemaphores = VulkanSyncObjects::GetVulkanImageSemaphores();
-		std::vector<VkCommandBuffer> vkCommandBuffers = VulkanCommandBuffer::GetVulkanCommandBuffers();
-		std::vector<VkCommandBuffer> vkGuiCommandBuffers = GuiVulkan::GetGuiCommandBuffers();
-		std::vector<VkSemaphore> vkRenderSemaphores = VulkanSyncObjects::GetVulkanRenderSemaphores();
-		VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
-		VkQueue vkPresentQueue = VulkanDevice::GetVulkanPresentQueue();
 
-		vkWaitForFences(vkDevice, 1, &vkInFlightFences[s_CurrentFrame], VK_TRUE, UINT64_MAX);
+		vkWaitForFences(VulkanDevice::GetVulkanDevice(), 1, &VulkanSyncObjects::GetVulkanFences()[s_CurrentFrame], VK_TRUE, UINT64_MAX);
 
 		uint32_t imageIndex;
 
-		VkResult result = vkAcquireNextImageKHR(vkDevice, vkSwapChain, UINT64_MAX, vkImageSemaphores[s_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
+		VkResult result = vkAcquireNextImageKHR(VulkanDevice::GetVulkanDevice(), VulkanSwapChain::GetVulkanSwapChain(), UINT64_MAX,
+			VulkanSyncObjects::GetVulkanImageSemaphores()[s_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
 
-		if (result == VK_ERROR_OUT_OF_DATE_KHR) 
+		if (result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			m_SwapChain->RecreateSwapChain();
 			return;
@@ -110,20 +187,20 @@ namespace PhysiXal {
 		
 		//vkResetCommandBuffer(vkCommandBuffers[s_CurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);
 		
-		m_CommandBuffer->RecordCommandBuffers(vkCommandBuffers[s_CurrentFrame], imageIndex);
-		m_Gui->GuiDraw(vkGuiCommandBuffers[s_CurrentFrame], imageIndex);
+		m_CommandBuffer->RecordCommandBuffers(VulkanCommandBuffer::GetVulkanCommandBuffers()[s_CurrentFrame], imageIndex);
+		m_Gui->GuiDraw(GuiVulkan::GetGuiCommandBuffers()[s_CurrentFrame], imageIndex);
 
 		m_UniformBuffer->UpdateUniformBuffer(s_CurrentFrame);
 
 		// Only reset the fence if we are submitting work
-		vkResetFences(vkDevice, 1, &vkInFlightFences[s_CurrentFrame]);
+		vkResetFences(VulkanDevice::GetVulkanDevice(), 1, &VulkanSyncObjects::GetVulkanFences()[s_CurrentFrame]);
 
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-		std::array<VkCommandBuffer, 2> submitCommandBuffers = { vkCommandBuffers[s_CurrentFrame], vkGuiCommandBuffers[s_CurrentFrame] };
+		std::array<VkCommandBuffer, 2> submitCommandBuffers = { VulkanCommandBuffer::GetVulkanCommandBuffers()[s_CurrentFrame], GuiVulkan::GetGuiCommandBuffers()[s_CurrentFrame] };
 
-		VkSemaphore waitSemaphores[] = { vkImageSemaphores[s_CurrentFrame] };
+		VkSemaphore waitSemaphores[] = { VulkanSyncObjects::GetVulkanImageSemaphores()[s_CurrentFrame] };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
@@ -131,11 +208,11 @@ namespace PhysiXal {
 		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
 		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
-		VkSemaphore signalSemaphores[] = { vkRenderSemaphores[s_CurrentFrame] };
+		VkSemaphore signalSemaphores[] = { VulkanSyncObjects::GetVulkanRenderSemaphores()[s_CurrentFrame] };
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
-		if (vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, vkInFlightFences[s_CurrentFrame]) != VK_SUCCESS)
+		if (vkQueueSubmit(VulkanDevice::GetVulkanGraphicsQueue(), 1, &submitInfo, VulkanSyncObjects::GetVulkanFences()[s_CurrentFrame]) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to submit draw command buffer!");
 		}
@@ -145,11 +222,11 @@ namespace PhysiXal {
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = signalSemaphores;
 
-		VkSwapchainKHR swapChains[] = { vkSwapChain };
+		VkSwapchainKHR swapChains[] = { VulkanSwapChain::GetVulkanSwapChain() };
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
 		presentInfo.pImageIndices = &imageIndex;
-		result = vkQueuePresentKHR(vkPresentQueue, &presentInfo);
+		result = vkQueuePresentKHR(VulkanDevice::GetVulkanPresentQueue(), &presentInfo);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || s_FramebufferResized)
 		{
@@ -168,8 +245,11 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
-		vkDeviceWaitIdle(vkDevice);
+		vkDeviceWaitIdle(VulkanDevice::GetVulkanDevice());
 	}
+
+	/*void VulkanRenderer::SetCamera(Camera* camera)
+	{
+		m_Camera = camera;
+	}*/
 }

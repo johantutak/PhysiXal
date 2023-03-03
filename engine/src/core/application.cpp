@@ -5,6 +5,7 @@
 #include "core/window.h"
 
 #include "renderer/renderer.h"
+//#include "api/vulkan/vk_renderer.h"
 
 #include "gui/gui.h"
 
@@ -19,6 +20,7 @@ namespace PhysiXal {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Application* Application::s_Instance = nullptr;
+	//VulkanRenderer* m_Renderer = nullptr;
 
 	Application::Application(const ApplicationSpecification& specification)
 	{
@@ -28,13 +30,21 @@ namespace PhysiXal {
 		PX_ASSERT(!s_Instance, "Application already exists");
 		s_Instance = this;
 
-		// Initialize the window
+		// Set window specification
 		WindowSpecification windowSpec;
 		windowSpec.Title = specification.Name;
 		windowSpec.Width = specification.WindowWidth;
 		windowSpec.Height = specification.WindowHeight;
 		m_Window = std::unique_ptr<Window>(Window::Create(windowSpec));
+
+		// Initialize the window
 		m_Window->Init();
+
+		// Initialize the camera
+		m_Camera = new Camera(120.0f, static_cast<float>(windowSpec.Width = specification.WindowWidth),static_cast<float>(windowSpec.Height = specification.WindowHeight),0.1f, 1000.0f);
+		//m_Renderer->SetCamera(m_Camera);
+
+		// Set window events
 		m_Window->SetEventCallback(PX_BIND_EVENT_FN(Application::OnEvent));
 
 		// Initialize the renderer
@@ -60,15 +70,6 @@ namespace PhysiXal {
 
 		// Shutdown the renderer
 		Renderer::Shutdown();
-
-
-		// Destroy the window
-		//Window::~Window(); It's only for symbolic purposes since the window is destroyed within it's own class.
-
-		// Shutdown the application
-		// #### TO DO #### Make it shutdown in he correct order.
-		PX_WARN("...Shutting down Application (client).");
-		PX_CORE_WARN("...Shutting down Log (core).");
 	}
 
 	void Application::OnEvent(Event& e)
@@ -76,6 +77,8 @@ namespace PhysiXal {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(PX_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(PX_BIND_EVENT_FN(Application::OnWindowResize));
+
+		m_Camera->OnEvent(e);
 
 		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 		{
@@ -127,6 +130,7 @@ namespace PhysiXal {
 			}
 
 			m_Window->OnUpdate();
+			m_Camera->OnUpdate();
 
 			Renderer::WaitAndIdle();
 		}

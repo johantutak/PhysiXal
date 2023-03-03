@@ -27,26 +27,29 @@ namespace PhysiXal {
 	void GuiLayer::GuiInit()
 	{
 		PX_PROFILE_FUNCTION();
-
-		Application& app = Application::Get();
-		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
-		auto vkInstance = VulkanContext::GetVulkanInstance();
-		VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		VkCommandPool vkCommandPool = VulkanCommandBuffer::GetVulkanCommandPool();
-		std::vector<VkCommandBuffer> vkCommandBuffer = VulkanCommandBuffer::GetVulkanCommandBuffers();
-		VkQueue vkPresentQueue = VulkanDevice::GetVulkanPresentQueue();
-		std::vector<VkImageView> vkSwapChainImages = VulkanSwapChain::GetVulkanImageViews();
 		
 		PX_CORE_INFO("Initializing the GUI (Dear ImGUI)");
 
-		QueueFamilyIndices Indices = VulkanDevice::FindQueueFamilies(vkPhysicalDevice);
+		Application& app = Application::Get();
+		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+
+		QueueFamilyIndices Indices = VulkanDevice::FindQueueFamilies(VulkanDevice::GetVulkanPhysicalDevice());
 		
 		// #### Initialize Vulkan (Dear ImGUI) ####
+
+		// Create Dear ImGUIs descriptor pool
 		m_GuiVulkan->CreateGuiDescriptorPool();
+
+		// Create Dear ImGUI render pass
 		m_GuiVulkan->CreateGuiRenderPass();
+
+		// Create Dear ImGUI command pool
 		m_GuiVulkan->CreateGuiCommandPool();
+
+		// Create Dear ImGUI command buffers
 		m_GuiVulkan->CreateGuiCommandBuffers();
+
+		// Create Dear ImGUI framebuffers
 		m_GuiVulkan->CreateGuiFramebuffers();
 
 		// #### Initialize ImGUI library ####
@@ -82,16 +85,16 @@ namespace PhysiXal {
 
 		// This initializes imgui for Vulkan
 		ImGui_ImplVulkan_InitInfo init_info = {};
-		init_info.Instance = vkInstance;
-		init_info.PhysicalDevice = vkPhysicalDevice;
-		init_info.Device = vkDevice;
+		init_info.Instance = VulkanContext::GetVulkanInstance();
+		init_info.PhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
+		init_info.Device = VulkanDevice::GetVulkanDevice();
 		init_info.QueueFamily = Indices.m_GraphicsFamily.value();
-		init_info.Queue = vkPresentQueue;
+		init_info.Queue = VulkanDevice::GetVulkanPresentQueue();
 		init_info.PipelineCache = VK_NULL_HANDLE;
 		init_info.DescriptorPool = m_GuiVulkan->GetGuiDescriptorPool();
 		init_info.Allocator = nullptr;
 		init_info.MinImageCount = MAX_FRAMES_IN_FLIGHT;
-		init_info.ImageCount = static_cast<uint32_t>(vkSwapChainImages.size());
+		init_info.ImageCount = static_cast<uint32_t>(VulkanSwapChain::GetVulkanImageViews().size());
 		init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 		init_info.CheckVkResultFn = NULL;
 		
@@ -104,7 +107,7 @@ namespace PhysiXal {
 		ImGui_ImplVulkan_CreateFontsTexture(commandBuffer);
 		GuiEndSingleTimeCommands(commandBuffer);
 
-		vkDeviceWaitIdle(vkDevice);
+		vkDeviceWaitIdle(VulkanDevice::GetVulkanDevice());
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
 	}
 
@@ -118,10 +121,19 @@ namespace PhysiXal {
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 
+		// Destruction of Dear ImGUI framebuffers
 		m_GuiVulkan->DestroyGuiFramebuffers();
+
+		// Destruction of Dear ImGUI command buffers
 		m_GuiVulkan->DestroyGuiCommandBuffers();
+
+		// Destruction of Dear ImGUI command pool
 		m_GuiVulkan->DestroyGuiCommandPool();
+
+		// Destruction of Dear ImGUI render pass
 		m_GuiVulkan->DestroyGuiRenderPass();
+
+		// Destruction of Dear ImGUI descriptor pool
 		m_GuiVulkan->DestroyGuiDescriptorPool();
 	}
 
@@ -141,6 +153,7 @@ namespace PhysiXal {
 		ImGui::Render();
 
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
+
 		// Update and Render additional Platform Windows
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
@@ -186,9 +199,6 @@ namespace PhysiXal {
 	void GuiLayer::GuiOnRender()
 	{
 		PX_PROFILE_FUNCTION();
-
-		//static bool showDemoWindow = ture;
-		//ImGui::ShowDemoWindow(&showDemoWindow);
 		
 		m_Widgets->PerformanceStats();
 	}
@@ -196,8 +206,14 @@ namespace PhysiXal {
 	void GuiLayer::GuiOnRebuild()
 	{
 		ImGui_ImplVulkan_SetMinImageCount(MAX_FRAMES_IN_FLIGHT);
+
+		// On framebuffer rebuild we recreate Dear ImGUI render pass
 		m_GuiVulkan->CreateGuiRenderPass();
+
+		// On framebuffer rebuild we recreate Dear ImGUI framebuffers
 		m_GuiVulkan->CreateGuiFramebuffers();
+
+		// On framebuffer rebuild we recreate Dear ImGUIscommand buffers
 		m_GuiVulkan->CreateGuiCommandBuffers();
 	}
 }

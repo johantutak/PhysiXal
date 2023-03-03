@@ -15,17 +15,14 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		VkCommandPool vkGuiCommandPool = GuiVulkan::GetGuiCommandPool();
-
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandPool = vkGuiCommandPool;
+		allocInfo.commandPool = GuiVulkan::GetGuiCommandPool();
 		allocInfo.commandBufferCount = 1;
 
 		VkCommandBuffer commandBuffer;
-		vkAllocateCommandBuffers(vkDevice, &allocInfo, &commandBuffer);
+		vkAllocateCommandBuffers(VulkanDevice::GetVulkanDevice(), &allocInfo, &commandBuffer);
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -40,10 +37,6 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-		VkQueue vkGraphicsQueue = VulkanDevice::GetVulkanGraphicsQueue();
-		VkCommandPool vkGuiCommandPool = GuiVulkan::GetGuiCommandPool();
-
 		vkEndCommandBuffer(commandBuffer);
 
 		VkSubmitInfo submitInfo{};
@@ -51,9 +44,9 @@ namespace PhysiXal {
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &commandBuffer;
 
-		vkQueueSubmit(vkGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-		vkQueueWaitIdle(vkGraphicsQueue);
+		vkQueueSubmit(VulkanDevice::GetVulkanGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
+		vkQueueWaitIdle(VulkanDevice::GetVulkanGraphicsQueue());
 
-		vkFreeCommandBuffers(vkDevice, vkGuiCommandPool, 1, &commandBuffer);
+		vkFreeCommandBuffers(VulkanDevice::GetVulkanDevice(), GuiVulkan::GetGuiCommandPool(), 1, &commandBuffer);
 	}
 }

@@ -2,6 +2,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include "scene/camera.h"
+
 namespace PhysiXal {
 
 	// #### TEMPORARY ####
@@ -21,7 +23,11 @@ namespace PhysiXal {
 
 		void WaitAndIdle();
 
+		//void SetCamera(Camera* camera);
+
 		static uint32_t GetVulkanCurrentFrame() { return s_CurrentFrame; }
+	private:
+		Camera* m_Camera = nullptr;
 	private:
 		inline static uint32_t s_CurrentFrame = 0;
 

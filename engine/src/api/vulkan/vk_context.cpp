@@ -4,6 +4,8 @@
 #include "api/vulkan/vk_utilities.h"
 #include "api/vulkan/vk_initializers.h"
 
+#include "core/application.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -21,7 +23,12 @@ namespace PhysiXal {
 
 		PX_CORE_ASSERT(glfwVulkanSupported(), "GLFW must support Vulkan!");
 
-		// Application info
+		// Vulkan loves structs.  I mean, really loves structs.
+		// Most of Vulkan code is simply filling out structs
+		// and submitting that to an API call with the necessary
+		// object handles attached
+		// 
+		// #### Application info ####
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		appInfo.pApplicationName = "PhysiXal";
@@ -30,11 +37,14 @@ namespace PhysiXal {
 		appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 		appInfo.apiVersion = VK_API_VERSION_1_0;
 
-		// Extensions and validation
+		// Enables Vulkan validation layers. ( Debug information )
+		// 
+		// #### Extensions and validation ####
 		VkInstanceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		createInfo.pApplicationInfo = &appInfo;
 
+		// Give all the extensions/layers to the create info.
 		auto extensions = GetRequiredExtensions();
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
@@ -55,7 +65,9 @@ namespace PhysiXal {
 			createInfo.pNext = nullptr;
 		}
 
-		// Instance creation
+		// Make the API call
+		// 
+		// #### Instance creation ####
 		if (vkCreateInstance(&createInfo, nullptr, &s_VulkanInstance) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to create instance!");
@@ -69,6 +81,38 @@ namespace PhysiXal {
 		PX_CORE_WARN("...Destroying Vulkan context");
 
 		vkDestroyInstance(s_VulkanInstance, nullptr);
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//  Surface
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void VulkanContext::CreateSurface()
+	{
+		PX_PROFILE_FUNCTION();
+
+		// We create a multi-platform specific presentation surface.
+		// 
+		// This is the window's application handle.
+		auto vkWindowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+		PX_CORE_INFO("Creating Vulkan surface");
+
+		// Vulkan's freshly created instance gets feed into the API call.
+		// Vulkan follows this idiom to a fault.
+		if (glfwCreateWindowSurface(VulkanContext::GetVulkanInstance(), vkWindowHandle, nullptr, &s_Surface) != VK_SUCCESS)
+		{
+			PX_CORE_ERROR("Failed to create window surface!");
+		}
+	}
+
+	void VulkanContext::DestroySurface()
+	{
+		PX_PROFILE_FUNCTION();
+
+		PX_CORE_WARN("...Destroying Vulkan surface");
+
+		vkDestroySurfaceKHR(VulkanContext::GetVulkanInstance(), s_Surface, nullptr);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

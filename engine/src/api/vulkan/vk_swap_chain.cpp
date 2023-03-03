@@ -22,14 +22,14 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
-        VkSurfaceKHR vkSurface = VulkanDevice::GetVulkanSurface();
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_INFO("Creating Vulkan swap chain");
 
-        SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(vkPhysicalDevice);
+        SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(VulkanDevice::GetVulkanPhysicalDevice());
 
+        // The GPU needs three things
+        // 1.) Surface format as described earlier
+        // 2.) Present mode. Again refer to documentation I shared
+        // 3.) Surface extent is basically just the size ( width, height ) of the image
         VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
         VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
@@ -40,10 +40,12 @@ namespace PhysiXal {
             imageCount = swapChainSupport.capabilities.maxImageCount;
         }
 
+        // There are only 8 potential bits that can be used here and I'm using two
+        // Essentially this is what they mean
+        // VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT - This is a color image I'm rendering into
         VkSwapchainCreateInfoKHR createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-        createInfo.surface = vkSurface;
-
+        createInfo.surface = VulkanContext::GetVulkanSurface();
         createInfo.minImageCount = imageCount;
         createInfo.imageFormat = surfaceFormat.format;
         createInfo.imageColorSpace = surfaceFormat.colorSpace;
@@ -51,35 +53,45 @@ namespace PhysiXal {
         createInfo.imageArrayLayers = 1;
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-        QueueFamilyIndices indices = VulkanDevice::FindQueueFamilies(vkPhysicalDevice);
+        // If the graphics queue family and present family don't match
+	    // a swap chain with different information is created
+        QueueFamilyIndices indices = VulkanDevice::FindQueueFamilies(VulkanDevice::GetVulkanPhysicalDevice());
         uint32_t queueFamilyIndices[] = { indices.m_GraphicsFamily.value(), indices.m_PresentFamily.value() };
 
-        if (indices.m_GraphicsFamily != indices.m_PresentFamily) {
+        if (indices.m_GraphicsFamily != indices.m_PresentFamily) 
+        {
+            // There are only two sharing modes 
+            // This is set beacuse images are not exclusive to one queue
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             createInfo.queueFamilyIndexCount = 2;
             createInfo.pQueueFamilyIndices = queueFamilyIndices;
         }
         else
         {
+            // Exclusive access to the images if the indices are the same
             createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
         }
 
         createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
         createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
         createInfo.presentMode = presentMode;
+
+        // Is Vulkan allowed to discard operations outside of the renderable space?
         createInfo.clipped = VK_TRUE;
 
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        if (vkCreateSwapchainKHR(vkDevice, &createInfo, nullptr, &s_SwapChain) != VK_SUCCESS)
+        // Create the swapchain
+        if (vkCreateSwapchainKHR(VulkanDevice::GetVulkanDevice(), &createInfo, nullptr, &s_SwapChain) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to create swap chain!");
         }
 
-        vkGetSwapchainImagesKHR(vkDevice, s_SwapChain, &imageCount, nullptr);
+        vkGetSwapchainImagesKHR(VulkanDevice::GetVulkanDevice(), s_SwapChain, &imageCount, nullptr);
         s_SwapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(vkDevice, s_SwapChain, &imageCount, s_SwapChainImages.data());
+        vkGetSwapchainImagesKHR(VulkanDevice::GetVulkanDevice(), s_SwapChain, &imageCount, s_SwapChainImages.data());
 
+        // Save swapchain details
         s_SwapChainImageFormat = surfaceFormat.format;
         s_SwapChainExtent = extent;
     }
@@ -88,48 +100,54 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_WARN("...Destroying Vulkan swap chain");
 
-        vkDestroySwapchainKHR(vkDevice, s_SwapChain, nullptr);
+        // Destruction of the swap chain
+        vkDestroySwapchainKHR(VulkanDevice::GetVulkanDevice(), s_SwapChain, nullptr);
     }
 
     void VulkanSwapChain::DestroySwapChain()
     {
         PX_PROFILE_FUNCTION();
 
+        // Destruction of depth buffer
         m_DepthBuffer->DestroyDepthResources();
+
+        // Destruction of multisampling (MSAA)
         m_Device->DestroyColorResources();
+
+        // Destruction of framebuffers
         m_Framebuffer->DestroyFramebuffers();
+
+        // Destruction of image views
         DestroyImageViews();
+
+        // Destruction of swap chain
         DestroyCurrentSwapChain();
     }
 
     SwapChainSupportDetails VulkanSwapChain::QuerySwapChainSupport(VkPhysicalDevice device)
     {
-        VkSurfaceKHR vkSurface = VulkanDevice::GetVulkanSurface();
-
         SwapChainSupportDetails details;
 
-        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, vkSurface, &details.capabilities);
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, VulkanContext::GetVulkanSurface(), &details.capabilities);
 
         uint32_t formatCount;
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, vkSurface, &formatCount, nullptr);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, VulkanContext::GetVulkanSurface(), &formatCount, nullptr);
 
         if (formatCount != 0)
         {
             details.formats.resize(formatCount);
-            vkGetPhysicalDeviceSurfaceFormatsKHR(device, vkSurface, &formatCount, details.formats.data());
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device, VulkanContext::GetVulkanSurface(), &formatCount, details.formats.data());
         }
 
         uint32_t presentModeCount;
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, vkSurface, &presentModeCount, nullptr);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, VulkanContext::GetVulkanSurface(), &presentModeCount, nullptr);
 
         if (presentModeCount != 0)
         {
             details.presentModes.resize(presentModeCount);
-            vkGetPhysicalDeviceSurfacePresentModesKHR(device, vkSurface, &presentModeCount, details.presentModes.data());
+            vkGetPhysicalDeviceSurfacePresentModesKHR(device, VulkanContext::GetVulkanSurface(), &presentModeCount, details.presentModes.data());
         }
 
         return details;
@@ -139,6 +157,7 @@ namespace PhysiXal {
     {
         for (const auto& availableFormat : availableFormats)
         {
+            // Favor 32 bit srgb format and srgb nonlinear colorspace
             if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
             {
                 return availableFormat;
@@ -150,30 +169,20 @@ namespace PhysiXal {
 
     VkPresentModeKHR VulkanSwapChain::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
     {
-        // #### TEMPORARY #### Quick fix to get VSync to work on Linux with Intel integarted GPU
-
-        // Use VK_PRESENT_MODE_MAILBOX_KHR is faster and more energy consuming than traditional vSync
-        // Or use VK_PRESENT_MODE_FIFO_KHR for traditional vSync
+        // Only looking for FIFO mode with later fix for MAILBOX on Nvidia GPU´s needed
         for (const auto& availablePresentMode : availablePresentModes)
         {
             if (availablePresentMode == VK_PRESENT_MODE_FIFO_KHR)
             {
                 return availablePresentMode;
             }
-#if 0
-            if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
-            {
-                return availablePresentMode;
-            }
-        } // if this code is used, the removal of for loops current } needs to be done
-        return VK_PRESENT_MODE_FIFO_KHR;
-#endif
         }
     }
 
     VkExtent2D VulkanSwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
     {
         auto vkWindowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
         if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         {
             return capabilities.currentExtent;
@@ -203,10 +212,11 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_INFO("Setting up and creating Vulkan image views");
-
+        
+        // There are only 4 aspect bits
+        // Most use 3 of them
+        // They determine what is affected by the image operations
         s_SwapChainImageViews.resize(s_SwapChainImages.size());
 
         for (uint32_t i = 0; i < s_SwapChainImages.size(); i++)
@@ -219,13 +229,12 @@ namespace PhysiXal {
     {
         PX_PROFILE_FUNCTION();
 
-        VkDevice vkDevice = VulkanDevice::GetVulkanDevice();
-
         PX_CORE_WARN("...Destroying Vulkan image views");
 
+        // Destruction of image views
         for (auto imageView : s_SwapChainImageViews)
         {
-            vkDestroyImageView(vkDevice, imageView, nullptr);
+            vkDestroyImageView(VulkanDevice::GetVulkanDevice(), imageView, nullptr);
         }
     }
 
@@ -247,18 +256,38 @@ namespace PhysiXal {
 
         m_VulkanRenderer->WaitAndIdle();
 
-        // Dear ImGUI
+        // #### Dear ImGUI ####
+
+        // Destruction of Dear ImGUIs framebuffer
         m_GuiVulkan->DestroyGuiFramebuffers();
+
+        // Destruction of Dear ImGUIs command buffers
         m_GuiVulkan->DestroyGuiCommandBuffers();
+
+        // Destruction of Dear ImGUIs command pool
         //m_GuiVulkan->DestroyGuiCommandPool();
+
+        // Destruction of Dear ImGUIs render pass
         m_GuiVulkan->DestroyGuiRenderPass();
 
+        // #### Vulkan core ####
+
+        // Destruction of swap chain all other dependencies that will be recreated
         DestroySwapChain();
 
-        m_SwapChain->CreateSwapChain();
-        m_SwapChain->CreateImageViews();
+        // After destruction we need to recreate everything and first the swap chain
+        CreateSwapChain();
+
+        // recreation of the image viwes
+        CreateImageViews();
+
+        // recreation of the Multisampling (MSAA)
         m_Device->CreateColorResources();
+
+        // recreation of the depth buffer
         m_DepthBuffer->CreateDepthResources();
+
+        // When everything else is in order we put it together for our new framebuffer
         m_Framebuffer->CreateFramebuffers();
 
         // We also need to take care of the UI
