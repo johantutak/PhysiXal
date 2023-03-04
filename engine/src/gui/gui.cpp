@@ -1,7 +1,10 @@
 #include "px_pch.h"
 #include "gui/gui.h"
 
+#include "api/imgui/imgui_initializers.h"
 #include "api/imgui/imgui_layer.h"
+
+#include "api/vulkan/vk_initializers.h"
 
 namespace PhysiXal {
 
@@ -39,10 +42,12 @@ namespace PhysiXal {
 		s_Gui->GuiEnd();
 	}
 
-	/*void Gui::Draw(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+	void Gui::Draw()
 	{
-		s_Gui->GuiDraw(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-	}*/
+		PX_PROFILE_FUNCTION();
+
+		s_Gui->GuiDraw(GuiVulkan::GetGuiCommandBuffers()[VulkanRenderer::GetVulkanCurrentFrame()], VulkanRenderer::GetVulkanImageIndex());
+	}
 
 	void Gui::OnRender()
 	{
@@ -53,6 +58,8 @@ namespace PhysiXal {
 
 	void Gui::OnRebuild()
 	{
+		PX_PROFILE_FUNCTION();
+
 		s_Gui->GuiOnRebuild();
 	}
 }

@@ -72,15 +72,15 @@ namespace PhysiXal {
 
         std::array<VkDescriptorPoolSize, 2> poolSizes{};
         poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        poolSizes[0].descriptorCount = static_cast<uint32_t>(c_MaxImageCount);
         poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        poolSizes[1].descriptorCount = static_cast<uint32_t>(c_MaxImageCount);
 
         VkDescriptorPoolCreateInfo poolInfo{};
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
         poolInfo.pPoolSizes = poolSizes.data();
-        poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        poolInfo.maxSets = static_cast<uint32_t>(c_MaxImageCount);
 
         if (vkCreateDescriptorPool(VulkanDevice::GetVulkanDevice(), &poolInfo, nullptr, &s_DescriptorPool) != VK_SUCCESS)
         {
@@ -103,20 +103,20 @@ namespace PhysiXal {
 
         PX_CORE_INFO("Creating Vulkan descriptor sets");
         
-        std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, s_DescriptorSetLayout);
+        std::vector<VkDescriptorSetLayout> layouts(c_MaxImageCount, s_DescriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         allocInfo.descriptorPool = s_DescriptorPool;
-        allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        allocInfo.descriptorSetCount = static_cast<uint32_t>(c_MaxImageCount);
         allocInfo.pSetLayouts = layouts.data();
 
-        s_DescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+        s_DescriptorSets.resize(c_MaxImageCount);
         if (vkAllocateDescriptorSets(VulkanDevice::GetVulkanDevice(), &allocInfo, s_DescriptorSets.data()) != VK_SUCCESS)
         {
             PX_CORE_ERROR("Failed to allocate descriptor sets!");
         }
 
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        for (size_t i = 0; i < c_MaxImageCount; i++) {
             VkDescriptorBufferInfo bufferInfo{};
             bufferInfo.buffer = s_UniformBuffers[i];
             bufferInfo.offset = 0;
@@ -161,11 +161,11 @@ namespace PhysiXal {
 
         VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
-        s_UniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-        s_UniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
-        s_UniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+        s_UniformBuffers.resize(c_MaxImageCount);
+        s_UniformBuffersMemory.resize(c_MaxImageCount);
+        s_UniformBuffersMapped.resize(c_MaxImageCount);
 
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        for (size_t i = 0; i < c_MaxImageCount; i++) {
             m_Buffer->CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, s_UniformBuffers[i], s_UniformBuffersMemory[i]);
 
             vkMapMemory(VulkanDevice::GetVulkanDevice(), s_UniformBuffersMemory[i], 0, bufferSize, 0, &s_UniformBuffersMapped[i]);
@@ -178,7 +178,8 @@ namespace PhysiXal {
 
         PX_CORE_WARN("...Destroying Vulkan unifrom buffers");
 
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        for (size_t i = 0; i < c_MaxImageCount; i++)
+        {
             vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), s_UniformBuffers[i], nullptr);
             vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_UniformBuffersMemory[i], nullptr);
         }

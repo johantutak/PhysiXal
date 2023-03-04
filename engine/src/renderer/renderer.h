@@ -11,7 +11,8 @@ namespace PhysiXal {
 		static void Init();
 		static void Shutdown();
 
-		static void DrawFrame();
+		static void BeginFrame();
+		static void EndFrame();
 
 		static void WaitAndIdle();
 	private:

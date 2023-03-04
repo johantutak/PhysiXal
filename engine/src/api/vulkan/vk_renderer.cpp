@@ -162,18 +162,16 @@ namespace PhysiXal {
 		m_Context->DestroyContext();
 	}
 
-	void VulkanRenderer::DrawFrame()
+	void VulkanRenderer::BeginFrame()
 	{
-		PX_PROFILE_SCOPE("Renderer Draw");
+		PX_PROFILE_SCOPE("Renderer Begin Frame");
 
 		PX_CORE_INFO("Drawing frame!");
 
 		vkWaitForFences(VulkanDevice::GetVulkanDevice(), 1, &VulkanSyncObjects::GetVulkanFences()[s_CurrentFrame], VK_TRUE, UINT64_MAX);
 
-		uint32_t imageIndex;
-
 		VkResult result = vkAcquireNextImageKHR(VulkanDevice::GetVulkanDevice(), VulkanSwapChain::GetVulkanSwapChain(), UINT64_MAX,
-			VulkanSyncObjects::GetVulkanImageSemaphores()[s_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
+			VulkanSyncObjects::GetVulkanImageSemaphores()[s_CurrentFrame], VK_NULL_HANDLE, &s_ImageIndex);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
@@ -187,8 +185,12 @@ namespace PhysiXal {
 		
 		//vkResetCommandBuffer(vkCommandBuffers[s_CurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);
 		
-		m_CommandBuffer->RecordCommandBuffers(VulkanCommandBuffer::GetVulkanCommandBuffers()[s_CurrentFrame], imageIndex);
-		m_Gui->GuiDraw(GuiVulkan::GetGuiCommandBuffers()[s_CurrentFrame], imageIndex);
+		m_CommandBuffer->RecordCommandBuffers(VulkanCommandBuffer::GetVulkanCommandBuffers()[s_CurrentFrame], s_ImageIndex);
+	}
+
+	void VulkanRenderer::EndFrame()
+	{
+		PX_PROFILE_SCOPE("Renderer End Frame");
 
 		m_UniformBuffer->UpdateUniformBuffer(s_CurrentFrame);
 
@@ -225,20 +227,20 @@ namespace PhysiXal {
 		VkSwapchainKHR swapChains[] = { VulkanSwapChain::GetVulkanSwapChain() };
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
-		presentInfo.pImageIndices = &imageIndex;
-		result = vkQueuePresentKHR(VulkanDevice::GetVulkanPresentQueue(), &presentInfo);
+		presentInfo.pImageIndices = &s_ImageIndex;
+		VkResult result = vkQueuePresentKHR(VulkanDevice::GetVulkanPresentQueue(), &presentInfo);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || s_FramebufferResized)
 		{
 			s_FramebufferResized = false;
 			m_SwapChain->RecreateSwapChain();
 		}
-		else if (result != VK_SUCCESS) 
+		else if (result != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to present swap chain image!");
 		}
 
-		s_CurrentFrame = (s_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+		s_CurrentFrame = (s_CurrentFrame + 1) % c_MaxImageCount;
 	}
 
 	void VulkanRenderer::WaitAndIdle()
@@ -248,6 +250,7 @@ namespace PhysiXal {
 		vkDeviceWaitIdle(VulkanDevice::GetVulkanDevice());
 	}
 
+	// #### TO DO #### Camera class works but needs to get implemented to work with the renderer and it's scene
 	/*void VulkanRenderer::SetCamera(Camera* camera)
 	{
 		m_Camera = camera;

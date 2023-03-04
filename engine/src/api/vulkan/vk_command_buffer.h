@@ -4,7 +4,7 @@
 
 namespace PhysiXal {
 
-	const int MAX_FRAMES_IN_FLIGHT = 2;
+	const int c_MaxImageCount = 2;
 
 	class VulkanCommandBuffer
 	{

@@ -15,7 +15,7 @@ namespace PhysiXal {
 		static void End();
 
 		// #### TO DO #### Replace GuiLayer this function 
-		//static void Draw(static VkCommandBuffer commandBuffer, uint32_t imageIndex);
+		static void Draw();
 
 		static void OnRender();
 

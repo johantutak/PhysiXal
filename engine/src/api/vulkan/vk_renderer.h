@@ -19,17 +19,23 @@ namespace PhysiXal {
 		void Init();
 		void Shutdown();
 
-		void DrawFrame();
+		void BeginFrame();
+		void EndFrame();
 
 		void WaitAndIdle();
 
+		// #### TO DO #### Camera class works but needs to get implemented to work with the renderer and it's scene
 		//void SetCamera(Camera* camera);
 
 		static uint32_t GetVulkanCurrentFrame() { return s_CurrentFrame; }
+
+		static uint32_t GetVulkanImageIndex() { return s_ImageIndex; }
 	private:
 		Camera* m_Camera = nullptr;
 	private:
 		inline static uint32_t s_CurrentFrame = 0;
+
+		inline static uint32_t s_ImageIndex;
 
 		inline static bool s_FramebufferResized;
 	};

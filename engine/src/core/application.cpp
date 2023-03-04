@@ -5,7 +5,8 @@
 #include "core/window.h"
 
 #include "renderer/renderer.h"
-//#include "api/vulkan/vk_renderer.h"
+
+//#include "api/vulkan/vk_initializers.h"
 
 #include "gui/gui.h"
 
@@ -42,6 +43,8 @@ namespace PhysiXal {
 
 		// Initialize the camera
 		m_Camera = new Camera(120.0f, static_cast<float>(windowSpec.Width = specification.WindowWidth),static_cast<float>(windowSpec.Height = specification.WindowHeight),0.1f, 1000.0f);
+		
+		// Setup the camera
 		//m_Renderer->SetCamera(m_Camera);
 
 		// Set window events
@@ -120,13 +123,23 @@ namespace PhysiXal {
 						layer->OnUpdate(m_FrameTime);
 				}
 
-				// Draw GUI frame here
+				// Acquire images to screen
+				Renderer::BeginFrame();
+
+				// Acquire images for GUI to screen
 				Gui::Begin();
+
+				// Issue GUI commands
 				Gui::OnRender();
+
+				// Present Gui frame, IO and platform windows to screen
 				Gui::End();
 
-				// Draw frame here
-				Renderer::DrawFrame();
+				// Submit GUI command buffers to screen
+				Gui::Draw();
+
+				// Present frame to the screen
+				Renderer::EndFrame();
 			}
 
 			m_Window->OnUpdate();

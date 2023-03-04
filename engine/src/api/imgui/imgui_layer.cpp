@@ -93,7 +93,7 @@ namespace PhysiXal {
 		init_info.PipelineCache = VK_NULL_HANDLE;
 		init_info.DescriptorPool = m_GuiVulkan->GetGuiDescriptorPool();
 		init_info.Allocator = nullptr;
-		init_info.MinImageCount = MAX_FRAMES_IN_FLIGHT;
+		init_info.MinImageCount = c_MaxImageCount;
 		init_info.ImageCount = static_cast<uint32_t>(VulkanSwapChain::GetVulkanImageViews().size());
 		init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 		init_info.CheckVkResultFn = NULL;
@@ -200,12 +200,15 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 		
+		// Issues Dear ImGui command for performance stats widget
 		m_Widgets->PerformanceStats();
 	}
 
 	void GuiLayer::GuiOnRebuild()
 	{
-		ImGui_ImplVulkan_SetMinImageCount(MAX_FRAMES_IN_FLIGHT);
+		PX_PROFILE_FUNCTION();
+
+		ImGui_ImplVulkan_SetMinImageCount(c_MaxImageCount);
 
 		// On framebuffer rebuild we recreate Dear ImGUI render pass
 		m_GuiVulkan->CreateGuiRenderPass();
