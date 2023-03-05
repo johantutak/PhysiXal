@@ -28,7 +28,7 @@ namespace PhysiXal {
 
 		PX_PROFILE_FUNCTION();
 
-		PX_ASSERT(!s_Instance, "Application already exists");
+		PX_CORE_ASSERT(!s_Instance, "Application already exists");
 		s_Instance = this;
 
 		// Set window specification

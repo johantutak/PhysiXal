@@ -8,9 +8,7 @@ extern PhysiXal::Application* PhysiXal::CreateApplication();
 int main(int argc, char** argv)
 {
 	// Entry point (int main())
-	PhysiXal::Log::Init();
-	PX_CORE_INFO("Initializing Log (core).");
-	PX_INFO("Initializing Application (client).");
+	PhysiXal::InitializeCore();
 
 	PX_PROFILE_BEGIN_SESSION("Startup", "../profiling/startup.json");
 	auto app = PhysiXal::CreateApplication();
@@ -24,6 +22,5 @@ int main(int argc, char** argv)
 	delete app;
 	PX_PROFILE_END_SESSION();
 
-	PX_WARN("...Shutting down Application (client).");
-	PX_CORE_WARN("...Shutting down Log (core).");
+	PhysiXal::ShutdownCore();
 }

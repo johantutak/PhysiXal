@@ -12,9 +12,11 @@
 
 #include "core/core.h"
 
+#include "core/assert.h"
+#include "log/log.h"
+
 #include "core/application.h"
 #include "core/layer.h"
-#include "log/log.h"
 
 #include "core/timestep.h"
 

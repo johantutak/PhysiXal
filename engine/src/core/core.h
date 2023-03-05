@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 
+/**								#### PhysiXal Engine ⟨™⟩ - ©2023 - by Johan Tutak ####								**/
 /**
 * 
 * Notable mentions:
@@ -22,6 +23,14 @@
 
 #include <memory>
 
+namespace PhysiXal {
+
+	// Core
+	void InitializeCore();
+	void ShutdownCore();
+
+}
+
 #include "core/platform_detetction.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -29,19 +38,7 @@
 
 #include "api/vulkan/vk_buffer.h"
 
-// Core
-
-// #### Variable notations ####
-
-//	*	m for members
-//	*	c for constants/readonlys
-//	*	p for pointer (and pp for pointer to pointer)
-//	*	v for volatile
-//	*	s for static
-//	*	i for indexes and iterators or integers
-//	*	e for events
-//	*	g for global
-//  *   u for unsigned integer
+// #### Macros ####
 
 #ifdef PX_DEBUG
 	#if defined(PX_PLATFORM_WINDOWS)
@@ -57,17 +54,14 @@
 	#define PX_DEBUGBREAK()
 #endif
 
-#ifdef PX_ENABLE_ASSERTS
-	#define PX_ASSERT(x, ...) { if(!(x)) { PX_ERROR("Assertion Failed: {0}", __VA_ARGS__); PX_DEBUGBREAK(); } }
-	#define PX_CORE_ASSERT(x, ...) { if(!(x)) { PX_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); PX_DEBUGBREAK(); } }
-#else
-	#define PX_ASSERT(x, ...)
-	#define PX_CORE_ASSERT(x, ...)
-#endif
+#define PX_EXPAND_MACRO(x) x
+#define PX_STRINGIFY_MACRO(x) #x
 
 #define BIT(x) (1 << x)
 
 #define PX_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+// #### Pointer wrappers ####
 
 namespace PhysiXal {
 
@@ -80,7 +74,8 @@ namespace PhysiXal {
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
 
-	// Creates a ref #### TO DO #### integrate into the real Ref Class
+	// #### TO DO #### integrate into it's own ref class
+	// Creates a ref
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
 	template<typename T, typename ... Args>
@@ -90,6 +85,8 @@ namespace PhysiXal {
 	}
 }
 
+#include "core/assert.h"
+#include "log/log.h"
 
 namespace std {
 

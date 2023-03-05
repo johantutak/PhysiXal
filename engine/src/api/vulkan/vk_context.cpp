@@ -123,7 +123,7 @@ namespace PhysiXal {
 	{
 		PX_PROFILE_FUNCTION();
 
-		PX_CORE_INFO("Seting up Vulkan Debug messenger");
+		PX_CORE_INFO("Seting up Vulkan debug messenger");
 
 		if (!s_EnableValidation) return;
 

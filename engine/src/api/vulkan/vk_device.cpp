@@ -71,10 +71,11 @@ namespace PhysiXal {
                     s_PhysicalDevice = device;
                     s_MsaaSamples = GetMaxUsableSampleCount();
 
-                    if (device == !VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+                    // #### TO DO #### Get this message to show when discreate GPU is not found
+                    /*if (device == !VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
                     {
-                        return PX_CORE_ASSERT("Could not find discrete GPU."); // #### TO DO #### Get this message to show when discreate GPU is not found
-                    }
+                        return PX_CORE_ERROR("Could not find discrete GPU.");
+                    }*/
 
                     break;
                 }
