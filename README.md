@@ -1,4 +1,4 @@
-# PhysiXal Engine
+# PhysiXal Engine ![License](/resources/images/badge/License-Unlicensed.svg)
 
 "TO DO" --Put logo here--
 
