@@ -9,15 +9,11 @@ PhysiXal.config
 PhysiXal.creator
 PhysiXal.files
 PhysiXal.includes
-*.code-workspace
-.vscode/c_cpp_properties.json
-.vscode/settings.json
-profiling/startup.json
-profiling/startup.json
-profiling/shutdown.json
-profiling/runtime.json
+startup.json
+shutdown.json
+runtime.json
 .hidden
-editor/imgui.ini
+imgui.ini
 
 # PhysiXal files
 *.log

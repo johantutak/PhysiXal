@@ -3,24 +3,48 @@
 #include "core/core.h"
 #include "core/application.h"
 
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
+
 extern PhysiXal::Application* PhysiXal::CreateApplication();
 
 int main(int argc, char** argv)
 {
 	// Entry point (int main())
-	PhysiXal::InitializeCore();
+	PhysiXal::Core::InitializeCore();
 
-	PX_PROFILE_BEGIN_SESSION("Startup", "../profiling/startup.json");
+	// #### TO DO #### if profile is turned off, dont create any folders
+	// Gives application current time
+	auto t = std::time(nullptr);
+	auto tm = *std::localtime(&t);
+	std::ostringstream oss;
+	oss << std::put_time(&tm, "%H-%M-%S (hour-min-sec)");
+	auto current_time = oss.str();
+
+	// Create "the current date and time" directory if it doesn't exist
+	std::string profileDirectory = "../profiling/" __DATE__ "/" + current_time;
+	
+	if (!std::filesystem::exists(profileDirectory))
+	{
+		std::filesystem::create_directories(profileDirectory);
+	}
+
+	// Start application 
+	PX_PROFILE_BEGIN_SESSION("Startup", "../profiling/" __DATE__ "/" + current_time + "/startup.json");
 	auto app = PhysiXal::CreateApplication();
 	PX_PROFILE_END_SESSION();
 
-	PX_PROFILE_BEGIN_SESSION("Runtime", "../profiling/runtime.json");
+	// Run application
+	PX_PROFILE_BEGIN_SESSION("Runtime", "../profiling/" __DATE__ "/" + current_time + "/runtime.json");
 	app->Run();
 	PX_PROFILE_END_SESSION();
 
-	PX_PROFILE_BEGIN_SESSION("Shutdown", "../profiling/shutdown.json");
+	// Shut down application
+	PX_PROFILE_BEGIN_SESSION("Shutdown", "../profiling/" __DATE__ "/" + current_time + "/shutdown.json");
 	delete app;
 	PX_PROFILE_END_SESSION();
 
-	PhysiXal::ShutdownCore();
+	PhysiXal::Core::ShutdownCore();
 }

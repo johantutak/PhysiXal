@@ -21,24 +21,9 @@
 * 
 **/
 
-#include <memory>
-
-namespace PhysiXal {
-
-	// Core
-	void InitializeCore();
-	void ShutdownCore();
-
-}
-
 #include "core/platform_detetction.h"
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/hash.hpp>
-
-#include "api/vulkan/vk_buffer.h"
-
-// #### Macros ####
+#include <memory>
 
 #ifdef PX_DEBUG
 	#if defined(PX_PLATFORM_WINDOWS)
@@ -61,41 +46,23 @@ namespace PhysiXal {
 
 #define PX_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
-// #### Pointer wrappers ####
-
-namespace PhysiXal {
-
-	// Creates a scope
-	template<typename T>
-	using Scope = std::unique_ptr<T>;
-	template<typename T, typename ... Args>
-	constexpr Scope<T> CreateScope(Args&& ... args)
-	{
-		return std::make_unique<T>(std::forward<Args>(args)...);
-	}
-
-	// #### TO DO #### integrate into it's own ref class
-	// Creates a ref
-	template<typename T>
-	using Ref = std::shared_ptr<T>;
-	template<typename T, typename ... Args>
-	constexpr Ref<T> CreateRef(Args&& ... args)
-	{
-		return std::make_shared<T>(std::forward<Args>(args)...);
-	}
-}
+#include "core/scope.h"
+#include "core/ref.h"
 
 #include "core/assert.h"
 #include "log/log.h"
 
-namespace std {
+#include "core/hash.h"
 
-	// Creates a hash
-	template<> struct hash<PhysiXal::Vertex> 
+namespace PhysiXal {
+
+	class Core
 	{
-		size_t operator()(PhysiXal::Vertex const& vertex) const 
-		{
-			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
-		}
+	public:
+		// Core
+		static void InitializeCore();
+		static void ShutdownCore();
+	private:
+
 	};
 }

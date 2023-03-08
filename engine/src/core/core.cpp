@@ -11,7 +11,7 @@ namespace PhysiXal {
 	// Core
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void InitializeCore()
+	void Core::InitializeCore()
 	{
 		Log::Init();
 
@@ -22,7 +22,7 @@ namespace PhysiXal {
 		PX_INFO("Application (client)");
 	}
 
-	void ShutdownCore()
+	void Core::ShutdownCore()
 	{
 		PX_CORE_TRACE("...Shutting down");
 
@@ -31,5 +31,4 @@ namespace PhysiXal {
 
 		Log::Shutdown();
 	}
-
 }
