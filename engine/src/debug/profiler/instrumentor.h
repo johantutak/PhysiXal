@@ -217,7 +217,14 @@ namespace PhysiXal {
 	}
 }
 
-#define PX_PROFILE 1
+#define TURN_ON_PROFILING false
+
+#if TURN_ON_PROFILING true
+	#define PX_PROFILE true
+#else
+	#define PX_PROFILE false
+#endif
+
 #if PX_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting

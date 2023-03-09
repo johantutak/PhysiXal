@@ -2,6 +2,7 @@
 
 #include "core/core.h"
 #include "core/application.h"
+#include "debug/profiler/instrumentor.h"
 
 #include <iostream>
 #include <iomanip>
@@ -15,6 +16,7 @@ int main(int argc, char** argv)
 	// Entry point (int main())
 	PhysiXal::Core::InitializeCore();
 
+#if PX_PROFILE true
 	// #### TO DO #### if profile is turned off, dont create any folders
 	// Gives application current time
 	auto t = std::time(nullptr);
@@ -30,6 +32,7 @@ int main(int argc, char** argv)
 	{
 		std::filesystem::create_directories(profileDirectory);
 	}
+#endif
 
 	// Start application 
 	PX_PROFILE_BEGIN_SESSION("Startup", "../profiling/" __DATE__ "/" + current_time + "/startup.json");
