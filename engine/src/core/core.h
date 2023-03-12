@@ -23,6 +23,8 @@
 
 #include "core/platform_detetction.h"
 
+#include "core/data.h"
+
 #include <memory>
 
 #ifdef PX_DEBUG
