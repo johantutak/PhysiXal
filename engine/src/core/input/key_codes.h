@@ -2,7 +2,7 @@
 
 namespace PhysiXal {
 
-	typedef enum class KeyCode : uint16_t
+	typedef enum class KeyCode : U16
 	{
 		// Key codes
 		// From glfw3.h

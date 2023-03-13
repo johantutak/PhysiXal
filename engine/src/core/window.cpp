@@ -12,7 +12,7 @@ namespace PhysiXal	{
     Window* Window::Create(const WindowSpecification& specification)
 	{
 #ifdef PX_PLATFORM_WINDOWS
-        return new WinWindow(specification);
+        return pnew WinWindow(specification);
 #else
     PX_CORE_ASSERT(false, "Unknown platform!");
         return nullptr;

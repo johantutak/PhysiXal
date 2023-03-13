@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
 	// Shut down application
 	PX_PROFILE_BEGIN_SESSION("Shutdown", "../profiling/" __DATE__ "/" + current_time + "/shutdown.json");
-	delete app;
+	pdelete app;
 	PX_PROFILE_END_SESSION();
 
 	PhysiXal::Core::ShutdownCore();

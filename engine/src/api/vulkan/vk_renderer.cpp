@@ -207,7 +207,7 @@ namespace PhysiXal {
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
+		submitInfo.commandBufferCount = static_cast<U32>(submitCommandBuffers.size());
 		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
 		VkSemaphore signalSemaphores[] = { VulkanSyncObjects::GetVulkanRenderSemaphores()[s_CurrentFrame] };

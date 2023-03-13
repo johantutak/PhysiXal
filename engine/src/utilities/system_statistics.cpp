@@ -26,13 +26,13 @@ namespace PhysiXal::Utilities {
         VkPhysicalDevice vkPhysicalDevice = VulkanDevice::GetVulkanPhysicalDevice();
         vkGetPhysicalDeviceProperties(vkPhysicalDevice, &s_Properties);
 
-        uint32_t vk_major = VK_VERSION_MAJOR(s_Properties.apiVersion);
-        uint32_t vk_minor = VK_VERSION_MINOR(s_Properties.apiVersion);
-        uint32_t vk_patch = VK_VERSION_PATCH(s_Properties.apiVersion);
+        U32 vk_major = VK_VERSION_MAJOR(s_Properties.apiVersion);
+        U32 vk_minor = VK_VERSION_MINOR(s_Properties.apiVersion);
+        U32 vk_patch = VK_VERSION_PATCH(s_Properties.apiVersion);
 
-        uint32_t driver_major = VK_VERSION_MAJOR(s_Properties.driverVersion);
-        uint32_t driver_minor = VK_VERSION_MINOR(s_Properties.driverVersion);
-        uint32_t driver_patch = VK_VERSION_PATCH(s_Properties.driverVersion);
+        U32 driver_major = VK_VERSION_MAJOR(s_Properties.driverVersion);
+        U32 driver_minor = VK_VERSION_MINOR(s_Properties.driverVersion);
+        U32 driver_patch = VK_VERSION_PATCH(s_Properties.driverVersion);
 
         PX_CORE_INFO(".... Initializing devices ....!%");
 

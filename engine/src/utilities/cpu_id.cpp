@@ -37,7 +37,7 @@ CPUInfo::CPUInfo()
 {
     // Get vendor name EAX=0
     CPUID cpuID0(0, 0);
-    uint32_t HFS = cpuID0.EAX();
+    U32 HFS = cpuID0.EAX();
     mVendorId += std::string((const char*)&cpuID0.EBX(), 4);
     mVendorId += std::string((const char*)&cpuID0.EDX(), 4);
     mVendorId += std::string((const char*)&cpuID0.ECX(), 4);
@@ -64,7 +64,7 @@ CPUInfo::CPUInfo()
             for (int lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl) 
             {
                 CPUID cpuID4(0x0B, lvl);
-                uint32_t currLevel = (LVL_TYPE & cpuID4.ECX()) >> 8;
+                U32 currLevel = (LVL_TYPE & cpuID4.ECX()) >> 8;
                 switch (currLevel) {
                 case 0x01: mNumSMT = LVL_CORES & cpuID4.EBX(); break;
                 case 0x02: mNumLogCpus = LVL_CORES & cpuID4.EBX(); break;

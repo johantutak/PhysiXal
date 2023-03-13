@@ -27,7 +27,7 @@ namespace PhysiXal {
         PX_CORE_INFO("Finding suitable device (physical)");
 
         // Get the number of devices
-        uint32_t deviceCount = 0;
+        U32 deviceCount = 0;
         vkEnumeratePhysicalDevices(VulkanContext::GetVulkanInstance(), &deviceCount, nullptr);
 
         if (deviceCount == 0)
@@ -138,7 +138,7 @@ namespace PhysiXal {
 
     bool VulkanDevice::CheckDeviceExtensionSupport(VkPhysicalDevice device)
     {
-        uint32_t extensionCount;
+        U32 extensionCount;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
 
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
@@ -159,7 +159,7 @@ namespace PhysiXal {
         // Add each family index to a list
         QueueFamilyIndices indices;
 
-        uint32_t queueFamilyCount = 0;
+        U32 queueFamilyCount = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
 
         std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
@@ -205,10 +205,10 @@ namespace PhysiXal {
         QueueFamilyIndices indices = FindQueueFamilies(s_PhysicalDevice);
 
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-        std::set<uint32_t> uniqueQueueFamilies = { indices.m_GraphicsFamily.value(), indices.m_PresentFamily.value() };
+        std::set<U32> uniqueQueueFamilies = { indices.m_GraphicsFamily.value(), indices.m_PresentFamily.value() };
 
         float queuePriority = 1.0f;
-        for (uint32_t queueFamily : uniqueQueueFamilies) 
+        for (U32 queueFamily : uniqueQueueFamilies) 
         {
             // Put it all together.
             VkDeviceQueueCreateInfo queueCreateInfo{};
@@ -225,18 +225,18 @@ namespace PhysiXal {
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 
-        createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+        createInfo.queueCreateInfoCount = static_cast<U32>(queueCreateInfos.size());
         createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
         createInfo.pEnabledFeatures = &deviceFeatures;
 
-        createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+        createInfo.enabledExtensionCount = static_cast<U32>(deviceExtensions.size());
         createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
         // If validation layers are enabled supply them here
         if (s_EnableValidation) 
         {
-            createInfo.enabledLayerCount = static_cast<uint32_t>(ValidationLayers.size());
+            createInfo.enabledLayerCount = static_cast<U32>(ValidationLayers.size());
             createInfo.ppEnabledLayerNames = ValidationLayers.data();
         }
         else 

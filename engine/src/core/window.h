@@ -8,8 +8,8 @@ namespace PhysiXal {
 	struct WindowSpecification
 	{
 		std::string Title = "PhysiXal Engine";
-		uint32_t Width = 1600;
-		uint32_t Height = 900;
+		U32 Width = 1600;
+		U32 Height = 900;
 	};
 
 	// Interface representing a desktop system based Window
@@ -24,8 +24,8 @@ namespace PhysiXal {
 		virtual void Init() = 0;
 		virtual void OnUpdate() = 0;
 
-		virtual uint32_t GetWidth() const = 0;
-		virtual uint32_t GetHeight() const = 0;
+		virtual U32 GetWidth() const = 0;
+		virtual U32 GetHeight() const = 0;
 
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;

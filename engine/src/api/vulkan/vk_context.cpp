@@ -46,13 +46,13 @@ namespace PhysiXal {
 
 		// Give all the extensions/layers to the create info.
 		auto extensions = GetRequiredExtensions();
-		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+		createInfo.enabledExtensionCount = static_cast<U32>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
 		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
 		if (s_EnableValidation)
 		{
-			createInfo.enabledLayerCount = static_cast<uint32_t>(ValidationLayers.size());
+			createInfo.enabledLayerCount = static_cast<U32>(ValidationLayers.size());
 			createInfo.ppEnabledLayerNames = ValidationLayers.data();
 
 			PopulateDebugMessengerCreateInfo(debugCreateInfo);
@@ -163,7 +163,7 @@ namespace PhysiXal {
 
 	std::vector<const char*> VulkanContext::GetRequiredExtensions()
 	{
-		uint32_t glfwExtensionCount = 0;
+		U32 glfwExtensionCount = 0;
 		const char** glfwExtensions;
 		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
@@ -179,7 +179,7 @@ namespace PhysiXal {
 
 	bool VulkanContext::CheckValidationLayerSupport()
 	{
-		uint32_t layerCount;
+		U32 layerCount;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
 		std::vector<VkLayerProperties> availableLayers(layerCount);

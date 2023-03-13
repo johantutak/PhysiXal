@@ -10,8 +10,8 @@ namespace PhysiXal {
 		// Texture
 		void CreateTextureImage();
 		void DestroyTextureImage();
-		void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
-		void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+		void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, U32 mipLevels);
+		void CopyBufferToImage(VkBuffer buffer, VkImage image, U32 width, U32 height);
 
 		//Texture image view
 		void CreateTextureImageView();
@@ -26,7 +26,7 @@ namespace PhysiXal {
 		static VkSampler GetVulkanTextureSampler() { return s_TextureSampler; }
 
 		// Mipmaps
-		void GenerateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
+		void GenerateMipmaps(VkImage image, VkFormat imageFormat, I32 texWidth, I32 texHeight, U32 mipLevels);
 	private:
 		inline static VkImage s_TextureImage;
 		inline static VkDeviceMemory s_TextureImageMemory;

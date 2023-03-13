@@ -33,7 +33,7 @@ namespace PhysiXal {
             PX_CORE_ERROR(warn + err);
         }
 
-        std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+        std::unordered_map<Vertex, U32> uniqueVertices{};
 
         for (const auto& shape : shapes) {
             for (const auto& index : shape.mesh.indices) 
@@ -54,7 +54,7 @@ namespace PhysiXal {
                 vertex.color = { 1.0f, 1.0f, 1.0f };
 
                 if (uniqueVertices.count(vertex) == 0) {
-                    uniqueVertices[vertex] = static_cast<uint32_t>(s_Vertices.size());
+                    uniqueVertices[vertex] = static_cast<U32>(s_Vertices.size());
                     s_Vertices.push_back(vertex);
                 }
 

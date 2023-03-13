@@ -3,7 +3,7 @@
 namespace PhysiXal {
 
 	// Mouse codes
-	typedef enum class MouseCode : uint16_t
+	typedef enum class MouseCode : U16
 	{
 		// From glfw3.h
 		Button0 = 0,
@@ -23,7 +23,7 @@ namespace PhysiXal {
 
 	inline std::ostream& operator<<(std::ostream& os, MouseCode mouseCode)
 	{
-		os << static_cast<int32_t>(mouseCode);
+		os << static_cast<I32>(mouseCode);
 		return os;
 	}
 }

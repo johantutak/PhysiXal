@@ -11,8 +11,8 @@ namespace PhysiXal {
 	const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	struct QueueFamilyIndices {
-		std::optional<uint32_t> m_GraphicsFamily;
-		std::optional<uint32_t> m_PresentFamily;
+		std::optional<U32> m_GraphicsFamily;
+		std::optional<U32> m_PresentFamily;
 
 		bool IsComplete() {
 			return m_GraphicsFamily.has_value() && m_PresentFamily.has_value();

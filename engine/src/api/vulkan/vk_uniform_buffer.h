@@ -33,7 +33,7 @@ namespace PhysiXal {
 		void CreateUniformBuffers();
 		void DestroyUnifromBuffers();
 
-		void UpdateUniformBuffer(uint32_t currentImage);
+		void UpdateUniformBuffer(U32 currentImage);
 
 		static std::vector<VkBuffer> GetVulkanUniformBuffers() { return s_UniformBuffers; }
 	private:

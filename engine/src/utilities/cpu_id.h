@@ -10,7 +10,7 @@
 #ifdef PX_PLATFORM_WINDOWS
     #include <limits.h>
     #include <intrin.h>
-    typedef unsigned __int32  uint32_t;
+    typedef unsigned __int32  U32;
 #else
     #include <stdint.h>
 #endif
@@ -36,16 +36,16 @@ public:
 
 private:
     // Bit positions for data extractions
-    static const uint32_t SSE_POS = 0x02000000;
-    static const uint32_t SSE2_POS = 0x04000000;
-    static const uint32_t SSE3_POS = 0x00000001;
-    static const uint32_t SSE41_POS = 0x00080000;
-    static const uint32_t SSE42_POS = 0x00100000;
-    static const uint32_t AVX_POS = 0x10000000;
-    static const uint32_t AVX2_POS = 0x00000020;
-    static const uint32_t LVL_NUM = 0x000000FF;
-    static const uint32_t LVL_TYPE = 0x0000FF00;
-    static const uint32_t LVL_CORES = 0x0000FFFF;
+    static const U32 SSE_POS = 0x02000000;
+    static const U32 SSE2_POS = 0x04000000;
+    static const U32 SSE3_POS = 0x00000001;
+    static const U32 SSE41_POS = 0x00080000;
+    static const U32 SSE42_POS = 0x00100000;
+    static const U32 AVX_POS = 0x10000000;
+    static const U32 AVX2_POS = 0x00000020;
+    static const U32 LVL_NUM = 0x000000FF;
+    static const U32 LVL_TYPE = 0x0000FF00;
+    static const U32 LVL_CORES = 0x0000FFFF;
 
     // Attributes
     std::string mVendorId;

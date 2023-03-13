@@ -38,7 +38,7 @@ namespace PhysiXal {
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             framebufferInfo.renderPass = VulkanRenderPass::GetVulkanRenderPass();
-            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.attachmentCount = static_cast<U32>(attachments.size());
             framebufferInfo.pAttachments = attachments.data();
             framebufferInfo.width = VulkanSwapChain::GetVulkanSwapChainExtent().width;
             framebufferInfo.height = VulkanSwapChain::GetVulkanSwapChainExtent().height;

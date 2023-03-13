@@ -29,7 +29,7 @@ namespace PhysiXal {
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool = s_CommandPool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = (uint32_t)s_CommandBuffers.size();
+        allocInfo.commandBufferCount = (U32)s_CommandBuffers.size();
         
         if (vkAllocateCommandBuffers(VulkanDevice::GetVulkanDevice(), &allocInfo, s_CommandBuffers.data()) != VK_SUCCESS)
         {
@@ -45,10 +45,10 @@ namespace PhysiXal {
         PX_CORE_WARN("...Freeing up Vulkan command buffers");
 
         // Frees command buffers that are in the pool
-        vkFreeCommandBuffers(VulkanDevice::GetVulkanDevice(), s_CommandPool, static_cast<uint32_t>(s_CommandBuffers.size()), s_CommandBuffers.data());
+        vkFreeCommandBuffers(VulkanDevice::GetVulkanDevice(), s_CommandPool, static_cast<U32>(s_CommandBuffers.size()), s_CommandBuffers.data());
     }
 
-    void VulkanCommandBuffer::RecordCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+    void VulkanCommandBuffer::RecordCommandBuffers(VkCommandBuffer commandBuffer, U32 imageIndex)
     {
         PX_PROFILE_SCOPE("Renderer Prep");
 
@@ -71,7 +71,7 @@ namespace PhysiXal {
         clearValues[0].color = { {0.02f, 0.02f, 0.02f, 1.0f} };
         clearValues[1].depthStencil = { 1.0f, 0 };
 
-        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+        renderPassInfo.clearValueCount = static_cast<U32>(clearValues.size());
         renderPassInfo.pClearValues = clearValues.data();
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
@@ -101,7 +101,7 @@ namespace PhysiXal {
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VulkanPipeline::GetVulkanPipelineLayout(), 0, 1,
             &VulkanUniformBuffer::GetVulkanDescriptorSets()[VulkanRenderer::GetVulkanCurrentFrame()], 0, nullptr);
 
-        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Model->GetVulkanIndices().size()), 1, 0, 0, 0);
+        vkCmdDrawIndexed(commandBuffer, static_cast<U32>(m_Model->GetVulkanIndices().size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 

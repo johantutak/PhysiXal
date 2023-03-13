@@ -20,7 +20,7 @@ namespace PhysiXal {
 	struct ApplicationSpecification
 	{
 		std::string Name = "PhysiXal";
-		uint32_t WindowWidth = 1600, WindowHeight = 900;
+		U32 WindowWidth = 1600, WindowHeight = 900;
 	};
 
 	class Application

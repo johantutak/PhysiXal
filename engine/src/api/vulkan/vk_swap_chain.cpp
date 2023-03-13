@@ -34,7 +34,7 @@ namespace PhysiXal {
         VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
         VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
 
-        uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+        U32 imageCount = swapChainSupport.capabilities.minImageCount + 1;
         if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
         {
             imageCount = swapChainSupport.capabilities.maxImageCount;
@@ -56,7 +56,7 @@ namespace PhysiXal {
         // If the graphics queue family and present family don't match
 	    // a swap chain with different information is created
         QueueFamilyIndices indices = VulkanDevice::FindQueueFamilies(VulkanDevice::GetVulkanPhysicalDevice());
-        uint32_t queueFamilyIndices[] = { indices.m_GraphicsFamily.value(), indices.m_PresentFamily.value() };
+        U32 queueFamilyIndices[] = { indices.m_GraphicsFamily.value(), indices.m_PresentFamily.value() };
 
         if (indices.m_GraphicsFamily != indices.m_PresentFamily) 
         {
@@ -132,7 +132,7 @@ namespace PhysiXal {
 
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, VulkanContext::GetVulkanSurface(), &details.capabilities);
 
-        uint32_t formatCount;
+        U32 formatCount;
         vkGetPhysicalDeviceSurfaceFormatsKHR(device, VulkanContext::GetVulkanSurface(), &formatCount, nullptr);
 
         if (formatCount != 0)
@@ -141,7 +141,7 @@ namespace PhysiXal {
             vkGetPhysicalDeviceSurfaceFormatsKHR(device, VulkanContext::GetVulkanSurface(), &formatCount, details.formats.data());
         }
 
-        uint32_t presentModeCount;
+        U32 presentModeCount;
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, VulkanContext::GetVulkanSurface(), &presentModeCount, nullptr);
 
         if (presentModeCount != 0)
@@ -183,7 +183,7 @@ namespace PhysiXal {
     {
         auto vkWindowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
-        if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+        if (capabilities.currentExtent.width != std::numeric_limits<U32>::max())
         {
             return capabilities.currentExtent;
         }
@@ -193,8 +193,8 @@ namespace PhysiXal {
             glfwGetFramebufferSize(vkWindowHandle, &width, &height);
 
             VkExtent2D actualExtent = {
-                static_cast<uint32_t>(width),
-                static_cast<uint32_t>(height)
+                static_cast<U32>(width),
+                static_cast<U32>(height)
             };
 
             actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
@@ -219,7 +219,7 @@ namespace PhysiXal {
         // They determine what is affected by the image operations
         s_SwapChainImageViews.resize(s_SwapChainImages.size());
 
-        for (uint32_t i = 0; i < s_SwapChainImages.size(); i++)
+        for (U32 i = 0; i < s_SwapChainImages.size(); i++)
         {
             s_SwapChainImageViews[i] = CreateImageView(s_SwapChainImages[i], s_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
         }

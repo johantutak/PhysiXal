@@ -58,7 +58,7 @@ namespace PhysiXal {
         }
     }
 
-    const char* VulkanVendorIDToString(uint32_t vendorID)
+    const char* VulkanVendorIDToString(U32 vendorID)
 	{
 		switch (vendorID)
 		{
@@ -122,7 +122,7 @@ namespace PhysiXal {
     }
 
     // Texture
-    void CreateImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, VkImageTiling tiling,
+    void CreateImage(U32 width, U32 height, U32 mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, VkImageTiling tiling,
         VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
     {
         VkImageCreateInfo imageInfo{};
@@ -161,7 +161,7 @@ namespace PhysiXal {
         vkBindImageMemory(VulkanDevice::GetVulkanDevice(), image, imageMemory, 0);
     }
 
-    VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels) 
+    VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, U32 mipLevels)
     {
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;

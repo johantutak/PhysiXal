@@ -53,7 +53,7 @@ namespace PhysiXal {
         auto attributeDescriptions = Vertex::GetAttributeDescriptions();
 
         vertexInputInfo.vertexBindingDescriptionCount = 1;
-        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<U32>(attributeDescriptions.size());
         vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
         vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
@@ -111,7 +111,7 @@ namespace PhysiXal {
         };
         VkPipelineDynamicStateCreateInfo dynamicState{};
         dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-        dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+        dynamicState.dynamicStateCount = static_cast<U32>(dynamicStates.size());
         dynamicState.pDynamicStates = dynamicStates.data();
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};

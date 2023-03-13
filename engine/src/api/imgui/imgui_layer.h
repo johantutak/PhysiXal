@@ -18,7 +18,7 @@ namespace PhysiXal {
 		void GuiBegin();
 		void GuiEnd();
 		
-		void GuiDraw(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+		void GuiDraw(VkCommandBuffer commandBuffer, U32 imageIndex);
 
 		void GuiOnRender();
 

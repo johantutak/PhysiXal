@@ -15,7 +15,7 @@ namespace PhysiXal {
 
 		static std::vector<VkCommandBuffer> GetVulkanCommandBuffers() { return s_CommandBuffers; }
 
-		void RecordCommandBuffers(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+		void RecordCommandBuffers(VkCommandBuffer commandBuffer, U32 imageIndex);
 
 		// Command pool
 		void CreateCommandPool();

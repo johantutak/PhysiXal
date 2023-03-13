@@ -60,7 +60,7 @@ namespace PhysiXal {
 		// Vertex buffer
 		void CreateVertexBuffer();
 		void DestroyVertexBuffer();
-		uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+		U32 FindMemoryType(U32 typeFilter, VkMemoryPropertyFlags properties);
 
 		static VkBuffer GetVulkanVertexBuffer() { return s_VertexBuffer; }
 

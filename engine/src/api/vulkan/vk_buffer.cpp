@@ -89,12 +89,12 @@ namespace PhysiXal {
         vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_VertexBufferMemory, nullptr);
     }
 
-    uint32_t VulkanBuffer::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+    U32 VulkanBuffer::FindMemoryType(U32 typeFilter, VkMemoryPropertyFlags properties)
     {
         VkPhysicalDeviceMemoryProperties memProperties;
         vkGetPhysicalDeviceMemoryProperties(VulkanDevice::GetVulkanPhysicalDevice(), &memProperties);
 
-        for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) 
+        for (U32 i = 0; i < memProperties.memoryTypeCount; i++) 
         {
             if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
                 return i;

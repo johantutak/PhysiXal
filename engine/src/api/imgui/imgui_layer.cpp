@@ -94,7 +94,7 @@ namespace PhysiXal {
 		init_info.DescriptorPool = m_GuiVulkan->GetGuiDescriptorPool();
 		init_info.Allocator = nullptr;
 		init_info.MinImageCount = c_MaxImageCount;
-		init_info.ImageCount = static_cast<uint32_t>(VulkanSwapChain::GetVulkanImageViews().size());
+		init_info.ImageCount = static_cast<U32>(VulkanSwapChain::GetVulkanImageViews().size());
 		init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 		init_info.CheckVkResultFn = NULL;
 		
@@ -162,12 +162,12 @@ namespace PhysiXal {
 		}
 	}
 
-	void GuiLayer::GuiDraw(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+	void GuiLayer::GuiDraw(VkCommandBuffer commandBuffer, U32 imageIndex)
 	{
 		PX_PROFILE_FUNCTION();
 
 		VkExtent2D vkSwapChainExtent2D = VulkanSwapChain::GetVulkanSwapChainExtent();
-		uint32_t vkCurrentFrame = VulkanRenderer::GetVulkanCurrentFrame();
+		U32 vkCurrentFrame = VulkanRenderer::GetVulkanCurrentFrame();
 
 		std::vector<VkFramebuffer> vkGuiFramebuffers = GuiVulkan::GetGuiFramebuffers();
 		VkRenderPass vkGuiRenderPass = GuiVulkan::GetGuiRenderPass();

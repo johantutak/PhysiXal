@@ -127,7 +127,7 @@ namespace PhysiXal {
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.commandPool = s_GuiCommandPool;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandBufferCount = (uint32_t)s_GuiCommandBuffers.size();
+		allocInfo.commandBufferCount = (U32)s_GuiCommandBuffers.size();
 
 		if (vkAllocateCommandBuffers(VulkanDevice::GetVulkanDevice(), &allocInfo, s_GuiCommandBuffers.data()) != VK_SUCCESS)
 		{
@@ -141,7 +141,7 @@ namespace PhysiXal {
 
 		PX_CORE_WARN("...Freeing up Dear ImGUI (Vulkan) command buffers");
 
-		vkFreeCommandBuffers(VulkanDevice::GetVulkanDevice(), s_GuiCommandPool, static_cast<uint32_t>(s_GuiCommandBuffers.size()), s_GuiCommandBuffers.data());
+		vkFreeCommandBuffers(VulkanDevice::GetVulkanDevice(), s_GuiCommandPool, static_cast<U32>(s_GuiCommandBuffers.size()), s_GuiCommandBuffers.data());
 	}
 
 		// #### Command pool ####

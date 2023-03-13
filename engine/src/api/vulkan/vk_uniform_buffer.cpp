@@ -42,7 +42,7 @@ namespace PhysiXal {
         std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
         VkDescriptorSetLayoutCreateInfo layoutInfo{};
         layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+        layoutInfo.bindingCount = static_cast<U32>(bindings.size());
         layoutInfo.pBindings = bindings.data();
 
         if (vkCreateDescriptorSetLayout(VulkanDevice::GetVulkanDevice(), &layoutInfo, nullptr, &s_DescriptorSetLayout) != VK_SUCCESS)
@@ -72,15 +72,15 @@ namespace PhysiXal {
 
         std::array<VkDescriptorPoolSize, 2> poolSizes{};
         poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        poolSizes[0].descriptorCount = static_cast<uint32_t>(c_MaxImageCount);
+        poolSizes[0].descriptorCount = static_cast<U32>(c_MaxImageCount);
         poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        poolSizes[1].descriptorCount = static_cast<uint32_t>(c_MaxImageCount);
+        poolSizes[1].descriptorCount = static_cast<U32>(c_MaxImageCount);
 
         VkDescriptorPoolCreateInfo poolInfo{};
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+        poolInfo.poolSizeCount = static_cast<U32>(poolSizes.size());
         poolInfo.pPoolSizes = poolSizes.data();
-        poolInfo.maxSets = static_cast<uint32_t>(c_MaxImageCount);
+        poolInfo.maxSets = static_cast<U32>(c_MaxImageCount);
 
         if (vkCreateDescriptorPool(VulkanDevice::GetVulkanDevice(), &poolInfo, nullptr, &s_DescriptorPool) != VK_SUCCESS)
         {
@@ -107,7 +107,7 @@ namespace PhysiXal {
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         allocInfo.descriptorPool = s_DescriptorPool;
-        allocInfo.descriptorSetCount = static_cast<uint32_t>(c_MaxImageCount);
+        allocInfo.descriptorSetCount = static_cast<U32>(c_MaxImageCount);
         allocInfo.pSetLayouts = layouts.data();
 
         s_DescriptorSets.resize(c_MaxImageCount);
@@ -145,7 +145,7 @@ namespace PhysiXal {
             descriptorWrites[1].descriptorCount = 1;
             descriptorWrites[1].pImageInfo = &imageInfo;
 
-            vkUpdateDescriptorSets(VulkanDevice::GetVulkanDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+            vkUpdateDescriptorSets(VulkanDevice::GetVulkanDevice(), static_cast<U32>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         }
     }
 
@@ -185,7 +185,7 @@ namespace PhysiXal {
         }
     }
 
-    void VulkanUniformBuffer::UpdateUniformBuffer(uint32_t currentImage)
+    void VulkanUniformBuffer::UpdateUniformBuffer(U32 currentImage)
     {
         static auto startTime = std::chrono::high_resolution_clock::now();
 

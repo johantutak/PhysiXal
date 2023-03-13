@@ -40,9 +40,9 @@ namespace PhysiXal {
 		VkPhysicalDeviceProperties properties;
         vkGetPhysicalDeviceProperties(vkPhysicalDevice, &properties);
 
-		uint32_t vk_major = VK_VERSION_MAJOR(properties.apiVersion);
-        uint32_t vk_minor = VK_VERSION_MINOR(properties.apiVersion);
-        uint32_t vk_patch = VK_VERSION_PATCH(properties.apiVersion);
+		U32 vk_major = VK_VERSION_MAJOR(properties.apiVersion);
+        U32 vk_minor = VK_VERSION_MINOR(properties.apiVersion);
+        U32 vk_patch = VK_VERSION_PATCH(properties.apiVersion);
 
 		ImGui::Begin("Performance (DEVICE)");
 

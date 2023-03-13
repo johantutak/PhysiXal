@@ -26,7 +26,7 @@ namespace PhysiXal {
 		int texWidth, texHeight, texChannels;
 		stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 		VkDeviceSize imageSize = texWidth * texHeight * 4;
-		s_MipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
+		s_MipLevels = static_cast<U32>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
 
 		if (!pixels) 
 		{
@@ -48,7 +48,7 @@ namespace PhysiXal {
 			VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_TextureImage, s_TextureImageMemory);
 		
 		TransitionImageLayout(s_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, s_MipLevels);
-		CopyBufferToImage(stagingBuffer, s_TextureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
+		CopyBufferToImage(stagingBuffer, s_TextureImage, static_cast<U32>(texWidth), static_cast<U32>(texHeight));
 		//transitioned to VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL while generating mipmaps
 
 		vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), stagingBuffer, nullptr);
@@ -67,7 +67,7 @@ namespace PhysiXal {
 		vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_TextureImageMemory, nullptr);
 	}
 
-	void VulkanTexture::TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels)
+	void VulkanTexture::TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, U32 mipLevels)
 	{
 		VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
@@ -120,7 +120,7 @@ namespace PhysiXal {
 		EndSingleTimeCommands(commandBuffer);
 	}
 
-	void VulkanTexture::CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
+	void VulkanTexture::CopyBufferToImage(VkBuffer buffer, VkImage image, U32 width, U32 height)
 	{
 		VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
@@ -217,7 +217,7 @@ namespace PhysiXal {
 	// Mipmaps
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void VulkanTexture::GenerateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels)
+	void VulkanTexture::GenerateMipmaps(VkImage image, VkFormat imageFormat, I32 texWidth, I32 texHeight, U32 mipLevels)
 	{
 		PX_CORE_INFO("Generating Mipmaps");
 
@@ -245,7 +245,7 @@ namespace PhysiXal {
 		int32_t mipWidth = texWidth;
 		int32_t mipHeight = texHeight;
 
-		for (uint32_t i = 1; i < mipLevels; i++) 
+		for (U32 i = 1; i < mipLevels; i++)
 		{
 			barrier.subresourceRange.baseMipLevel = i - 1;
 			barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
