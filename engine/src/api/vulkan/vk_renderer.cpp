@@ -11,8 +11,6 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "scene/camera.h"
-
 namespace PhysiXal {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,10 +247,4 @@ namespace PhysiXal {
 
 		vkDeviceWaitIdle(VulkanDevice::GetVulkanDevice());
 	}
-
-	// #### TO DO #### Camera class works but needs to get implemented to work with the renderer and it's scene
-	/*void VulkanRenderer::SetCamera(Camera* camera)
-	{
-		m_Camera = camera;
-	}*/
 }

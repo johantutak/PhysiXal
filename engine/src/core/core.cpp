@@ -15,7 +15,7 @@ namespace PhysiXal {
 	{
 		Log::Init();
 
-		PX_CORE_TRACE("PhysiXal Engine {}", PX_BUILD_ID);
+		PX_CORE_TRACE("PhysiXal {}", PX_BUILD_ID);
 		PX_CORE_TRACE("Initializing...");
 		
 		PX_CORE_INFO("Log (core)");

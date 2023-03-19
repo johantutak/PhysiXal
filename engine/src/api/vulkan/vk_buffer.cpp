@@ -71,7 +71,7 @@ namespace PhysiXal {
 
         void* data;
         vkMapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, m_Model->GetVulkanVertices().data(), (size_t)bufferSize);
+        memcpy(data, m_Model->GetVulkanVertices().data(), (SIZE64)bufferSize);
         vkUnmapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory);
 
         CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_VertexBuffer, s_VertexBufferMemory);
@@ -122,7 +122,7 @@ namespace PhysiXal {
 
         void* data;
         vkMapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, m_Model->GetVulkanIndices().data(), (size_t)bufferSize);
+        memcpy(data, m_Model->GetVulkanIndices().data(), (SIZE64)bufferSize);
         vkUnmapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory);
 
         CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_IndexBuffer, s_IndexBufferMemory);

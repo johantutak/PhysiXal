@@ -181,7 +181,7 @@ namespace PhysiXal {
 
 		PX_CORE_INFO("Creating Dear ImGUI (Vulkan) framebuffers");
 
-		for (size_t i = 0; i < VulkanSwapChain::GetVulkanImageViews().size(); i++) {
+		for (SIZE64 i = 0; i < VulkanSwapChain::GetVulkanImageViews().size(); i++) {
 			std::array<VkImageView, 1> attachment = {
 			VulkanSwapChain::GetVulkanImageViews()[i]
 			};

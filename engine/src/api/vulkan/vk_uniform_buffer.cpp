@@ -11,6 +11,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "scene/camera.h"
+
 #include <chrono>
 
 namespace PhysiXal {
@@ -116,7 +118,7 @@ namespace PhysiXal {
             PX_CORE_ERROR("Failed to allocate descriptor sets!");
         }
 
-        for (size_t i = 0; i < c_MaxImageCount; i++) {
+        for (SIZE64 i = 0; i < c_MaxImageCount; i++) {
             VkDescriptorBufferInfo bufferInfo{};
             bufferInfo.buffer = s_UniformBuffers[i];
             bufferInfo.offset = 0;
@@ -165,7 +167,7 @@ namespace PhysiXal {
         s_UniformBuffersMemory.resize(c_MaxImageCount);
         s_UniformBuffersMapped.resize(c_MaxImageCount);
 
-        for (size_t i = 0; i < c_MaxImageCount; i++) {
+        for (SIZE64 i = 0; i < c_MaxImageCount; i++) {
             m_Buffer->CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, s_UniformBuffers[i], s_UniformBuffersMemory[i]);
 
             vkMapMemory(VulkanDevice::GetVulkanDevice(), s_UniformBuffersMemory[i], 0, bufferSize, 0, &s_UniformBuffersMapped[i]);
@@ -178,7 +180,7 @@ namespace PhysiXal {
 
         PX_CORE_WARN("...Destroying Vulkan unifrom buffers");
 
-        for (size_t i = 0; i < c_MaxImageCount; i++)
+        for (SIZE64 i = 0; i < c_MaxImageCount; i++)
         {
             vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), s_UniformBuffers[i], nullptr);
             vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_UniformBuffersMemory[i], nullptr);
@@ -194,9 +196,8 @@ namespace PhysiXal {
 
         UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.proj = glm::perspective(glm::radians(45.0f), VulkanSwapChain::GetVulkanSwapChainExtent().width / (float)VulkanSwapChain::GetVulkanSwapChainExtent().height, 0.1f, 10.0f);
-        ubo.proj[1][1] *= -1;
+        ubo.view = Camera::GetView();
+        ubo.proj = Camera::GetProjection();
 
         memcpy(s_UniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
     }

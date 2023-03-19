@@ -4,9 +4,11 @@
 #include "core/input/input.h"
 #include "core/window.h"
 
+#include "scene/camera_controller.h"
+
 #include "renderer/renderer.h"
 
-//#include "api/vulkan/vk_initializers.h"
+#include "api/vulkan/vk_initializers.h"
 
 #include "gui/gui.h"
 
@@ -21,7 +23,7 @@ namespace PhysiXal {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Application* Application::s_Instance = nullptr;
-	//VulkanRenderer* m_Renderer = nullptr;
+	VulkanRenderer* m_Renderer = nullptr;
 
 	Application::Application(const ApplicationSpecification& specification)
 	{
@@ -42,10 +44,16 @@ namespace PhysiXal {
 		m_Window->Init();
 
 		// Initialize the camera
-		m_Camera = new Camera(120.0f, static_cast<float>(windowSpec.Width = specification.WindowWidth),static_cast<float>(windowSpec.Height = specification.WindowHeight),0.1f, 1000.0f);
+		//m_Camera.SetViewDirection(glm::vec3(1.f), glm::vec3(0.5f, 0.f, 1.f));
+		m_Camera.SetViewTarget(glm::vec3(0.f, 2.f, 1.f), glm::vec3(0.f, 0.f, 0.f));
 		
-		// Setup the camera
-		//m_Renderer->SetCamera(m_Camera);
+		// #### EXAMPLE #### How to setup camera controller in future
+		//cameraController.moveInPlaneXZ(lveWindow.getGLFWwindow(), frameTime, viewerObject);
+		//m_Camera.SetViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+
+		//auto viewerObject = LveGameObject::createGameObject();
+		//viewerObject.transform.translation.z = -2.5f;
+		//KeyboardMovementController cameraController{};
 
 		// Set window events
 		m_Window->SetEventCallback(PX_BIND_EVENT_FN(Application::OnEvent));
@@ -80,8 +88,6 @@ namespace PhysiXal {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(PX_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(PX_BIND_EVENT_FN(Application::OnWindowResize));
-
-		m_Camera->OnEvent(e);
 
 		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 		{
@@ -123,6 +129,9 @@ namespace PhysiXal {
 						layer->OnUpdate(m_FrameTime);
 				}
 
+				float aspect = static_cast<float>(VulkanSwapChain::GetVulkanSwapChainExtent().width) / static_cast<float>(VulkanSwapChain::GetVulkanSwapChainExtent().height);
+				m_Camera.SetPerspectiveProjection(glm::radians(120.0f), aspect, 0.1f, 1000.f);
+
 				// Acquire images to screen
 				Renderer::BeginFrame();
 
@@ -143,7 +152,6 @@ namespace PhysiXal {
 			}
 
 			m_Window->OnUpdate();
-			m_Camera->OnUpdate();
 
 			Renderer::WaitAndIdle();
 		}

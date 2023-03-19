@@ -21,7 +21,7 @@ namespace PhysiXal {
 
         s_Framebuffers.resize(VulkanSwapChain::GetVulkanImageViews().size());
 
-        for (size_t i = 0; i < VulkanSwapChain::GetVulkanImageViews().size(); i++) {
+        for (SIZE64 i = 0; i < VulkanSwapChain::GetVulkanImageViews().size(); i++) {
             std::array<VkImageView, 3> attachments = {
                 VulkanDevice::GetVulkanColorImageView(),
                 VulkanDepthBuffer::GetVulkanDepthImageView(),

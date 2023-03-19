@@ -30,7 +30,7 @@ namespace PhysiXal {
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for (size_t i = 0; i < c_MaxImageCount; i++)
+		for (SIZE64 i = 0; i < c_MaxImageCount; i++)
 		{
 			if (vkCreateSemaphore(VulkanDevice::GetVulkanDevice(), &semaphoreInfo, nullptr, &s_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
 				vkCreateSemaphore(VulkanDevice::GetVulkanDevice(), &semaphoreInfo, nullptr, &s_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
@@ -47,7 +47,7 @@ namespace PhysiXal {
 
 		PX_CORE_WARN("...Destroying sync objects");
 
-		for (size_t i = 0; i < c_MaxImageCount; i++)
+		for (SIZE64 i = 0; i < c_MaxImageCount; i++)
 		{
 			vkDestroySemaphore(VulkanDevice::GetVulkanDevice(), s_ImageAvailableSemaphores[i], nullptr);
 			vkDestroySemaphore(VulkanDevice::GetVulkanDevice(), s_RenderFinishedSemaphores[i], nullptr);

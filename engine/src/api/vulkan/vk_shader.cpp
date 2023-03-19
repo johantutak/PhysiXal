@@ -40,7 +40,7 @@ namespace PhysiXal {
             PX_CORE_ERROR("Failed to open file!");
         }
 
-        size_t fileSize = (size_t)file.tellg();
+        SIZE64 fileSize = (SIZE64)file.tellg();
         std::vector<char> buffer(fileSize);
 
         file.seekg(0);

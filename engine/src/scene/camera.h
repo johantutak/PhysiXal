@@ -1,61 +1,26 @@
 #pragma once
 
-#include "events/event.h"
-#include "events/key_event.h"
-#include "events/app_event.h"
-
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
 namespace PhysiXal {
 
-	class Event;
-
-	struct CameraPushConst
-	{
-		glm::vec3 eyePos;
-	};
-
-	class Camera
-	{
+	class Camera {
 	public:
-		Camera(float fov, float width, float height, float zNear, float zFar);
+		void SetOrthographicProjection(float left, float right, float top, float bottom, float znear, float zfar);
+		void SetPerspectiveProjection(float fovy, float aspect, float znear, float zfar);
 
-		void OnEvent(Event& e);
-		void OnUpdate();
+		void SetViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up = glm::vec3{ 0.f, -1.f, 0.f });
+		void SetViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up = glm::vec3{ 0.f, -1.f, 0.f });
+		void SetViewYXZ(glm::vec3 position, glm::vec3 rotation);
 
-		glm::mat4 GetView();
-		glm::mat4 GetProjection() const;
-		glm::vec3 GetPosition() const;
-
+		static glm::mat4& GetProjection() { return m_ProjectionMatrix; }
+		static glm::mat4& GetView() { return m_ViewMatrix; }
 	private:
-		bool OnWindowResize(WindowResizeEvent& e);
-		bool OnKeyPressed(KeyPressedEvent& e);
+		static inline glm::mat4 m_ProjectionMatrix{ 1.f };
+		static inline glm::mat4 m_ViewMatrix{ 1.f };
 
-		// Pass 0 if you want to keep the original values
-		void UpdateProjection(float fov, float width, float height, float zNear, float zFar);
-		void UpdateViewMatrix();
-
-	private:
-		glm::vec3 m_Position{};
-		glm::vec3 m_Forward{};
-
-		glm::vec3 m_Rotation{};
-
-		float m_MoveSpeed{ 40.0f };
-		float m_MoveSpeedSlow{ 10.0f };
-		float m_MouseSpeed{ 5.0f };
-		bool m_IsSlowMovement{ false };
-
-		glm::mat4 m_View{};
-		glm::mat4 m_Projection{};
-
-		float m_Yaw;
-		float m_Pitch;
-
-		float m_Fov;
-		float m_Width;
-		float m_Height;
-		float m_ZNear;
-		float m_ZFar;
+		glm::vec3 m_Movement;
 	};
 }

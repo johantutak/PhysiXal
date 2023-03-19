@@ -13,7 +13,7 @@ namespace PhysiXal {
 	// Windows window
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-	static uint8_t s_GLFWWindowCount = 0;
+	static U8 s_GLFWWindowCount = 0;
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{

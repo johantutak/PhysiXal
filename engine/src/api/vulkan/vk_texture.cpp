@@ -39,7 +39,7 @@ namespace PhysiXal {
 
 		void* data;
 		vkMapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
-		memcpy(data, pixels, static_cast<size_t>(imageSize));
+		memcpy(data, pixels, static_cast<SIZE64>(imageSize));
 		vkUnmapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory);
 
 		stbi_image_free(pixels);

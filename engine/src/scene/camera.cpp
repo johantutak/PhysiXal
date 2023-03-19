@@ -1,14 +1,9 @@
 #include "px_pch.h"
 #include "scene/camera.h"
 
-#include "events/event.h"
-#include "events/key_event.h"
+#include <cassert>
+#include <limits>
 
-#include "core/input/input.h"
-
-#include <glm/gtc/matrix_transform.hpp>
-
-#include "events/app_event.h"
 
 namespace PhysiXal {
 
@@ -16,131 +11,78 @@ namespace PhysiXal {
 	// Camera
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	Camera::Camera(float fov, float width, float height, float zNear, float zFar)
-		: m_Position(-20.0f, 20.0f, 20.0f)
-		, m_Forward(0.0f, 0.0f, 1.0f)
-		, m_Yaw(0.0f)
-		, m_Pitch(0.0f)
+	void Camera::SetOrthographicProjection(float left, float right, float top, float bottom, float znear, float zfar) 
 	{
-		UpdateProjection(fov, width, height, zNear, zFar);
+		m_ProjectionMatrix = glm::mat4{ 1.0f };
+		m_ProjectionMatrix[0][0] = 2.f / (right - left);
+		m_ProjectionMatrix[1][1] = 2.f / (bottom - top);
+		m_ProjectionMatrix[2][2] = 1.f / (zfar - znear);
+		m_ProjectionMatrix[3][0] = -(right + left) / (right - left);
+		m_ProjectionMatrix[3][1] = -(bottom + top) / (bottom - top);
+		m_ProjectionMatrix[3][2] = -znear / (zfar - znear);
 	}
 
-	void Camera::OnEvent(Event& e)
+	void Camera::SetPerspectiveProjection(float fovy, float aspect, float znear, float zfar) 
 	{
-		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowResizeEvent>(PX_BIND_EVENT_FN(Camera::OnWindowResize));
-		dispatcher.Dispatch<KeyPressedEvent>(PX_BIND_EVENT_FN(Camera::OnKeyPressed));
+		PX_CORE_ASSERT(glm::abs(aspect - std::numeric_limits<float>::epsilon()) > 0.0f);
+		const float tanHalfFovy = tan(fovy / 2.f);
+		m_ProjectionMatrix = glm::mat4{ 0.0f };
+		m_ProjectionMatrix[0][0] = 1.f / (aspect * tanHalfFovy);
+		m_ProjectionMatrix[1][1] = 1.f / (tanHalfFovy);
+		m_ProjectionMatrix[2][2] = zfar / (zfar - znear);
+		m_ProjectionMatrix[2][3] = 1.f;
+		m_ProjectionMatrix[3][2] = -(zfar * znear) / (zfar - znear);
 	}
 
-	void Camera::OnUpdate()
+	void Camera::SetViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up) 
 	{
-		glm::vec3 movement{};
+		const glm::vec3 w{ glm::normalize(direction) };
+		const glm::vec3 u{ glm::normalize(glm::cross(w, up)) };
+		const glm::vec3 v{ glm::cross(w, u) };
 
-		// Movement
-
-		// To move up and down on x-axis (left or right in sence)
-		if (Input::IsKeyPressed(Key::A))
-			PX_CORE_INFO("A is pressed"),
-			movement.x -= 1;
-		if (Input::IsKeyPressed(Key::D))
-			PX_CORE_INFO("D is pressed"),
-			movement.x += 1;
-
-		// To move up and down on y-axis (up or down in sence)
-		if (Input::IsKeyPressed(Key::W))
-			PX_CORE_INFO("W is pressed"),
-			movement.y += 1;
-		if (Input::IsKeyPressed(Key::S))
-			PX_CORE_INFO("S is pressed"),
-			movement.y -= 1;
-
-		// To move up and down on z-axis (forward or backwards in sence)
-		if (Input::IsKeyPressed(Key::Q))
-			PX_CORE_INFO("Q is pressed"),
-			movement.z -= 1;
-		if (Input::IsKeyPressed(Key::E))
-			PX_CORE_INFO("E is pressed"),
-			movement.z += 1;
-
-		// constrain pitch
-		if (m_Pitch > 89.9f)
-			m_Pitch = 89.9f;
-		if (m_Pitch < -89.9f)
-			m_Pitch = -89.9f;
-
-		glm::vec3 front;
-		front.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-		front.y = sin(glm::radians(m_Pitch));
-		front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(-m_Pitch));
-		front = glm::normalize(front);
-		m_Forward = front;
-
-		if (glm::length(movement) > 0)
-		{
-			const glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-			const glm::vec3 forward = glm::normalize(m_Forward);
-			const glm::vec3 right = glm::normalize(glm::cross(m_Forward, up));
-
-			movement = glm::normalize(movement);
-			glm::vec3 mov{};
-
-			mov += movement.x * right;
-			mov += movement.y * forward;
-			mov += movement.z * up;
-
-			// #### TO Do #### set movement speed to timestep/v-sync
-			// Do it like example under
-			//m_Position += mov * Time::GetDeltaTime() * (m_IsSlowMovement ? m_MoveSpeedSlow : m_MoveSpeed);
-		}
+		m_ViewMatrix = glm::mat4{ 1.f };
+		m_ViewMatrix[0][0] = u.x;
+		m_ViewMatrix[1][0] = u.y;
+		m_ViewMatrix[2][0] = u.z;
+		m_ViewMatrix[0][1] = v.x;
+		m_ViewMatrix[1][1] = v.y;
+		m_ViewMatrix[2][1] = v.z;
+		m_ViewMatrix[0][2] = w.x;
+		m_ViewMatrix[1][2] = w.y;
+		m_ViewMatrix[2][2] = w.z;
+		m_ViewMatrix[3][0] = -glm::dot(u, position);
+		m_ViewMatrix[3][1] = -glm::dot(v, position);
+		m_ViewMatrix[3][2] = -glm::dot(w, position);
 	}
 
-	glm::mat4 Camera::GetView()
+	void Camera::SetViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up) 
 	{
-		UpdateViewMatrix();
-
-		return m_View;
+		SetViewDirection(position, target - position, up);
 	}
 
-	glm::mat4 Camera::GetProjection() const
+	void Camera::SetViewYXZ(glm::vec3 position, glm::vec3 rotation) 
 	{
-		return m_Projection;
-	}
-
-	glm::vec3 Camera::GetPosition() const
-	{
-		return m_Position;
-	}
-
-	bool Camera::OnWindowResize(WindowResizeEvent& e)
-	{
-		if (e.GetWidth() <= 0 || e.GetHeight() <= 0)
-			return false;
-
-		UpdateProjection(m_Fov, static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()), m_ZNear, m_ZFar);
-		return false;
-	}
-
-	bool Camera::OnKeyPressed(KeyPressedEvent& e)
-	{
-		if (e.GetKeyCode() == KeyCode::LeftShift)
-			m_IsSlowMovement = !m_IsSlowMovement;
-
-		return false;
-	}
-
-	void Camera::UpdateViewMatrix()
-	{
-		m_View = glm::lookAt(m_Position, m_Position + m_Forward, glm::vec3(0.0f, 1.0f, 0.0f));
-	}
-
-	void Camera::UpdateProjection(float fov, float width, float height, float zNear, float zFar)
-	{
-		m_Fov = fov;
-		m_Width = width;
-		m_Height = height;
-		m_ZNear = zNear;
-		m_ZFar = zFar;
-
-		m_Projection = glm::perspective(glm::radians(m_Fov / 2), m_Width / m_Height, m_ZNear, m_ZFar);
+		const float c3 = glm::cos(rotation.z);
+		const float s3 = glm::sin(rotation.z);
+		const float c2 = glm::cos(rotation.x);
+		const float s2 = glm::sin(rotation.x);
+		const float c1 = glm::cos(rotation.y);
+		const float s1 = glm::sin(rotation.y);
+		const glm::vec3 u{ (c1 * c3 + s1 * s2 * s3), (c2 * s3), (c1 * s2 * s3 - c3 * s1) };
+		const glm::vec3 v{ (c3 * s1 * s2 - c1 * s3), (c2 * c3), (c1 * c3 * s2 + s1 * s3) };
+		const glm::vec3 w{ (c2 * s1), (-s2), (c1 * c2) };
+		m_ViewMatrix = glm::mat4{ 1.f };
+		m_ViewMatrix[0][0] = u.x;
+		m_ViewMatrix[1][0] = u.y;
+		m_ViewMatrix[2][0] = u.z;
+		m_ViewMatrix[0][1] = v.x;
+		m_ViewMatrix[1][1] = v.y;
+		m_ViewMatrix[2][1] = v.z;
+		m_ViewMatrix[0][2] = w.x;
+		m_ViewMatrix[1][2] = w.y;
+		m_ViewMatrix[2][2] = w.z;
+		m_ViewMatrix[3][0] = -glm::dot(u, position);
+		m_ViewMatrix[3][1] = -glm::dot(v, position);
+		m_ViewMatrix[3][2] = -glm::dot(w, position);
 	}
 }

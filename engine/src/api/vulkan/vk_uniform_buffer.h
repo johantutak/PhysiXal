@@ -4,6 +4,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include "scene/camera.h"
+
 namespace PhysiXal {
 
 	struct UniformBufferObject {

@@ -39,8 +39,8 @@ namespace PhysiXal::Utilities {
 
 	std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters)
 	{
-		size_t start = 0;
-		size_t end = string.find_first_of(delimiters);
+		SIZE64 start = 0;
+		SIZE64 end = string.find_first_of(delimiters);
 
 		std::vector<std::string> result;
 
