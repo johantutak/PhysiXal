@@ -1,26 +1,49 @@
 #pragma once
 
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include "events/event.h"
+#include "events/key_event.h"
+#include "events/app_event.h"
+
+#include "api/vulkan/vk_context.h"
+
 #include <glm/glm.hpp>
 
 namespace PhysiXal {
 
-	class Camera {
-	public:
-		void SetOrthographicProjection(float left, float right, float top, float bottom, float znear, float zfar);
-		void SetPerspectiveProjection(float fovy, float aspect, float znear, float zfar);
+	class Camera
+	{
+    public:
+        // Camera
+        static void InitCamera(float fov, float width, float height, float zNear, float zFar);
 
-		void SetViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up = glm::vec3{ 0.f, -1.f, 0.f });
-		void SetViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up = glm::vec3{ 0.f, -1.f, 0.f });
-		void SetViewYXZ(glm::vec3 position, glm::vec3 rotation);
+        static void OnUpdate(GLFWwindow* window, float ts);
 
-		static glm::mat4& GetProjection() { return m_ProjectionMatrix; }
-		static glm::mat4& GetView() { return m_ViewMatrix; }
+        static glm::mat4 UpdateViewMatrix();
+        static void UpdateProjection(float fov, float width, float height, float zNear, float zFar);
+
+        static glm::mat4 GetView();
+        static glm::mat4 GetProjection();
+
+        void OnEvent(Event& e);
+
+        bool OnKeyPressed(KeyPressedEvent& e);
 	private:
-		static inline glm::mat4 m_ProjectionMatrix{ 1.f };
-		static inline glm::mat4 m_ViewMatrix{ 1.f };
+        inline static glm::mat4 m_View;
+        inline static glm::mat4 m_Projection;
 
-		glm::vec3 m_Movement;
+        inline static glm::vec3 m_CameraPos = glm::vec3(0.0f, 0.0f, 6.0f);
+        inline static glm::vec3 m_CameraFront = glm::vec3(0.0f, 0.0f, 1.0f);
+        inline static glm::vec3 m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        inline static float m_Yaw = -90.0f;
+        inline static float m_Pitch = 0.0f;
+        inline static float m_LastX = 800.0f / 2.0f;
+        inline static float m_LastY = 600.0f / 2.0f;
+        inline static bool m_InitMouse = true;
+
+        inline static float m_Fov;
+        inline static float m_Width;
+        inline static float m_Height;
+        inline static float m_ZNear;
+        inline static float m_ZFar;
 	};
 }

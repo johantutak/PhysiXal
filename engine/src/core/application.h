@@ -37,6 +37,8 @@ namespace PhysiXal {
 
 		inline Window& GetWindow() { return *m_Window; }
 
+		Camera* GetCamera() const { return m_Camera; }
+
 		static Application& Get() { return *s_Instance; }
 
 		Timestep GetTimeStep() const { return m_TimeStep; }
@@ -47,7 +49,7 @@ namespace PhysiXal {
 		bool OnWindowResize(WindowResizeEvent& e);
 	private:
 		Scope<Window> m_Window;
-		Camera m_Camera;
+		Camera* m_Camera;
 
 		bool m_Running = true;
 		bool m_Minimized = false;

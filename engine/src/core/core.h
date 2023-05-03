@@ -1,6 +1,12 @@
 ﻿#pragma once
 
+/*********************************************************************************************************************/
+/*********************************************************************************************************************/
+/**																													**/
 /**								#### PhysiXal Engine ⟨™⟩ - ©2023 - by Johan Tutak ####								**/
+/**																													**/
+/*********************************************************************************************************************/
+/*********************************************************************************************************************/
 /**
 * 
 * Notable mentions:
@@ -13,8 +19,8 @@
 * - is inspiered by Little Vulkan Engine made by blurrypiano at GitHub.com and got some of it's code base that is simillar
 * - or modified from it.
 * 
-* - is inspiered by Vulkan Tutorial made by Alexander Overvoorde at vulkan-tutorial.com and got some of it's code base that is simillar
-* - or modified from it.
+* - is inspiered by Vulkan Tutorial made by Alexander Overvoorde at vulkan-tutorial.com and got some of it's code base that
+* - is simillar or modified from it.
 * 
 * - is inspiered by Pelican Engine made by SeppahBaws at GitHub.com and got some of it's code base that is simillar
 * - or modified from it.

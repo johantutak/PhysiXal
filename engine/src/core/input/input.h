@@ -21,6 +21,8 @@ namespace PhysiXal {
 		static std::pair<float, float> GetMousePosition() { return s_Instance->GetMousePositionImpl(); }
 		static float GetMouseX() { return s_Instance->GetMouseXImpl(); }
 		static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
+		
+		static void SetCursorMode(bool enabled) { return s_Instance->SetCursorModeImpl(enabled); }
 
 		static Scope<Input> Create();
 	protected:
@@ -30,6 +32,8 @@ namespace PhysiXal {
 		virtual std::pair<float, float> GetMousePositionImpl() = 0;
 		virtual float GetMouseXImpl() = 0;
 		virtual float GetMouseYImpl() = 0;
+
+		virtual void SetCursorModeImpl(bool enabled) = 0;
 	private:
 		static Scope<Input> s_Instance;
 	};

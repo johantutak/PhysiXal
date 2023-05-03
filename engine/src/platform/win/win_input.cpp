@@ -45,4 +45,10 @@ namespace PhysiXal {
 		auto [x, y] = GetMousePositionImpl();
 		return y;
 	}
+
+	void WindowsInput::SetCursorModeImpl(bool enabled)
+	{
+		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		glfwSetInputMode(window, GLFW_CURSOR, enabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+	}
 }

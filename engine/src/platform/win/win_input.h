@@ -14,6 +14,8 @@ namespace PhysiXal {
 		virtual std::pair<float, float> GetMousePositionImpl() override;
 		virtual float GetMouseXImpl() override;
 		virtual float GetMouseYImpl() override;
+
+		virtual void SetCursorModeImpl(bool enabled) override;
 	private:
 
 	};
