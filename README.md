@@ -15,7 +15,7 @@ PhysiXal is modern game engine in the early stages of development that makes pos
 ### Supported platforms
 
 - Computer OS:
-  - ![Windows supported](/resources/images/badge/windows64_supported.svg)
+  - ![Windows supported](/resources/images/badge/windows_supported.svg)
   - ![Linux not supported](/resources/images/badge/linux_not_supported.svg)
   - ![MacOS not supported](/resources/images/badge/mac_not_supported.svg)
 - Mobile OS:
