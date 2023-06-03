@@ -1,22 +1,14 @@
 # Binaries
 **/bin/
 bin-int/
-
-# Files
-*.user
-Makefile
-PhysiXal.config
-PhysiXal.creator
-PhysiXal.files
-PhysiXal.includes
-startup.json
-shutdown.json
-runtime.json
-.hidden
-imgui.ini
+Intermediates/
 
 # PhysiXal files
 *.log
+startup.json
+shutdown.json
+runtime.json
+imgui.ini
 
 # Visual Studio files and folder
 .vs/
@@ -26,3 +18,5 @@ imgui.ini
 **.vcxproj.user
 
 # Directories
+engine/vendor/VulkanSDK
+scripts/__pycache__
