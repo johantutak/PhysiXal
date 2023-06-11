@@ -13,6 +13,8 @@
 
 #include "utilities/cpu_id.h"
 
+#include "core/input/input.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -68,6 +70,10 @@ namespace PhysiXal {
 		ImGui::Text("\n");
 		ImGui::Text("FRAME TIME: %.4f: ms/frame - %.4f: sec/frame - (%.0f FPS) \n", app.GetTimeStep().GetMilliseconds(), app.GetTimeStep().GetSeconds(), app.GetTimeStep().GetFramesPerSecond());
 		
+		ImGui::Separator();
+
+		ImGui::Text("MOUSE POSITION: X:(%.0f) Y:(%.0f)\n", Input::GetMouseX(), Input::GetMouseY());
+
 		ImGui::End();
 	}
 }

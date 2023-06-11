@@ -4,6 +4,8 @@
 #include "api/vulkan/vk_utilities.h"
 #include "api/vulkan/vk_initializers.h"
 
+#include "core/application.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -12,6 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "scene/camera.h"
+#include "scene/component.h"
 
 namespace PhysiXal {
 
@@ -116,7 +119,8 @@ namespace PhysiXal {
             PX_CORE_ERROR("Failed to allocate descriptor sets!");
         }
 
-        for (SIZE64 i = 0; i < c_MaxImageCount; i++) {
+        for (SIZE64 i = 0; i < c_MaxImageCount; i++) 
+        {
             VkDescriptorBufferInfo bufferInfo{};
             bufferInfo.buffer = s_UniformBuffers[i];
             bufferInfo.offset = 0;
@@ -165,8 +169,10 @@ namespace PhysiXal {
         s_UniformBuffersMemory.resize(c_MaxImageCount);
         s_UniformBuffersMapped.resize(c_MaxImageCount);
 
-        for (SIZE64 i = 0; i < c_MaxImageCount; i++) {
-            m_Buffer->CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, s_UniformBuffers[i], s_UniformBuffersMemory[i]);
+        for (SIZE64 i = 0; i < c_MaxImageCount; i++) 
+        {
+            m_Buffer->CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                s_UniformBuffers[i], s_UniformBuffersMemory[i]);
 
             vkMapMemory(VulkanDevice::GetVulkanDevice(), s_UniformBuffersMemory[i], 0, bufferSize, 0, &s_UniformBuffersMapped[i]);
         }
@@ -187,8 +193,15 @@ namespace PhysiXal {
 
     void VulkanUniformBuffer::UpdateUniformBuffer(U32 currentImage)
     {
+        Transform::InitModelMatrix();
+
+        // Set the position(x,y and z-axis), rotation (x,y and z-axis), and scale
+        Transform::SetPosition(glm::vec3(0.0f, -0.2f, 0.0f));
+        Transform::SetRotation(glm::vec3(-90.0f, 5.0f, Application::Get().GetTime() *  -90.0f));
+        Transform::SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
         UniformBufferObject ubo{};
-        ubo.model = glm::mat4(1.0f);
+        ubo.model = Transform::GetModelMatrix();
         ubo.view = Camera::GetView();
         ubo.proj = Camera::GetProjection();
         ubo.proj[1][1] *= -1;
