@@ -202,6 +202,8 @@ namespace PhysiXal {
 		
 		// Issues Dear ImGui command for performance stats widget
 		m_Widgets->PerformanceStats();
+		m_Widgets->AssetManager();
+		//m_Widgets->VertexData(); // #### TODO #### Fix performance and make it only display if 3D object is selected
 	}
 
 	void GuiLayer::GuiOnRebuild()

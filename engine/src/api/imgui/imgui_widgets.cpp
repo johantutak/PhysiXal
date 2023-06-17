@@ -15,8 +15,12 @@
 
 #include "core/input/input.h"
 
+#include "platform/win/win_utilities.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
+#include "utilities/string_utilities.h"
 
 namespace PhysiXal {
 
@@ -68,7 +72,8 @@ namespace PhysiXal {
 		ImGui::Separator();
 
 		ImGui::Text("\n");
-		ImGui::Text("FRAME TIME: %.4f: ms/frame - %.4f: sec/frame - (%.0f FPS) \n", app.GetTimeStep().GetMilliseconds(), app.GetTimeStep().GetSeconds(), app.GetTimeStep().GetFramesPerSecond());
+		ImGui::Text("FRAME TIME: %.4f: ms/frame - %.4f: sec/frame - (%.0f FPS) \n", app.GetTimeStep().GetMilliseconds(), 
+			app.GetTimeStep().GetSeconds(), app.GetTimeStep().GetFramesPerSecond());
 		
 		ImGui::Separator();
 
@@ -76,4 +81,100 @@ namespace PhysiXal {
 
 		ImGui::End();
 	}
+
+	void ImGuiWidgets::AssetManager()
+	{
+        ImGui::Begin("Asset Manager");
+
+        // Mesh selection
+        if (ImGui::Button("Mesh")) 
+        {
+            if (FileManager::SelectFile(m_SelectedModelFile, TEXT("Mesh Files\0*.obj\0All Files\0*.*\0")))
+            {
+                // File selected successfully
+                m_FileSelected = true;
+            }
+        }
+        ImGui::Text("%s", m_SelectedModelFile.c_str());
+
+        // Vertex shader selection
+        if (ImGui::Button("Vertex Shader"))
+        {
+            if (FileManager::SelectFile(m_SelectedVertexShaderFile, TEXT("Vertex Shader Files\0*.spv\0All Files\0*.*\0")))
+            {
+                // File selected successfully
+                m_FileSelected = true;
+            }
+        }
+        ImGui::Text("%s", m_SelectedVertexShaderFile.c_str());
+
+        // Fragment shader selection
+        if (ImGui::Button("Fragment Shader"))
+        {
+            if (FileManager::SelectFile(m_SelectedFragmentShaderFile, TEXT("Fragment Shader Files\0*.spv\0All Files\0*.*\0")))
+            {
+                // File selected successfully
+                m_FileSelected = true;
+            }
+        }
+        ImGui::Text("%s", m_SelectedFragmentShaderFile.c_str());
+
+        // Texture selection
+        if (ImGui::Button("Texture"))
+        {
+            if (FileManager::SelectFile(m_SelectedTextureFile, TEXT("Image Files\0*.png;*.jpg;*.bmp\0All Files\0*.*\0")))
+            {
+                // File selected successfully
+                m_FileSelected = true;
+            }
+        }
+        ImGui::Text("%s", m_SelectedTextureFile.c_str());
+
+        ImGui::End();
+    }
+
+    void ImGuiWidgets::VertexData()
+    {
+        ImGui::Begin("Vertex Data");
+
+        ImGui::Columns(4, "vertex_columns", true); // Create four columns
+
+        // Set column headers
+        ImGui::Text("Index");
+        ImGui::NextColumn();
+        ImGui::Text("Position");
+        ImGui::NextColumn();
+        ImGui::Text("Texture Coordinates");
+        ImGui::NextColumn();
+        ImGui::Text("Color");
+        ImGui::NextColumn();
+
+        // Add a separator below column headers
+        ImGui::Separator();
+
+        ImGuiListClipper clipper;
+        clipper.Begin(m_Model->GetVulkanVertices().size());
+
+        while (clipper.Step())
+        {
+            for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+            {
+                ImGui::Text("%d", i + 1);
+                ImGui::NextColumn();
+
+                ImGui::Text("%.3f, %.3f, %.3f", m_Model->GetVulkanVertices()[i].pos.x, m_Model->GetVulkanVertices()[i].pos.y, m_Model->GetVulkanVertices()[i].pos.z);
+                ImGui::NextColumn();
+
+                ImGui::Text("%.3f, %.3f", m_Model->GetVulkanVertices()[i].texCoord.x, m_Model->GetVulkanVertices()[i].texCoord.y);
+                ImGui::NextColumn();
+
+                ImGui::Text("%.3f, %.3f, %.3f", m_Model->GetVulkanVertices()[i].color.x, m_Model->GetVulkanVertices()[i].color.y, m_Model->GetVulkanVertices()[i].color.z);
+                ImGui::NextColumn();
+            }
+        }
+
+        ImGui::Columns(1); // Reset to a single column layout
+
+        ImGui::End();
+    }
 }

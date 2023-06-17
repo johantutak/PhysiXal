@@ -28,7 +28,7 @@ namespace PhysiXal {
 
         PX_PROFILE_SCOPE("tinyobj::LoadObj - VulkanModel::LoadModel()");
 
-        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) 
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str()))
         {
             PX_CORE_ERROR(warn + err);
         }

@@ -1,12 +1,17 @@
 #pragma once
 
+#include <locale>
+#include <codecvt>
+
 namespace PhysiXal::Utilities {
 
-	// String utilities
-	std::string GetFilename(const std::string& filepath);
-	std::string GetExtension(const std::string& filename);
-	std::string RemoveExtension(const std::string& filename);
-	bool StartsWith(const std::string& string, const std::string& start);
-	std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters);
-	std::vector<std::string> SplitString(const std::string& string, const char delimiter);
+	class String
+	{
+	public:
+		// String utilities
+		static std::wstring ToWideString(const std::string& str);
+		static std::string ToUtf8String(const std::wstring& wstr);
+		static std::string ExtractFileName(const std::string& filePath);
+	private:
+	};
 }
