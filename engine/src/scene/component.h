@@ -16,10 +16,10 @@ namespace PhysiXal {
 
         static glm::mat4 GetModelMatrix();
     private:
-        inline static glm::mat4 m_ModelMatrix;
+        inline static glm::mat4 s_ModelMatrix;
 
-        inline static glm::vec3 m_Position;
-        inline static glm::vec3 m_Rotation;
-        inline static glm::vec3 m_Scale;
+        inline static glm::vec3 s_Position;
+        inline static glm::vec3 s_Rotation;
+        inline static glm::vec3 s_Scale;
     };
 }

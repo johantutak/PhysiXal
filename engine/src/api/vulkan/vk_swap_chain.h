@@ -28,6 +28,8 @@ namespace PhysiXal {
 
 		static VkSwapchainKHR GetVulkanSwapChain() { return s_SwapChain; }
 
+		static std::vector<VkImage> GetVulkanSwapChainImages() { return s_SwapChainImages; }
+
 		static VkFormat GetVulkanImageFormat() { return s_SwapChainImageFormat; }
 		static VkExtent2D GetVulkanSwapChainExtent() { return s_SwapChainExtent; }
 

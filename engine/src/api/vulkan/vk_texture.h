@@ -2,39 +2,48 @@
 
 #include <vulkan/vulkan.h>
 
+#include <stb_image.h>
+
 namespace PhysiXal {
+
+	struct Texture {
+		VkImage textureImage;
+		VkDeviceMemory textureImageMemory;
+
+		VkImageView textureImageView;
+
+		VkSampler textureSampler;
+	};
 
 	class VulkanTexture
 	{
 	public:
 		// Texture
-		void CreateTextureImage();
-		void DestroyTextureImage();
+		void CreateTextureImage(VkImage& textureImage, VkDeviceMemory& textureImageMemory, const std::string& filePath);
+		void DestroyTextureImage(VkImage& textureImage, VkDeviceMemory& textureImageMemory);
+		stbi_uc* LoadTextureData(const std::string& filePath, int& texWidth, int& texHeight, int& texChannels);
 		void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, U32 mipLevels);
 		void CopyBufferToImage(VkBuffer buffer, VkImage image, U32 width, U32 height);
 
-		//Texture image view
-		void CreateTextureImageView();
-		void DestroyTextureImageView();
+		static Texture& GetVulkanTexture() { return texture; }
+		//static Texture& GetVulkanTextureNew() { return textureNew; }
 
-		static VkImageView GetVulkanTextureImageView() { return s_TextureImageView; }
+		//Texture image view
+		void CreateTextureImageView(VkImage& textureImage, VkImageView& textureImageView);
+		void DestroyTextureImageView(VkImageView& textureImageView);
 
 		// Texture sampler
-		void CreateTextureSampler();
-		void DestroyTextureSampler();
-
-		static VkSampler GetVulkanTextureSampler() { return s_TextureSampler; }
+		void CreateTextureSampler(VkSampler& textureSampler);
+		void DestroyTextureSampler(VkSampler& textureSampler);
 
 		// Mipmaps
 		void GenerateMipmaps(VkImage image, VkFormat imageFormat, I32 texWidth, I32 texHeight, U32 mipLevels);
+
+		static U32 GetVulkanMipLevels() { return s_MipLevels; }
 	private:
-		inline static VkImage s_TextureImage;
-		inline static VkDeviceMemory s_TextureImageMemory;
+		inline static Texture texture;
+		//inline static Texture textureNew;
 
-		inline static VkImageView s_TextureImageView;
-
-		inline static VkSampler s_TextureSampler;
-
-		inline static uint32_t s_MipLevels;
+		inline static U32 s_MipLevels;
 	};
 }

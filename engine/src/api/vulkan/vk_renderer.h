@@ -4,11 +4,12 @@
 
 #include "scene/camera.h"
 
+#include "api/imgui/imgui_widgets.h"
+
 namespace PhysiXal {
 
 	// #### TEMPORARY ####
 	const std::string MODEL_PATH = "../editor/assets/models/viking_room.obj";
-	const std::string TEXTURE_PATH = "../editor/assets/textures/viking_room.png";
 
 	// #### TO DO #### Framebuffer reset in window fix and fix renderer destruction order
 

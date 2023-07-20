@@ -15,7 +15,7 @@ namespace PhysiXal {
 	// Texture
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void VulkanTexture::CreateTextureImage()
+	void VulkanTexture::CreateTextureImage(VkImage& textureImage, VkDeviceMemory& textureImageMemory, const std::string& filePath)
 	{
 		PX_PROFILE_FUNCTION();
 
@@ -24,7 +24,7 @@ namespace PhysiXal {
 		PX_PROFILE_SCOPE("stbi_load - VulkanTexture::CreateTextureImage()");
 
 		int texWidth, texHeight, texChannels;
-		stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+		stbi_uc* pixels = LoadTextureData(filePath.c_str(), texWidth, texHeight, texChannels);
 		VkDeviceSize imageSize = texWidth * texHeight * 4;
 		s_MipLevels = static_cast<U32>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
 
@@ -45,26 +45,33 @@ namespace PhysiXal {
 		stbi_image_free(pixels);
 
 		CreateImage(texWidth, texHeight, s_MipLevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
-			VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_TextureImage, s_TextureImageMemory);
+			VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
 		
-		TransitionImageLayout(s_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, s_MipLevels);
-		CopyBufferToImage(stagingBuffer, s_TextureImage, static_cast<U32>(texWidth), static_cast<U32>(texHeight));
+		TransitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, s_MipLevels);
+		CopyBufferToImage(stagingBuffer, textureImage, static_cast<U32>(texWidth), static_cast<U32>(texHeight));
 		//transitioned to VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL while generating mipmaps
 
 		vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), stagingBuffer, nullptr);
 		vkFreeMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory, nullptr);
 
-		GenerateMipmaps(s_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, s_MipLevels);
+		GenerateMipmaps(textureImage, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, s_MipLevels);
 	}
 
-	void VulkanTexture::DestroyTextureImage()
+	void VulkanTexture::DestroyTextureImage(VkImage& textureImage, VkDeviceMemory& textureImageMemory)
 	{
 		PX_PROFILE_FUNCTION();
 
 		PX_CORE_WARN("...Erasing texture image");
 
-		vkDestroyImage(VulkanDevice::GetVulkanDevice(), s_TextureImage, nullptr);
-		vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_TextureImageMemory, nullptr);
+		vkDestroyImage(VulkanDevice::GetVulkanDevice(), textureImage, nullptr);
+		vkFreeMemory(VulkanDevice::GetVulkanDevice(), textureImageMemory, nullptr);
+	}
+
+	stbi_uc* VulkanTexture::LoadTextureData(const std::string& filePath, int& texWidth, int& texHeight, int& texChannels)
+	{
+		stbi_uc* pixels = stbi_load(filePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+
+		return pixels;
 	}
 
 	void VulkanTexture::TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, U32 mipLevels)
@@ -84,8 +91,9 @@ namespace PhysiXal {
 		barrier.subresourceRange.baseArrayLayer = 0;
 		barrier.subresourceRange.layerCount = 1;
 
-		VkPipelineStageFlags sourceStage;
-		VkPipelineStageFlags destinationStage;
+		VkPipelineStageFlags sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT; // Set default value
+		VkPipelineStageFlags destinationStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT; // Set default value
+
 
 		if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) 
 		{
@@ -148,29 +156,29 @@ namespace PhysiXal {
 	// Texture image view
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void VulkanTexture::CreateTextureImageView()
+	void VulkanTexture::CreateTextureImageView(VkImage& textureImage, VkImageView& textureImageView)
 	{
 		PX_PROFILE_FUNCTION();
 
 		PX_CORE_INFO("Setting up and creating Vulkan texture image views");
 
-		s_TextureImageView = CreateImageView(s_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, s_MipLevels);
+		textureImageView = CreateImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, s_MipLevels);
 	}
 
-	void VulkanTexture::DestroyTextureImageView()
+	void VulkanTexture::DestroyTextureImageView(VkImageView& textureImageView)
 	{
 		PX_PROFILE_FUNCTION();
 
 		PX_CORE_WARN("...Destroying Vulkan texture image views");
 
-		vkDestroyImageView(VulkanDevice::GetVulkanDevice(), s_TextureImageView, nullptr);
+		vkDestroyImageView(VulkanDevice::GetVulkanDevice(), textureImageView, nullptr);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Texture sampler
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void VulkanTexture::CreateTextureSampler()
+	void VulkanTexture::CreateTextureSampler(VkSampler& textureSampler)
 	{
 		PX_PROFILE_FUNCTION();
 
@@ -198,19 +206,19 @@ namespace PhysiXal {
 		//samplerInfo.minLod = static_cast<float>(s_MipLevels / 2); // Test to see if LOD Mipmaps works
 		samplerInfo.mipLodBias = 0.0f;
 
-		if (vkCreateSampler(VulkanDevice::GetVulkanDevice(), &samplerInfo, nullptr, &s_TextureSampler) != VK_SUCCESS)
+		if (vkCreateSampler(VulkanDevice::GetVulkanDevice(), &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS)
 		{
 			PX_CORE_ERROR("Failed to create texture sampler!");
 		}
 	}
 
-	void VulkanTexture::DestroyTextureSampler()
+	void VulkanTexture::DestroyTextureSampler(VkSampler& textureSampler)
 	{
 		PX_PROFILE_FUNCTION();
 
 		PX_CORE_WARN("...Destroying Vulkan texture sampler");
 
-		vkDestroySampler(VulkanDevice::GetVulkanDevice(), s_TextureSampler, nullptr);
+		vkDestroySampler(VulkanDevice::GetVulkanDevice(), textureSampler, nullptr);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -8,6 +8,8 @@
 
 #include "core/application.h"
 
+#include "asset/asset_manager.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -66,13 +68,13 @@ namespace PhysiXal {
 		m_Framebuffer->CreateFramebuffers();
 
 		// Create texture image
-		m_Texture->CreateTextureImage();
+		m_Texture->CreateTextureImage(VulkanTexture::GetVulkanTexture().textureImage, VulkanTexture::GetVulkanTexture().textureImageMemory, AssetManager::GetTexture());
 
 		// Create texture image views
-		m_Texture->CreateTextureImageView();
+		m_Texture->CreateTextureImageView(VulkanTexture::GetVulkanTexture().textureImage, VulkanTexture::GetVulkanTexture().textureImageView);
 
 		// Create texture sampler for LOD
-		m_Texture->CreateTextureSampler();
+		m_Texture->CreateTextureSampler(VulkanTexture::GetVulkanTexture().textureSampler);
 
 		// Load model (.obj) to renderer
 		m_Model->LoadModel();
@@ -90,7 +92,8 @@ namespace PhysiXal {
 		m_UniformBuffer->CreateDescriptorPool();
 
 		// Create descriptor sets
-		m_UniformBuffer->CreateDescriptorSets();
+		m_UniformBuffer->CreateUniformDescriptorSets();
+		m_UniformBuffer->CreateTextureDescriptorSet();
 
 		// Create command buffers
 		m_CommandBuffer->CreateCommandBuffers();
@@ -117,17 +120,21 @@ namespace PhysiXal {
 		// Destruction of the uniform buffers
 		m_UniformBuffer->DestroyUnifromBuffers();
 
+		// Destruction of the descriptor sets
+		m_UniformBuffer->DestroyTextureDescriptorSet();
+		m_UniformBuffer->DestroyUniformDescriptorSets();
+
 		// Destruction of the descriptor pool
 		m_UniformBuffer->DestroyDescriptorPool();
 
 		// Destruction of the texture sampler for LOD
-		m_Texture->DestroyTextureSampler();
+		m_Texture->DestroyTextureSampler(VulkanTexture::GetVulkanTexture().textureSampler);
 
 		// Destruction the texture image view
-		m_Texture->DestroyTextureImageView();
+		m_Texture->DestroyTextureImageView(VulkanTexture::GetVulkanTexture().textureImageView);
 
 		// Destruction of the texture image
-		m_Texture->DestroyTextureImage();
+		m_Texture->DestroyTextureImage(VulkanTexture::GetVulkanTexture().textureImage, VulkanTexture::GetVulkanTexture().textureImageMemory);
 
 		// Destruction of the descriptor set layout
 		m_UniformBuffer->DestroyDescriptorSetLayout();

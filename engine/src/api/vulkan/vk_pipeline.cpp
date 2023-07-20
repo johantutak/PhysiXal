@@ -24,8 +24,6 @@ namespace PhysiXal {
 
         PX_CORE_INFO("Creating the layout of the graphics pipeline");
 
-        VkDescriptorSetLayout vkDescriptorSetLayout = VulkanUniformBuffer::GetVulkanDescriptorSetLayout();
-
         auto vertShaderCode = VulkanShader::ReadFile("../editor/assets/shaders/base_vert.spv");
         auto fragShaderCode = VulkanShader::ReadFile("../editor/assets/shaders/base_frag.spv");
 
@@ -114,10 +112,12 @@ namespace PhysiXal {
         dynamicState.dynamicStateCount = static_cast<U32>(dynamicStates.size());
         dynamicState.pDynamicStates = dynamicStates.data();
 
+        VkDescriptorSetLayout descriptorSetLayouts[] = { VulkanUniformBuffer::GetVulkanUniformDescriptorSetLayout(), VulkanUniformBuffer::GetVulkanTextureDescriptorSetLayout() };
+
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 1;
-        pipelineLayoutInfo.pSetLayouts = &vkDescriptorSetLayout;
+        pipelineLayoutInfo.setLayoutCount = 2;
+        pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts;
 
         if (vkCreatePipelineLayout(VulkanDevice::GetVulkanDevice(), &pipelineLayoutInfo, nullptr, &s_PipelineLayout) != VK_SUCCESS)
         {

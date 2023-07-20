@@ -16,11 +16,10 @@
 #include "core/input/input.h"
 
 #include "platform/win/win_utilities.h"
+#include "utilities/string_utilities.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-
-#include "utilities/string_utilities.h"
 
 namespace PhysiXal {
 
@@ -82,9 +81,9 @@ namespace PhysiXal {
 		ImGui::End();
 	}
 
-	void ImGuiWidgets::AssetManager()
+	void ImGuiWidgets::AssetManager() // #### TEMPORARY ####
 	{
-        ImGui::Begin("Asset Manager");
+        ImGui::Begin("TEMPORARY - Asset Manager");
 
         // Mesh selection
         if (ImGui::Button("Mesh")) 
@@ -118,17 +117,6 @@ namespace PhysiXal {
             }
         }
         ImGui::Text("%s", m_SelectedFragmentShaderFile.c_str());
-
-        // Texture selection
-        if (ImGui::Button("Texture"))
-        {
-            if (FileManager::SelectFile(m_SelectedTextureFile, TEXT("Image Files\0*.png;*.jpg;*.bmp\0All Files\0*.*\0")))
-            {
-                // File selected successfully
-                m_FileSelected = true;
-            }
-        }
-        ImGui::Text("%s", m_SelectedTextureFile.c_str());
 
         ImGui::End();
     }

@@ -13,12 +13,15 @@
 #include "api/vulkan/vk_initializers.h"
 #include "api/vulkan/vk_utilities.h"
 
+#include "asset/asset_manager.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 namespace PhysiXal {
 
 	static ImGuiWidgets* m_Widgets = nullptr;
+	static AssetManager* m_AssetManager = nullptr;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Dear ImGUI
@@ -202,7 +205,8 @@ namespace PhysiXal {
 		
 		// Issues Dear ImGui command for performance stats widget
 		m_Widgets->PerformanceStats();
-		m_Widgets->AssetManager();
+		m_Widgets->AssetManager(); // #### TEMPORARY ####
+		m_AssetManager->Manager();
 		//m_Widgets->VertexData(); // #### TODO #### Fix performance and make it only display if 3D object is selected
 	}
 

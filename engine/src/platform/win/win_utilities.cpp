@@ -32,7 +32,7 @@ namespace PhysiXal {
         return false;
     }
 
-    float FileManager::CPUTemperature()
+    /*float FileManager::CPUTemperature()
     {
         IWbemLocator* pLoc = NULL;
         IWbemServices* pSvc = NULL;
@@ -102,5 +102,5 @@ namespace PhysiXal {
         CoUninitialize();
 
         return temperature;
-    }
+    }*/
 }

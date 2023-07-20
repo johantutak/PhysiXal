@@ -28,22 +28,22 @@ namespace PhysiXal {
 
         bool OnKeyPressed(KeyPressedEvent& e);
 	private:
-        inline static glm::mat4 m_View;
-        inline static glm::mat4 m_Projection;
+        inline static glm::mat4 s_View;
+        inline static glm::mat4 s_Projection;
 
-        inline static glm::vec3 m_CameraPos = glm::vec3(0.0f, 0.0f, 6.0f);
-        inline static glm::vec3 m_CameraFront = glm::vec3(0.0f, 0.0f, 1.0f);
-        inline static glm::vec3 m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        inline static float m_Yaw = -90.0f;
-        inline static float m_Pitch = 0.0f;
-        inline static float m_LastX = 800.0f / 2.0f;
-        inline static float m_LastY = 600.0f / 2.0f;
-        inline static bool m_InitMouse = true;
+        inline static glm::vec3 s_CameraPos = glm::vec3(0.0f, 0.0f, 6.0f);
+        inline static glm::vec3 s_CameraFront = glm::vec3(0.0f, 0.0f, 1.0f);
+        inline static glm::vec3 s_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        inline static float s_Yaw = -90.0f;
+        inline static float s_Pitch = 0.0f;
+        inline static float s_LastX = 800.0f / 2.0f;
+        inline static float s_LastY = 600.0f / 2.0f;
+        inline static bool s_InitMouse = true;
 
-        inline static float m_Fov;
-        inline static float m_Width;
-        inline static float m_Height;
-        inline static float m_ZNear;
-        inline static float m_ZFar;
+        inline static float s_Fov;
+        inline static float s_Width;
+        inline static float s_Height;
+        inline static float s_ZNear;
+        inline static float s_ZFar;
 	};
 }

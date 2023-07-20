@@ -98,8 +98,13 @@ namespace PhysiXal {
 
         vkCmdBindIndexBuffer(commandBuffer, VulkanBuffer::GetVulkanIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
+        std::vector<VkDescriptorSet> VkDescriptorSets = VulkanUniformBuffer::GetVulkanUniformDescriptorSets();
+        VkDescriptorSet VkDescriptorSet = VulkanUniformBuffer::GetVulkanTextureDescriptorSet();
+
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VulkanPipeline::GetVulkanPipelineLayout(), 0, 1,
-            &VulkanUniformBuffer::GetVulkanDescriptorSets()[VulkanRenderer::GetVulkanCurrentFrame()], 0, nullptr);
+            &VkDescriptorSets[VulkanRenderer::GetVulkanCurrentFrame()], 0, nullptr);
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VulkanPipeline::GetVulkanPipelineLayout(), 1, 1,
+            &VkDescriptorSet, 0, nullptr);
 
         vkCmdDrawIndexed(commandBuffer, static_cast<U32>(m_Model->GetVulkanIndices().size()), 1, 0, 0, 0);
 
