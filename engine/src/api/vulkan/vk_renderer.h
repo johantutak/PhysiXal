@@ -8,9 +8,6 @@
 
 namespace PhysiXal {
 
-	// #### TEMPORARY ####
-	const std::string MODEL_PATH = "../editor/assets/models/viking_room.obj";
-
 	// #### TO DO #### Framebuffer reset in window fix and fix renderer destruction order
 
 	class VulkanRenderer

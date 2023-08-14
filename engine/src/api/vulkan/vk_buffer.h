@@ -58,22 +58,14 @@ namespace PhysiXal {
 		void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
 		// Vertex buffer
-		void CreateVertexBuffer();
-		void DestroyVertexBuffer();
+		void CreateVertexBuffer(VkBuffer& vertexBuffer, VkDeviceMemory& vertexBufferMemory, std::vector<Vertex>& vertices);
+		void DestroyVertexBuffer(VkBuffer& vertexBuffer, VkDeviceMemory& vertexBufferMemory);
 		U32 FindMemoryType(U32 typeFilter, VkMemoryPropertyFlags properties);
 
-		static VkBuffer GetVulkanVertexBuffer() { return s_VertexBuffer; }
-
 		// Index buffer
-		void CreateIndexBuffer();
-		void DestroyIndexBuffer();
-
-		static VkBuffer GetVulkanIndexBuffer() { return s_IndexBuffer; }
+		void CreateIndexBuffer(VkBuffer& indexBuffer, VkDeviceMemory& indexBufferMemory, std::vector<U32>& indices);
+		void DestroyIndexBuffer(VkBuffer& indexBuffer, VkDeviceMemory& indexBufferMemory);
 	private:
-		static inline VkBuffer s_VertexBuffer;
-		static inline VkDeviceMemory s_VertexBufferMemory;
-
-		static inline VkBuffer s_IndexBuffer;
-		static inline VkDeviceMemory s_IndexBufferMemory;
+		
 	};
 }

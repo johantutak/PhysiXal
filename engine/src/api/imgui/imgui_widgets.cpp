@@ -81,46 +81,6 @@ namespace PhysiXal {
 		ImGui::End();
 	}
 
-	void ImGuiWidgets::AssetManager() // #### TEMPORARY ####
-	{
-        ImGui::Begin("TEMPORARY - Asset Manager");
-
-        // Mesh selection
-        if (ImGui::Button("Mesh")) 
-        {
-            if (FileManager::SelectFile(m_SelectedModelFile, TEXT("Mesh Files\0*.obj\0All Files\0*.*\0")))
-            {
-                // File selected successfully
-                m_FileSelected = true;
-            }
-        }
-        ImGui::Text("%s", m_SelectedModelFile.c_str());
-
-        // Vertex shader selection
-        if (ImGui::Button("Vertex Shader"))
-        {
-            if (FileManager::SelectFile(m_SelectedVertexShaderFile, TEXT("Vertex Shader Files\0*.spv\0All Files\0*.*\0")))
-            {
-                // File selected successfully
-                m_FileSelected = true;
-            }
-        }
-        ImGui::Text("%s", m_SelectedVertexShaderFile.c_str());
-
-        // Fragment shader selection
-        if (ImGui::Button("Fragment Shader"))
-        {
-            if (FileManager::SelectFile(m_SelectedFragmentShaderFile, TEXT("Fragment Shader Files\0*.spv\0All Files\0*.*\0")))
-            {
-                // File selected successfully
-                m_FileSelected = true;
-            }
-        }
-        ImGui::Text("%s", m_SelectedFragmentShaderFile.c_str());
-
-        ImGui::End();
-    }
-
     void ImGuiWidgets::VertexData()
     {
         ImGui::Begin("Vertex Data");
@@ -141,7 +101,7 @@ namespace PhysiXal {
         ImGui::Separator();
 
         ImGuiListClipper clipper;
-        clipper.Begin(m_Model->GetVulkanVertices().size());
+        clipper.Begin(m_Mesh->GetVulkanMesh().vertices.size());
 
         while (clipper.Step())
         {
@@ -150,13 +110,13 @@ namespace PhysiXal {
                 ImGui::Text("%d", i + 1);
                 ImGui::NextColumn();
 
-                ImGui::Text("%.3f, %.3f, %.3f", m_Model->GetVulkanVertices()[i].pos.x, m_Model->GetVulkanVertices()[i].pos.y, m_Model->GetVulkanVertices()[i].pos.z);
+                ImGui::Text("%.3f, %.3f, %.3f", m_Mesh->GetVulkanMesh().vertices[i].pos.x, m_Mesh->GetVulkanMesh().vertices[i].pos.y, m_Mesh->GetVulkanMesh().vertices[i].pos.z);
                 ImGui::NextColumn();
 
-                ImGui::Text("%.3f, %.3f", m_Model->GetVulkanVertices()[i].texCoord.x, m_Model->GetVulkanVertices()[i].texCoord.y);
+                ImGui::Text("%.3f, %.3f", m_Mesh->GetVulkanMesh().vertices[i].texCoord.x, m_Mesh->GetVulkanMesh().vertices[i].texCoord.y);
                 ImGui::NextColumn();
 
-                ImGui::Text("%.3f, %.3f, %.3f", m_Model->GetVulkanVertices()[i].color.x, m_Model->GetVulkanVertices()[i].color.y, m_Model->GetVulkanVertices()[i].color.z);
+                ImGui::Text("%.3f, %.3f, %.3f", m_Mesh->GetVulkanMesh().vertices[i].color.x, m_Mesh->GetVulkanMesh().vertices[i].color.y, m_Mesh->GetVulkanMesh().vertices[i].color.z);
                 ImGui::NextColumn();
             }
         }

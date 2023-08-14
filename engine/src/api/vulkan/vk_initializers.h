@@ -14,7 +14,7 @@
 #include "api/vulkan/vk_uniform_buffer.h"
 #include "api/vulkan/vk_texture.h"
 #include "api/vulkan/vk_depth_buffer.h"
-#include "api/vulkan/vk_model.h"
+#include "api/vulkan/vk_mesh.h"
 
 namespace PhysiXal {
 
@@ -32,5 +32,5 @@ namespace PhysiXal {
 	static VulkanUniformBuffer* m_UniformBuffer = nullptr;
 	static VulkanTexture* m_Texture = nullptr;
 	static VulkanDepthBuffer* m_DepthBuffer = nullptr;
-	static VulkanModel* m_Model = nullptr;
+	static VulkanMesh* m_Mesh = nullptr;
 }

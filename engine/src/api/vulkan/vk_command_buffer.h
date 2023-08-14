@@ -17,6 +17,8 @@ namespace PhysiXal {
 
 		void RecordCommandBuffers(VkCommandBuffer commandBuffer, U32 imageIndex);
 
+		void UpdateCommandBuffers(VkCommandBuffer commandBuffer, VkBuffer vertexBuffer, VkBuffer indexBuffer, uint32_t indexCount);
+
 		// Command pool
 		void CreateCommandPool();
 		void DestroyCommandPool();

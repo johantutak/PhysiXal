@@ -57,13 +57,13 @@ namespace PhysiXal {
     // Vertex buffer
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void VulkanBuffer::CreateVertexBuffer()
+    void VulkanBuffer::CreateVertexBuffer(VkBuffer& vertexBuffer, VkDeviceMemory& vertexBufferMemory, std::vector<Vertex>& vertices)
     {
         PX_PROFILE_FUNCTION();
 
         PX_CORE_INFO("Creating Vulkan vertex buffer");
 
-        VkDeviceSize bufferSize = sizeof(m_Model->GetVulkanVertices()[0]) * m_Model->GetVulkanVertices().size();
+        VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -71,22 +71,22 @@ namespace PhysiXal {
 
         void* data;
         vkMapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, m_Model->GetVulkanVertices().data(), (SIZE64)bufferSize);
+        memcpy(data, vertices.data(), (SIZE64)bufferSize);
         vkUnmapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory);
 
-        CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_VertexBuffer, s_VertexBufferMemory);
+        CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 
-        CopyBuffer(stagingBuffer, s_VertexBuffer, bufferSize);
+        CopyBuffer(stagingBuffer, vertexBuffer, bufferSize);
     }
 
-    void VulkanBuffer::DestroyVertexBuffer()
+    void VulkanBuffer::DestroyVertexBuffer(VkBuffer& vertexBuffer, VkDeviceMemory& vertexBufferMemory)
     {
         PX_PROFILE_FUNCTION();
 
         PX_CORE_WARN("...Destroying Vulkan vertex buffer");
 
-        vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), s_VertexBuffer, nullptr);
-        vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_VertexBufferMemory, nullptr);
+        vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), vertexBuffer, nullptr);
+        vkFreeMemory(VulkanDevice::GetVulkanDevice(), vertexBufferMemory, nullptr);
     }
 
     U32 VulkanBuffer::FindMemoryType(U32 typeFilter, VkMemoryPropertyFlags properties)
@@ -108,13 +108,13 @@ namespace PhysiXal {
     // Index buffer
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void VulkanBuffer::CreateIndexBuffer()
+    void VulkanBuffer::CreateIndexBuffer(VkBuffer& indexBuffer, VkDeviceMemory& indexBufferMemory, std::vector<U32>& indices)
     {
         PX_PROFILE_FUNCTION();
 
         PX_CORE_INFO("Creating Vulkan index buffer");
 
-        VkDeviceSize bufferSize = sizeof(m_Model->GetVulkanIndices()[0]) * m_Model->GetVulkanIndices().size();
+        VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -122,24 +122,24 @@ namespace PhysiXal {
 
         void* data;
         vkMapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, m_Model->GetVulkanIndices().data(), (SIZE64)bufferSize);
+        memcpy(data, indices.data(), (SIZE64)bufferSize);
         vkUnmapMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory);
 
-        CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, s_IndexBuffer, s_IndexBufferMemory);
+        CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 
-        CopyBuffer(stagingBuffer, s_IndexBuffer, bufferSize);
+        CopyBuffer(stagingBuffer, indexBuffer, bufferSize);
 
         vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), stagingBuffer, nullptr);
         vkFreeMemory(VulkanDevice::GetVulkanDevice(), stagingBufferMemory, nullptr);
     }
 
-    void VulkanBuffer::DestroyIndexBuffer()
+    void VulkanBuffer::DestroyIndexBuffer(VkBuffer& indexBuffer, VkDeviceMemory& indexBufferMemory)
     {
         PX_PROFILE_FUNCTION();
 
         PX_CORE_WARN("...Destroying Vulkan index buffer");
 
-        vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), s_IndexBuffer, nullptr);
-        vkFreeMemory(VulkanDevice::GetVulkanDevice(), s_IndexBufferMemory, nullptr);
+        vkDestroyBuffer(VulkanDevice::GetVulkanDevice(), indexBuffer, nullptr);
+        vkFreeMemory(VulkanDevice::GetVulkanDevice(), indexBufferMemory, nullptr);
     }
 }

@@ -5,6 +5,8 @@
 #include "api/vulkan/vk_initializers.h"
 #include "api/vulkan/vk_renderer.h"
 
+#include "asset/asset_manager.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -91,13 +93,7 @@ namespace PhysiXal {
         scissor.offset = { 0, 0 };
         scissor.extent = VulkanSwapChain::GetVulkanSwapChainExtent();
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-        VkBuffer vertexBuffers[] = { VulkanBuffer::GetVulkanVertexBuffer() };
-        VkDeviceSize offsets[] = { 0 };
-        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-        vkCmdBindIndexBuffer(commandBuffer, VulkanBuffer::GetVulkanIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
+        
         std::vector<VkDescriptorSet> VkDescriptorSets = VulkanUniformBuffer::GetVulkanUniformDescriptorSets();
         VkDescriptorSet VkDescriptorSet = VulkanUniformBuffer::GetVulkanTextureDescriptorSet();
 
@@ -105,8 +101,33 @@ namespace PhysiXal {
             &VkDescriptorSets[VulkanRenderer::GetVulkanCurrentFrame()], 0, nullptr);
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VulkanPipeline::GetVulkanPipelineLayout(), 1, 1,
             &VkDescriptorSet, 0, nullptr);
+        
+        // #### TEMPORARY ####
+        if (!AssetManager::GetSelectedMesh().empty())
+        {
+            VkBuffer& vertexBufferTest = VulkanMesh::GetVulkanMeshNew().vertexBuffer;
+            VkDeviceMemory& vertexBufferMemoryTest = VulkanMesh::GetVulkanMeshNew().vertexBufferMemory;
+            std::vector<Vertex>& verticesTest = VulkanMesh::GetVulkanMeshNew().vertices;
 
-        vkCmdDrawIndexed(commandBuffer, static_cast<U32>(m_Model->GetVulkanIndices().size()), 1, 0, 0, 0);
+            VkBuffer& indexBufferTest = VulkanMesh::GetVulkanMeshNew().indexBuffer;
+            VkDeviceMemory& indexBufferMemoryTest = VulkanMesh::GetVulkanMeshNew().indexBufferMemory;
+            std::vector<U32>& indicesTest = VulkanMesh::GetVulkanMeshNew().indices;
+
+            UpdateCommandBuffers(commandBuffer, vertexBufferTest, indexBufferTest, static_cast<U32>(indicesTest.size()));
+        }
+        else
+        {
+            if (VkBuffer& vertexBufferTest = VulkanMesh::GetVulkanMeshNew().vertexBuffer)
+            {
+                UpdateCommandBuffers(commandBuffer, VulkanMesh::GetVulkanMeshNew().vertexBuffer, VulkanMesh::GetVulkanMeshNew().indexBuffer,
+                    static_cast<U32>(VulkanMesh::GetVulkanMeshNew().indices.size()));
+            }
+            else
+            {
+                UpdateCommandBuffers(commandBuffer, VulkanMesh::GetVulkanMesh().vertexBuffer, VulkanMesh::GetVulkanMesh().indexBuffer,
+                    static_cast<U32>(VulkanMesh::GetVulkanMesh().indices.size()));
+            }
+        }
 
         vkCmdEndRenderPass(commandBuffer);
 
@@ -114,6 +135,17 @@ namespace PhysiXal {
         {
             PX_CORE_ERROR("Failed to record command buffer!");
         }
+    }
+
+    void VulkanCommandBuffer::UpdateCommandBuffers(VkCommandBuffer commandBuffer, VkBuffer vertexBuffer, VkBuffer indexBuffer, uint32_t indexCount)
+    {
+        VkBuffer vertexBuffers[] = { vertexBuffer };
+        VkDeviceSize offsets[] = { 0 };
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

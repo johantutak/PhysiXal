@@ -26,7 +26,6 @@ namespace PhysiXal {
 		void CopyBufferToImage(VkBuffer buffer, VkImage image, U32 width, U32 height);
 
 		static Texture& GetVulkanTexture() { return texture; }
-		//static Texture& GetVulkanTextureNew() { return textureNew; }
 
 		//Texture image view
 		void CreateTextureImageView(VkImage& textureImage, VkImageView& textureImageView);
@@ -42,7 +41,6 @@ namespace PhysiXal {
 		static U32 GetVulkanMipLevels() { return s_MipLevels; }
 	private:
 		inline static Texture texture;
-		//inline static Texture textureNew;
 
 		inline static U32 s_MipLevels;
 	};

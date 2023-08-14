@@ -76,14 +76,14 @@ namespace PhysiXal {
 		// Create texture sampler for LOD
 		m_Texture->CreateTextureSampler(VulkanTexture::GetVulkanTexture().textureSampler);
 
-		// Load model (.obj) to renderer
-		m_Model->LoadModel();
+		// Load mesh (.obj) to renderer
+		m_Mesh->LoadMesh(AssetManager::GetMesh(), VulkanMesh::GetVulkanMesh().vertices, VulkanMesh::GetVulkanMesh().indices);
 
 		// Create vertex buffer
-		m_Buffer->CreateVertexBuffer();
+		m_Buffer->CreateVertexBuffer(VulkanMesh::GetVulkanMesh().vertexBuffer, VulkanMesh::GetVulkanMesh().vertexBufferMemory, VulkanMesh::GetVulkanMesh().vertices);
 
 		// Create index buffer
-		m_Buffer->CreateIndexBuffer();
+		m_Buffer->CreateIndexBuffer(VulkanMesh::GetVulkanMesh().indexBuffer, VulkanMesh::GetVulkanMesh().indexBufferMemory, VulkanMesh::GetVulkanMesh().indices);
 
 		// Create uniform buffer
 		m_UniformBuffer->CreateUniformBuffers();
@@ -139,11 +139,24 @@ namespace PhysiXal {
 		// Destruction of the descriptor set layout
 		m_UniformBuffer->DestroyDescriptorSetLayout();
 
-		// Destruction of the index buffer
-		m_Buffer->DestroyIndexBuffer();
+		// #### TO DO #### Implement a case witch as a temporary solution for correct destruction of vertex and index buffer bases on new values.
+		//				   Possibly until, when rendering is expanded to have UUID and multiple objects.
+		if (VkBuffer& vertexBufferTest = VulkanMesh::GetVulkanMeshNew().vertexBuffer)
+		{
+			// Destruction of the index buffer
+			m_Buffer->DestroyIndexBuffer(VulkanMesh::GetVulkanMeshNew().indexBuffer, VulkanMesh::GetVulkanMeshNew().indexBufferMemory);
 
-		// Destruction of the vertex buffer
-		m_Buffer->DestroyVertexBuffer();
+			// Destruction of the vertex buffer
+			m_Buffer->DestroyVertexBuffer(VulkanMesh::GetVulkanMeshNew().vertexBuffer, VulkanMesh::GetVulkanMeshNew().vertexBufferMemory);
+		}
+		else
+		{
+			// Destruction of the index buffer
+			m_Buffer->DestroyIndexBuffer(VulkanMesh::GetVulkanMesh().indexBuffer, VulkanMesh::GetVulkanMesh().indexBufferMemory);
+
+			// Destruction of the vertex buffer
+			m_Buffer->DestroyVertexBuffer(VulkanMesh::GetVulkanMesh().vertexBuffer, VulkanMesh::GetVulkanMesh().vertexBufferMemory);
+		}
 
 		// Destruction of the synchronization objects which includes the semaphores and render fence
 		m_SyncObjects->DestroySyncObjects();

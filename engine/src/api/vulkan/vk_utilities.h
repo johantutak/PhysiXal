@@ -14,7 +14,7 @@
 #include "api/vulkan/vk_uniform_buffer.h"
 #include "api/vulkan/vk_texture.h"
 #include "api/vulkan/vk_depth_buffer.h"
-#include "api/vulkan/vk_model.h"
+#include "api/vulkan/vk_mesh.h"
 
 namespace PhysiXal {
 
