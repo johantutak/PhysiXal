@@ -8,7 +8,7 @@ namespace PhysiXal {
 	{
 	public:
 		// Graphics pipeline
-		void CreateGraphicsPipeline();
+		void CreateGraphicsPipeline(const std::string& vertexShader, const std::string& fragmentShader);
 		void DestroyGraphicsPipeline();
 
 		static VkPipeline GetVulkanPipeline() { return s_GraphicsPipeline; }

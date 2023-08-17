@@ -21,7 +21,6 @@ namespace PhysiXal {
         // #### TO DO #### Put texture, mesh and shaders(vertex and fragment) into own classes.
         ImGui::Begin("Asset Manager");
         
-        // ########################################################################################################################
         // Texture selection
         if (ImGui::Button("Texture"))
         {
@@ -30,6 +29,8 @@ namespace PhysiXal {
                 // File selected successfully
                 SetTexturePath(s_SelectedTextureFile);
                 s_FileSelected = true;
+
+                PX_CORE_INFO("New texture selected");
             }
         }
         ImGui::Text("%s", AssetManager::GetTexturePath().c_str());
@@ -37,8 +38,6 @@ namespace PhysiXal {
         // #### TODO #### Get it to increment instead and do it when i add UUID.
         if (!s_SelectedTextureFile.empty())
         {
-            PX_CORE_INFO("New texture selected");
-
             // Create texture image
             m_Texture->CreateTextureImage(VulkanTexture::GetVulkanTexture().textureImage, VulkanTexture::GetVulkanTexture().textureImageMemory, s_SelectedTextureFile);
 
@@ -57,8 +56,8 @@ namespace PhysiXal {
             s_SelectedTextureFile.clear();
         }
 
-        // ########################################################################################################################
-        // Mesh selection
+        ImGui::Separator();
+
         if (ImGui::Button("Mesh"))
         {
             if (FileManager::SelectFile(m_SelectedMeshFile, TEXT("Mesh Files\0*.obj\0All Files\0*.*\0")))
@@ -66,14 +65,14 @@ namespace PhysiXal {
                 // File selected successfully
                 SetMeshPath(m_SelectedMeshFile);
                 s_FileSelected = true;
+
+                PX_CORE_INFO("New mesh selected");
             }
         }
         ImGui::Text("%s", AssetManager::GetMeshPath().c_str());
 
         if (!m_SelectedMeshFile.empty())
         {
-            PX_CORE_INFO("New mesh selected");
-
             // Destruction of the index buffer
             m_Buffer->DestroyIndexBuffer(m_Mesh->GetVulkanMesh().indexBuffer, m_Mesh->GetVulkanMesh().indexBufferMemory);
 
@@ -92,71 +91,70 @@ namespace PhysiXal {
             m_SelectedMeshFile.clear();
         }
 
-        // ########################################################################################################################
+        ImGui::Separator();
+
         // Vertex shader selection
         if (ImGui::Button("Vertex Shader"))
         {
             if (FileManager::SelectFile(m_SelectedVertexShaderFile, TEXT("Vertex Shader Files\0*.spv\0All Files\0*.*\0")))
             {
                 // File selected successfully
+                SetVertexShaderPath(m_SelectedVertexShaderFile);
                 s_FileSelected = true;
+
+                PX_CORE_INFO("New shader (vertex) selected");
             }
         }
-        ImGui::Text("%s", m_SelectedVertexShaderFile.c_str());
+        ImGui::Text("%s", AssetManager::GetVertexShaderPath().c_str());
 
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        PX_CORE_ERROR("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-        // ########################################################################################################################
         // Fragment shader selection
         if (ImGui::Button("Fragment Shader"))
         {
             if (FileManager::SelectFile(m_SelectedFragmentShaderFile, TEXT("Fragment Shader Files\0*.spv\0All Files\0*.*\0")))
             {
                 // File selected successfully
+                SetFragmentShaderPath(m_SelectedFragmentShaderFile);
                 s_FileSelected = true;
+
+                PX_CORE_INFO("New shader (fragment) selected");
             }
         }
-        ImGui::Text("%s", m_SelectedFragmentShaderFile.c_str());
+        ImGui::Text("%s", AssetManager::GetFragmentShaderPath().c_str());
+
+        if (ImGui::Button("Apply"))
+        {
+            if (!m_SelectedVertexShaderFile.empty() && !m_SelectedFragmentShaderFile.empty())
+            {
+                // Destruction of the pipeline
+                m_Pipeline->DestroyGraphicsPipeline();
+
+                // Create pipeline
+                m_Pipeline->CreateGraphicsPipeline(m_SelectedVertexShaderFile, m_SelectedFragmentShaderFile);
+
+                m_SelectedVertexShaderFile.clear();
+                m_SelectedFragmentShaderFile.clear();
+            }
+            else
+            {
+                if (m_SelectedVertexShaderFile.empty())
+                {
+                    PX_CORE_ERROR("No shader (vertex) selected");
+                }
+
+                if (m_SelectedFragmentShaderFile.empty())
+                {
+                    PX_CORE_ERROR("No shader (fragment) selected");
+                }
+
+                PX_CORE_WARN("vertex and fragment shader needs selection to update pipeline");
+            }
+        }
 
         ImGui::End();
 
+        // #### TO DO #### Bellow is an example of how to add a shader text feature in the future.
+        /*
+        // Maybe to be used for shader editing
         ImGui::Begin("Shader Editor");
         static char shaderCode[4096]; // Buffer to hold shader code
         ImGui::InputTextMultiline("##shader_code", shaderCode, sizeof(shaderCode), ImVec2(-1.0f, -1.0f));
@@ -164,6 +162,7 @@ namespace PhysiXal {
             // Handle shader compilation and reloading here
         }
         ImGui::End();
+        */
     }
 
     const std::string& AssetManager::GetTexturePath()
@@ -184,5 +183,25 @@ namespace PhysiXal {
     void AssetManager::SetMeshPath(const std::string& newPath)
     {
         s_MeshPath = newPath;
+    }
+
+    const std::string& AssetManager::GetVertexShaderPath()
+    {
+        return s_VertexShaderPath;
+    }
+
+    void AssetManager::SetVertexShaderPath(const std::string& newPath)
+    {
+        s_VertexShaderPath = newPath;
+    }
+
+    const std::string& AssetManager::GetFragmentShaderPath()
+    {
+        return s_FragmentShaderPath;
+    }
+
+    void AssetManager::SetFragmentShaderPath(const std::string& newPath)
+    {
+        s_FragmentShaderPath = newPath;
     }
 }

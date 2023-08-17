@@ -53,7 +53,7 @@ namespace PhysiXal {
 		m_UniformBuffer->CreateDescriptorSetLayout();
 
 		// Create pipeline
-		m_Pipeline->CreateGraphicsPipeline();
+		m_Pipeline->CreateGraphicsPipeline(AssetManager::GetVertexShader(), AssetManager::GetFragmentShader());
 
 		// Create command pool
 		m_CommandBuffer->CreateCommandPool();

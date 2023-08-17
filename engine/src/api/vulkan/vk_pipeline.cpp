@@ -9,6 +9,8 @@
 #include "api/vulkan/vk_utilities.h"
 #include "api/vulkan/vk_initializers.h"
 
+#include "asset/asset_manager.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -18,14 +20,14 @@ namespace PhysiXal {
     // Graphics pipeline
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void VulkanPipeline::CreateGraphicsPipeline()
+    void VulkanPipeline::CreateGraphicsPipeline(const std::string& vertexShader, const std::string& fragmentShader)
     {
         PX_PROFILE_FUNCTION();
 
         PX_CORE_INFO("Creating the layout of the graphics pipeline");
 
-        auto vertShaderCode = VulkanShader::ReadFile("../editor/assets/shaders/base_vert.spv");
-        auto fragShaderCode = VulkanShader::ReadFile("../editor/assets/shaders/base_frag.spv");
+        auto vertShaderCode = VulkanShader::ReadFile(vertexShader);
+        auto fragShaderCode = VulkanShader::ReadFile(fragmentShader);
 
         VkShaderModule vertShaderModule = VulkanShader::CreateShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = VulkanShader::CreateShaderModule(fragShaderCode);
