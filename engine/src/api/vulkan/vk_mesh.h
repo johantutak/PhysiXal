@@ -22,11 +22,10 @@ namespace PhysiXal {
 	public:
 		// Model
 		void LoadMesh(const std::string& filePath, std::vector<Vertex>& vertices, std::vector<U32>& indices);
+		void UnloadMesh(std::vector<Vertex>& vertices, std::vector<U32>& indices);
 
 		static Mesh& GetVulkanMesh() { return mesh; }
-		static Mesh& GetVulkanMeshNew() { return meshNew; }
 	private:
 		inline static Mesh mesh;
-		inline static Mesh meshNew;
 	};
 }

@@ -12,17 +12,27 @@
 
 namespace PhysiXal {
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Vulkan renderer
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Asset Manager
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void AssetManager::Manager()
     {
         // #### TO DO #### Put texture, mesh and shaders(vertex and fragment) into own classes.
         ImGui::Begin("Asset Manager");
-        
+
+        // ###################################
+        // #### Texture ######################
+        // ###################################
+
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Texture:");
+
+        ImGui::SameLine(0, 10);
+
+        ImGui::Text("%s", AssetManager::GetTexturePath().c_str());
+
         // Texture selection
-        if (ImGui::Button("Texture"))
+        if (ImGui::Button("Select Texture"))
         {
             if (FileManager::SelectFile(s_SelectedTextureFile, TEXT("Texture Files\0*.png;*.jpg;*.bmp\0All Files\0*.*\0")))
             {
@@ -33,32 +43,57 @@ namespace PhysiXal {
                 PX_CORE_INFO("New texture selected");
             }
         }
-        ImGui::Text("%s", AssetManager::GetTexturePath().c_str());
 
-        // #### TODO #### Get it to increment instead and do it when i add UUID.
-        if (!s_SelectedTextureFile.empty())
+        ImGui::SameLine(0, 10);
+
+        // Apply texture
+        if (ImGui::Button("Apply Texture"))
         {
-            // Create texture image
-            m_Texture->CreateTextureImage(VulkanTexture::GetVulkanTexture().textureImage, VulkanTexture::GetVulkanTexture().textureImageMemory, s_SelectedTextureFile);
+            // #### TODO #### Get it to increment instead and do it when i add UUID.
+            if (!s_SelectedTextureFile.empty())
+            {
+                // Create texture image
+                m_Texture->CreateTextureImage(VulkanTexture::GetVulkanTexture().textureImage, VulkanTexture::GetVulkanTexture().textureImageMemory, s_SelectedTextureFile);
 
-            // Create texture image views
-            m_Texture->CreateTextureImageView(VulkanTexture::GetVulkanTexture().textureImage, VulkanTexture::GetVulkanTexture().textureImageView);
+                // Create texture image views
+                m_Texture->CreateTextureImageView(VulkanTexture::GetVulkanTexture().textureImage, VulkanTexture::GetVulkanTexture().textureImageView);
 
-            // Create texture sampler for LOD
-            m_Texture->CreateTextureSampler(VulkanTexture::GetVulkanTexture().textureSampler);
+                // Create texture sampler for LOD
+                m_Texture->CreateTextureSampler(VulkanTexture::GetVulkanTexture().textureSampler);
 
-            // Destruction of the texture descriptor set
-            m_UniformBuffer->DestroyTextureDescriptorSet();
+                // Destruction of the texture descriptor set
+                m_UniformBuffer->DestroyTextureDescriptorSet();
 
-            // Create texture descriptor set
-            m_UniformBuffer->CreateTextureDescriptorSet();
+                // Create texture descriptor set
+                m_UniformBuffer->CreateTextureDescriptorSet();
 
-            s_SelectedTextureFile.clear();
+                s_SelectedTextureFile.clear();
+            }
+            else
+            {
+                if (s_SelectedTextureFile.empty())
+                {
+                    PX_CORE_ERROR("No texture selected");
+                }
+
+                PX_CORE_WARN("Texture selection needed to update texture specific image, image view and sampler");
+            }
         }
 
         ImGui::Separator();
 
-        if (ImGui::Button("Mesh"))
+        // ###################################
+        // #### Mesh #########################
+        // ###################################
+
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Mesh:");
+
+        ImGui::SameLine(0, 10);
+
+        ImGui::Text("%s", AssetManager::GetMeshPath().c_str());
+
+        // Mesh selection
+        if (ImGui::Button("Select Mesh"))
         {
             if (FileManager::SelectFile(m_SelectedMeshFile, TEXT("Mesh Files\0*.obj\0All Files\0*.*\0")))
             {
@@ -69,32 +104,68 @@ namespace PhysiXal {
                 PX_CORE_INFO("New mesh selected");
             }
         }
-        ImGui::Text("%s", AssetManager::GetMeshPath().c_str());
 
-        if (!m_SelectedMeshFile.empty())
+        ImGui::SameLine(0, 10);
+
+        // Apply mesh
+        if (ImGui::Button("Apply Mesh"))
         {
-            // Destruction of the index buffer
-            m_Buffer->DestroyIndexBuffer(m_Mesh->GetVulkanMesh().indexBuffer, m_Mesh->GetVulkanMesh().indexBufferMemory);
+            // #### TODO #### Get it to increment instead and do it when i add UUID.
+            if (!m_SelectedMeshFile.empty())
+            {
+                s_ButtonPressed = true;
 
-            // Destruction of the vertex buffer
-            m_Buffer->DestroyVertexBuffer(m_Mesh->GetVulkanMesh().vertexBuffer, m_Mesh->GetVulkanMesh().vertexBufferMemory);
+                // Destruction of the index buffer
+                m_Buffer->DestroyIndexBuffer(m_Mesh->GetVulkanMesh().indexBuffer, m_Mesh->GetVulkanMesh().indexBufferMemory);
 
-            // Load mesh (.obj) to renderer
-            m_Mesh->LoadMesh(m_SelectedMeshFile, m_Mesh->GetVulkanMeshNew().vertices, m_Mesh->GetVulkanMeshNew().indices);
+                // Destruction of the vertex buffer
+                m_Buffer->DestroyVertexBuffer(m_Mesh->GetVulkanMesh().vertexBuffer, m_Mesh->GetVulkanMesh().vertexBufferMemory);
 
-            // Create vertex buffer
-            m_Buffer->CreateVertexBuffer(m_Mesh->GetVulkanMeshNew().vertexBuffer, m_Mesh->GetVulkanMeshNew().vertexBufferMemory, m_Mesh->GetVulkanMeshNew().vertices);
+                // Unload of the mesh data
+                m_Mesh->UnloadMesh(m_Mesh->GetVulkanMesh().vertices, m_Mesh->GetVulkanMesh().indices);
 
-            // Create index buffer
-            m_Buffer->CreateIndexBuffer(m_Mesh->GetVulkanMeshNew().indexBuffer, m_Mesh->GetVulkanMeshNew().indexBufferMemory, m_Mesh->GetVulkanMeshNew().indices);
+                // Load mesh (.obj) to renderer
+                m_Mesh->LoadMesh(m_SelectedMeshFile, m_Mesh->GetVulkanMesh().vertices, m_Mesh->GetVulkanMesh().indices);
 
-            m_SelectedMeshFile.clear();
+                // Create vertex buffer
+                m_Buffer->CreateVertexBuffer(m_Mesh->GetVulkanMesh().vertexBuffer, m_Mesh->GetVulkanMesh().vertexBufferMemory, m_Mesh->GetVulkanMesh().vertices);
+
+                // Create index buffer
+                m_Buffer->CreateIndexBuffer(m_Mesh->GetVulkanMesh().indexBuffer, m_Mesh->GetVulkanMesh().indexBufferMemory, m_Mesh->GetVulkanMesh().indices);
+
+                m_SelectedMeshFile.clear();
+            }
+            else
+            {
+                if (m_SelectedMeshFile.empty())
+                {
+                    PX_CORE_ERROR("No mesh selected");
+                }
+
+                PX_CORE_WARN("Mesh selection needed to update vertex and index buffer for 3D object loading");
+            }
         }
 
         ImGui::Separator();
 
+        // ###################################
+        // #### Shader #######################
+        // ###################################
+
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Vertex shader:");
+
+        ImGui::SameLine(0, 10);
+
+        ImGui::Text("%s", AssetManager::GetVertexShaderPath().c_str());
+
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Fragment shader:");
+
+        ImGui::SameLine(0, 10);
+
+        ImGui::Text("%s", AssetManager::GetFragmentShaderPath().c_str());
+
         // Vertex shader selection
-        if (ImGui::Button("Vertex Shader"))
+        if (ImGui::Button("Select Shader (vertex)"))
         {
             if (FileManager::SelectFile(m_SelectedVertexShaderFile, TEXT("Vertex Shader Files\0*.spv\0All Files\0*.*\0")))
             {
@@ -102,13 +173,14 @@ namespace PhysiXal {
                 SetVertexShaderPath(m_SelectedVertexShaderFile);
                 s_FileSelected = true;
 
-                PX_CORE_INFO("New shader (vertex) selected");
+                PX_CORE_INFO("New Shader (vertex) selected");
             }
         }
-        ImGui::Text("%s", AssetManager::GetVertexShaderPath().c_str());
+
+        ImGui::SameLine(0, 10);
 
         // Fragment shader selection
-        if (ImGui::Button("Fragment Shader"))
+        if (ImGui::Button("Select Shader (fragment)"))
         {
             if (FileManager::SelectFile(m_SelectedFragmentShaderFile, TEXT("Fragment Shader Files\0*.spv\0All Files\0*.*\0")))
             {
@@ -119,9 +191,11 @@ namespace PhysiXal {
                 PX_CORE_INFO("New shader (fragment) selected");
             }
         }
-        ImGui::Text("%s", AssetManager::GetFragmentShaderPath().c_str());
 
-        if (ImGui::Button("Apply"))
+        ImGui::SameLine(0, 10);
+
+        // Apply both vertex and fragment shader
+        if (ImGui::Button("Apply Shaders"))
         {
             if (!m_SelectedVertexShaderFile.empty() && !m_SelectedFragmentShaderFile.empty())
             {
@@ -146,7 +220,7 @@ namespace PhysiXal {
                     PX_CORE_ERROR("No shader (fragment) selected");
                 }
 
-                PX_CORE_WARN("vertex and fragment shader needs selection to update pipeline");
+                PX_CORE_WARN("Vertex and fragment shader selection needed to update pipeline");
             }
         }
 

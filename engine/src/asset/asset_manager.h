@@ -2,6 +2,8 @@
 
 namespace PhysiXal {
 
+    inline static bool s_ButtonPressed  = false;
+
     class AssetManager
     {
     public:
@@ -29,9 +31,9 @@ namespace PhysiXal {
         static std::string GetSelectedVertexShader() { return m_SelectedVertexShaderFile; }
         static std::string GetFragmentShader() { return s_FragmentShaderPath; }
         static std::string GetSelectedFragmentShader() { return m_SelectedFragmentShaderFile; }
-    private:
-        inline static bool s_FileSelected;
 
+        //static bool GetButtonPressed() { return s_ButtonPressed; }
+    private:
         inline static std::string s_SelectedTextureFile;
 
         inline static std::string m_SelectedMeshFile;
@@ -45,5 +47,7 @@ namespace PhysiXal {
 
         inline static std::string s_VertexShaderPath = "../editor/assets/shaders/base_vert.spv";
         inline static std::string s_FragmentShaderPath = "../editor/assets/shaders/base_frag.spv";
+
+        inline static bool s_FileSelected;
     };
 }

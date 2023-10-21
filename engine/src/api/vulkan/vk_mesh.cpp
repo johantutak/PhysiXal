@@ -68,4 +68,16 @@ namespace PhysiXal {
             }
         }
     }
+
+    void VulkanMesh::UnloadMesh(std::vector<Vertex>& vertices, std::vector<U32>& indices)
+    {
+        PX_PROFILE_FUNCTION();
+
+        PX_CORE_WARN("...Unloading mesh data (vertices & indices)");
+
+        mesh.indices.clear();
+        mesh.vertices.clear();
+    }
+
 }
+

@@ -102,32 +102,8 @@ namespace PhysiXal {
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VulkanPipeline::GetVulkanPipelineLayout(), 1, 1,
             &VkDescriptorSet, 0, nullptr);
         
-        // #### TEMPORARY ####
-        if (!AssetManager::GetSelectedMesh().empty())
-        {
-            VkBuffer& vertexBufferTest = VulkanMesh::GetVulkanMeshNew().vertexBuffer;
-            VkDeviceMemory& vertexBufferMemoryTest = VulkanMesh::GetVulkanMeshNew().vertexBufferMemory;
-            std::vector<Vertex>& verticesTest = VulkanMesh::GetVulkanMeshNew().vertices;
-
-            VkBuffer& indexBufferTest = VulkanMesh::GetVulkanMeshNew().indexBuffer;
-            VkDeviceMemory& indexBufferMemoryTest = VulkanMesh::GetVulkanMeshNew().indexBufferMemory;
-            std::vector<U32>& indicesTest = VulkanMesh::GetVulkanMeshNew().indices;
-
-            UpdateCommandBuffers(commandBuffer, vertexBufferTest, indexBufferTest, static_cast<U32>(indicesTest.size()));
-        }
-        else
-        {
-            if (VkBuffer& vertexBufferTest = VulkanMesh::GetVulkanMeshNew().vertexBuffer)
-            {
-                UpdateCommandBuffers(commandBuffer, VulkanMesh::GetVulkanMeshNew().vertexBuffer, VulkanMesh::GetVulkanMeshNew().indexBuffer,
-                    static_cast<U32>(VulkanMesh::GetVulkanMeshNew().indices.size()));
-            }
-            else
-            {
-                UpdateCommandBuffers(commandBuffer, VulkanMesh::GetVulkanMesh().vertexBuffer, VulkanMesh::GetVulkanMesh().indexBuffer,
-                    static_cast<U32>(VulkanMesh::GetVulkanMesh().indices.size()));
-            }
-        }
+        UpdateCommandBuffers(commandBuffer, VulkanMesh::GetVulkanMesh().vertexBuffer, VulkanMesh::GetVulkanMesh().indexBuffer,
+            static_cast<U32>(VulkanMesh::GetVulkanMesh().indices.size()));
 
         vkCmdEndRenderPass(commandBuffer);
 

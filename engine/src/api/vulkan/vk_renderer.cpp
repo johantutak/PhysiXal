@@ -139,24 +139,14 @@ namespace PhysiXal {
 		// Destruction of the descriptor set layout
 		m_UniformBuffer->DestroyDescriptorSetLayout();
 
-		// #### TO DO #### Implement a case witch as a temporary solution for correct destruction of vertex and index buffer bases on new values.
-		//				   Possibly until, when rendering is expanded to have UUID and multiple objects.
-		if (VkBuffer& vertexBufferTest = VulkanMesh::GetVulkanMeshNew().vertexBuffer)
-		{
-			// Destruction of the index buffer
-			m_Buffer->DestroyIndexBuffer(VulkanMesh::GetVulkanMeshNew().indexBuffer, VulkanMesh::GetVulkanMeshNew().indexBufferMemory);
+		// Destruction of the index buffer
+		m_Buffer->DestroyIndexBuffer(VulkanMesh::GetVulkanMesh().indexBuffer, VulkanMesh::GetVulkanMesh().indexBufferMemory);
 
-			// Destruction of the vertex buffer
-			m_Buffer->DestroyVertexBuffer(VulkanMesh::GetVulkanMeshNew().vertexBuffer, VulkanMesh::GetVulkanMeshNew().vertexBufferMemory);
-		}
-		else
-		{
-			// Destruction of the index buffer
-			m_Buffer->DestroyIndexBuffer(VulkanMesh::GetVulkanMesh().indexBuffer, VulkanMesh::GetVulkanMesh().indexBufferMemory);
+		// Destruction of the vertex buffer
+		m_Buffer->DestroyVertexBuffer(VulkanMesh::GetVulkanMesh().vertexBuffer, VulkanMesh::GetVulkanMesh().vertexBufferMemory);
 
-			// Destruction of the vertex buffer
-			m_Buffer->DestroyVertexBuffer(VulkanMesh::GetVulkanMesh().vertexBuffer, VulkanMesh::GetVulkanMesh().vertexBufferMemory);
-		}
+		// Unload of the mesh data
+		m_Mesh->UnloadMesh(m_Mesh->GetVulkanMesh().vertices, m_Mesh->GetVulkanMesh().indices);
 
 		// Destruction of the synchronization objects which includes the semaphores and render fence
 		m_SyncObjects->DestroySyncObjects();
