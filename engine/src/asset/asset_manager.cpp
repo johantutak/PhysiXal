@@ -32,7 +32,8 @@ namespace PhysiXal {
         ImGui::Text("%s", AssetManager::GetTexturePath().c_str());
 
         // Texture selection
-        if (ImGui::Button("Select Texture"))
+        ImGui::PushID(1);
+        if (ImGui::Button("Select"))
         {
             if (FileManager::SelectFile(s_SelectedTextureFile, TEXT("Texture Files\0*.png;*.jpg;*.bmp\0All Files\0*.*\0")))
             {
@@ -43,11 +44,13 @@ namespace PhysiXal {
                 PX_CORE_INFO("New texture selected");
             }
         }
+        ImGui::PopID();
 
         ImGui::SameLine(0, 10);
 
         // Apply texture
-        if (ImGui::Button("Apply Texture"))
+        ImGui::PushID(2);
+        if (ImGui::Button("Apply"))
         {
             // #### TODO #### Get it to increment instead and do it when i add UUID.
             if (!s_SelectedTextureFile.empty())
@@ -79,6 +82,7 @@ namespace PhysiXal {
                 PX_CORE_WARN("Texture selection needed to update texture specific image, image view and sampler");
             }
         }
+        ImGui::PopID();
 
         ImGui::Separator();
 
@@ -93,7 +97,8 @@ namespace PhysiXal {
         ImGui::Text("%s", AssetManager::GetMeshPath().c_str());
 
         // Mesh selection
-        if (ImGui::Button("Select Mesh"))
+        ImGui::PushID(3);
+        if (ImGui::Button("Select"))
         {
             if (FileManager::SelectFile(m_SelectedMeshFile, TEXT("Mesh Files\0*.obj\0All Files\0*.*\0")))
             {
@@ -104,11 +109,13 @@ namespace PhysiXal {
                 PX_CORE_INFO("New mesh selected");
             }
         }
+        ImGui::PopID();
 
         ImGui::SameLine(0, 10);
 
         // Apply mesh
-        if (ImGui::Button("Apply Mesh"))
+        ImGui::PushID(4);
+        if (ImGui::Button("Apply"))
         {
             // #### TODO #### Get it to increment instead and do it when i add UUID.
             if (!m_SelectedMeshFile.empty())
@@ -145,6 +152,7 @@ namespace PhysiXal {
                 PX_CORE_WARN("Mesh selection needed to update vertex and index buffer for 3D object loading");
             }
         }
+        ImGui::PopID();
 
         ImGui::Separator();
 
@@ -165,7 +173,7 @@ namespace PhysiXal {
         ImGui::Text("%s", AssetManager::GetFragmentShaderPath().c_str());
 
         // Vertex shader selection
-        if (ImGui::Button("Select Shader (vertex)"))
+        if (ImGui::Button("Select (vertex)"))
         {
             if (FileManager::SelectFile(m_SelectedVertexShaderFile, TEXT("Vertex Shader Files\0*.spv\0All Files\0*.*\0")))
             {
@@ -180,7 +188,7 @@ namespace PhysiXal {
         ImGui::SameLine(0, 10);
 
         // Fragment shader selection
-        if (ImGui::Button("Select Shader (fragment)"))
+        if (ImGui::Button("Select (fragment)"))
         {
             if (FileManager::SelectFile(m_SelectedFragmentShaderFile, TEXT("Fragment Shader Files\0*.spv\0All Files\0*.*\0")))
             {
@@ -195,7 +203,8 @@ namespace PhysiXal {
         ImGui::SameLine(0, 10);
 
         // Apply both vertex and fragment shader
-        if (ImGui::Button("Apply Shaders"))
+        ImGui::PushID(5);
+        if (ImGui::Button("Apply"))
         {
             if (!m_SelectedVertexShaderFile.empty() && !m_SelectedFragmentShaderFile.empty())
             {
@@ -223,6 +232,7 @@ namespace PhysiXal {
                 PX_CORE_WARN("Vertex and fragment shader selection needed to update pipeline");
             }
         }
+        ImGui::PopID();
 
         ImGui::End();
 
