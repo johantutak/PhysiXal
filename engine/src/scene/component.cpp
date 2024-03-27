@@ -1,6 +1,11 @@
 #include "px_pch.h"
 #include "scene/component.h"
 
+#include "imgui.h"
+#include "ImGuizmo.h"
+
+#include <glm/gtx/matrix_decompose.hpp>
+
 namespace PhysiXal {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,5 +40,35 @@ namespace PhysiXal {
     glm::mat4 Transform::GetModelMatrix()
     {
         return s_ModelMatrix;
+    }
+
+    void Transform::ManipulateModelMatrix(const glm::mat4& view, const glm::mat4& projection, glm::mat4& modelMatrix)
+    {
+        ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
+
+        if (ImGuizmo::IsUsing())
+        {
+            // If you want to update the static members after manipulation
+            glm::vec3 scale, translation, skew;
+            glm::vec4 perspective;
+            glm::quat rotation;
+
+            // Decompose the model matrix into its components
+            glm::decompose(modelMatrix, scale, rotation, translation, skew, perspective);
+
+            // Update the static member variables with the decomposed values
+            s_Position = translation;
+            s_Rotation = glm::eulerAngles(rotation); // Convert quaternion to euler angles
+            s_Scale = scale;
+
+            // If you want the rotation in degrees, convert from radians
+            s_Rotation = glm::degrees(s_Rotation);
+
+            // Convert Euler angles (in degrees) back to a quaternion for rotation
+            glm::quat rotationQuat = glm::quat(glm::radians(s_Rotation));
+
+            // Recompose the matrix manually
+            s_ModelMatrix = glm::translate(glm::mat4(1.0f), s_Position) * glm::mat4(rotationQuat) * glm::scale(glm::mat4(1.0f), s_Scale);
+        }
     }
 }

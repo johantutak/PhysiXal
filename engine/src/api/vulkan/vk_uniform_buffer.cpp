@@ -255,12 +255,12 @@ namespace PhysiXal {
 
     void VulkanUniformBuffer::UpdateUniformBuffer(U32 currentImage)
     {
-        Transform::InitModelMatrix();
+        //Transform::InitModelMatrix();
 
         // Set the position(x,y and z-axis), rotation (x,y and z-axis), and scale
-        Transform::SetPosition(glm::vec3(0.0f, -0.2f, 0.0f));
-        Transform::SetRotation(glm::vec3(-90.0f, 5.0f, Application::Get().GetTime() * -90.0f));
-        Transform::SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+        //Transform::SetPosition(glm::vec3(0.0f, -0.2f, 0.0f));
+        //Transform::SetRotation(glm::vec3(-90.0f, 0.0f, -90.0f));
+        //Transform::SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
         UniformBufferObject ubo{};
         ubo.model = Transform::GetModelMatrix();

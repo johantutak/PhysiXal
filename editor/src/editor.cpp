@@ -1,5 +1,8 @@
 #include "editor.h"
 
+#include "imgui/imgui.h"
+#include "ImGuizmo.h"
+
 Editor::Editor()
 	: Layer("Editor")
 {

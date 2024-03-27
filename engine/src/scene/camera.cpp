@@ -28,12 +28,12 @@ namespace PhysiXal {
 	{
 		// #### This function handles camera controls  ####
 
-		if (Input::IsMouseButtonPressed(MouseCode::ButtonRight))
-		{
+		//if (Input::IsMouseButtonPressed(MouseCode::ButtonRight))
+		//{
 			// Calculate camera position
 			float cameraSpeed = 10.0f * ts;
 
-			PX_CORE_INFO("Mouse button (right) is pressed");
+			//PX_CORE_INFO("Mouse button (right) is pressed");
 
 			if (Input::IsMouseButtonPressed(MouseCode::ButtonLeft))
 			{
@@ -113,7 +113,7 @@ namespace PhysiXal {
 			if (Input::IsKeyPressed(Key::S))
 			{
 				PX_CORE_INFO("S is pressed"), s_CameraPos -= cameraSpeed * s_CameraFront;
-			}
+			//}
 
 			Input::SetCursorMode(false);
 		}

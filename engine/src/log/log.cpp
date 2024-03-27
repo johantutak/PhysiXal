@@ -4,6 +4,8 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
+#include "api/imgui/imgui_widgets.h"
+
 namespace PhysiXal {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,6 +20,9 @@ namespace PhysiXal {
 		std::vector<spdlog::sink_ptr> logSinks;
 		logSinks.emplace_back(CreateRef<spdlog::sinks::stdout_color_sink_mt>());
 		logSinks.emplace_back(CreateRef<spdlog::sinks::basic_file_sink_mt>("PhysiXal.log", true));
+		
+		auto imguiSink = CreateRef<ImGuiLogSink_mt>(); // Add ImGui log sink
+		logSinks.emplace_back(imguiSink);
 
 		logSinks[0]->set_pattern("%^[%T] %n: %v%$");
 		logSinks[1]->set_pattern("[%T] [%l] %n: %v");

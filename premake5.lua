@@ -28,6 +28,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "engine/thirdparty/GLFW/include"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 IncludeDir["ImGui"] = "engine/thirdparty/imgui"
+IncludeDir["ImGuizmo"] = "engine/thirdparty/ImGuizmo"
 IncludeDir["glm"] = "engine/thirdparty/glm"
 IncludeDir["stb_image"] = "engine/thirdparty/stb_image"
 IncludeDir["tinyobjloader"] = "engine/thirdparty/tinyobjloader"
@@ -75,7 +76,10 @@ project "Engine"
 		"%{prj.name}/thirdparty/glm/glm/**.hpp",
 		"%{prj.name}/thirdparty/glm/glm/**.inl",
 		"%{prj.name}/thirdparty/tinyobjloader/**.h",
-		"%{prj.name}/thirdparty/tinyobjloader/**.cpp"
+		"%{prj.name}/thirdparty/tinyobjloader/**.cpp",
+
+		"%{prj.name}/thirdparty/ImGuizmo/ImGuizmo.h",
+		"%{prj.name}/thirdparty/ImGuizmo/ImGuizmo.cpp"
 	}
 
 	defines
@@ -91,6 +95,7 @@ project "Engine"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.tinyobjloader}"
@@ -102,7 +107,7 @@ project "Engine"
 		"%{Library.Vulkan}",
 		"ImGui"
 	}
-	
+
 	flags { "NoPCH" }
 
 	filter "system:windows"
@@ -165,7 +170,8 @@ project "Editor"
 		"engine/src",
 		"engine/thirdparty",
 		"%{IncludeDir.VulkanSDK}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links 

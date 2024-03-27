@@ -8,12 +8,17 @@
 #include "api/imgui/imgui_utilities.h"
 #include "api/imgui/imgui_widgets.h"
 
+#include "ImGuizmo.h"
+
 #include "core/application.h"
 
 #include "api/vulkan/vk_initializers.h"
 #include "api/vulkan/vk_utilities.h"
 
 #include "asset/asset_manager.h"
+
+#include "scene/camera.h"
+#include "scene/component.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -147,6 +152,10 @@ namespace PhysiXal {
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		// #### TEMPORARY ####
+		// Begin the ImGuizmo frame
+		ImGuizmo::BeginFrame();
 	}
 
 	void GuiLayer::GuiEnd()
@@ -202,11 +211,29 @@ namespace PhysiXal {
 	void GuiLayer::GuiOnRender()
 	{
 		PX_PROFILE_FUNCTION();
-		
+
+		// #### TEMPORARY ####
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+		// Inform ImGuizmo about the type of projection (perspective in this case)
+		ImGuizmo::SetOrthographic(false);
+
+		//ImGuizmo::SetDrawlist();
+
+		//float windowWidth = (float)ImGui::GetWindowWidth();
+		//float windowHeight = (float)ImGui::GetWindowHeight();
+
+		// Set the display rectangle for ImGuizmo (covering the entire viewport)
+		//ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+		Transform::ManipulateModelMatrix(Camera::GetView(), Camera::GetProjection(), Transform::GetModelMatrix());
+
 		// Issues Dear ImGui command for performance stats widget
 		m_Widgets->PerformanceStats();
 		m_AssetManager->Manager();
 		//m_Widgets->VertexData(); // #### TODO #### Fix performance and make it only display if 3D object is selected
+		m_Widgets->LogWindow();
 	}
 
 	void GuiLayer::GuiOnRebuild()

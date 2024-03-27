@@ -16,6 +16,8 @@
 
 #include "scene/camera.h"
 
+#include "scene/component.h"
+
 namespace PhysiXal {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,6 +50,13 @@ namespace PhysiXal {
 
 		// Set window events
 		m_Window->SetEventCallback(PX_BIND_EVENT_FN(Application::OnEvent));
+
+		// #### TEMPORARY ####
+		// #### TODO #### Fix rotation issue, that probably has to do with decompose values of ImGUIZMO
+		// Set the position(x,y and z-axis), rotation (x,y and z-axis), and scale with transform component for model matrix
+		Transform::SetPosition(glm::vec3(0.0f, -0.2f, 0.0f));
+		Transform::SetRotation(glm::vec3(-90.0f, 0.0f, -90.0f));
+		Transform::SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 		// Initialize the renderer
 		Renderer::Init();
@@ -112,6 +121,11 @@ namespace PhysiXal {
 			m_FrameTime = time - m_LastFrameTime;
 			m_TimeStep = glm::min<float>(m_FrameTime, 0.0333f);
 			m_LastFrameTime = time;
+
+			// #### TEMPORARY ####
+			// #### TODO #### Fix so that this is only updated on application initializion
+			// Initialize the model matrix in runtime
+			Transform::InitModelMatrix();
 
 			if (!m_Minimized)
 			{

@@ -2,7 +2,7 @@
 
 namespace PhysiXal {
 
-    inline static bool s_ButtonPressed  = false;
+    inline static bool s_ButtonPressed = false;
 
     class AssetManager
     {

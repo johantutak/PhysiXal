@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace PhysiXal {
 
@@ -15,6 +16,8 @@ namespace PhysiXal {
         static void SetScale(const glm::vec3& scale);
 
         static glm::mat4 GetModelMatrix();
+
+        static void ManipulateModelMatrix(const glm::mat4& view, const glm::mat4& projection, glm::mat4& modelMatrix);
     private:
         inline static glm::mat4 s_ModelMatrix;
 
