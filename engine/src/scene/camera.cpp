@@ -28,35 +28,54 @@ namespace PhysiXal {
 	{
 		// #### This function handles camera controls  ####
 
-		//if (Input::IsMouseButtonPressed(MouseCode::ButtonRight))
-		//{
+		if (Input::IsKeyPressed(Key::LeftShift))
+		{
+			PX_CORE_INFO("Shift (left) is pressed");
+
 			// Calculate camera position
 			float cameraSpeed = 10.0f * ts;
 
-			//PX_CORE_INFO("Mouse button (right) is pressed");
-
-			if (Input::IsMouseButtonPressed(MouseCode::ButtonLeft))
+			if (Input::IsMouseButtonPressed(MouseCode::ButtonRight))
 			{
-				PX_CORE_INFO("Mouse button (left) is pressed");
-				// Calculate mouse timestep
+				PX_CORE_INFO("Mouse button (right) is pressed");
+
 				if (s_InitMouse)
 				{
+					// On first press, reset last mouse positions without changing yaw and pitch
 					s_LastX = Input::GetMouseX();
 					s_LastY = Input::GetMouseY();
-					s_InitMouse = false;
+					s_InitMouse = false; // Ensure this block won't run until the next press
+				}
+				else
+				{
+					float xoffset = Input::GetMouseX() - s_LastX;
+					float yoffset = s_LastY - Input::GetMouseY(); // Invert y-offset due to coordinate system
+
+					float sensitivity = 0.3f;
+					xoffset *= sensitivity;
+					yoffset *= sensitivity;
+
+					// Apply movement deltas to yaw and pitch
+					s_Yaw += xoffset;
+					s_Pitch += yoffset;
+
+					// Update last mouse positions
+					s_LastX = Input::GetMouseX();
+					s_LastY = Input::GetMouseY();
+
+					// Constrain pitch to avoid flipping
+					if (s_Pitch > 89.0f) s_Pitch = 89.0f;
+					if (s_Pitch < -89.0f) s_Pitch = -89.0f;
 				}
 
-				float xoffset = Input::GetMouseX() - s_LastX;
-				float yoffset = s_LastY - Input::GetMouseY();
-				s_LastX = Input::GetMouseX();
-				s_LastY = Input::GetMouseY();
+				Input::SetCursorMode(false);
+			}
+			else
+			{
+				// When button is released, prepare for recalibration on next press
+				s_InitMouse = true;
 
-				// Update camera angles based on mouse timestep
-				float sensitivity = 0.3f;
-				xoffset *= sensitivity;
-				yoffset *= sensitivity;
-				s_Yaw += xoffset;
-				s_Pitch += yoffset;
+				Input::SetCursorMode(true);
 			}
 
 			// Update camera angles based on keyboard input
@@ -113,13 +132,7 @@ namespace PhysiXal {
 			if (Input::IsKeyPressed(Key::S))
 			{
 				PX_CORE_INFO("S is pressed"), s_CameraPos -= cameraSpeed * s_CameraFront;
-			//}
-
-			Input::SetCursorMode(false);
-		}
-		else
-		{
-			Input::SetCursorMode(true);
+			}
 		}
 
 		// constrain pitch

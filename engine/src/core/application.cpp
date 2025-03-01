@@ -16,7 +16,9 @@
 
 #include "scene/camera.h"
 
-#include "scene/component.h"
+#include "ecs/ecs.h"
+
+#include "asset/imguizmo_system.h"
 
 namespace PhysiXal {
 
@@ -26,6 +28,7 @@ namespace PhysiXal {
 
 	Application* Application::s_Instance = nullptr;
 	VulkanRenderer* m_Renderer = nullptr;
+	ECSManager* g_ECSManager = nullptr;
 
 	Application::Application(const ApplicationSpecification& specification)
 	{
@@ -51,12 +54,12 @@ namespace PhysiXal {
 		// Set window events
 		m_Window->SetEventCallback(PX_BIND_EVENT_FN(Application::OnEvent));
 
-		// #### TEMPORARY ####
-		// #### TODO #### Fix rotation issue, that probably has to do with decompose values of ImGUIZMO
 		// Set the position(x,y and z-axis), rotation (x,y and z-axis), and scale with transform component for model matrix
-		Transform::SetPosition(glm::vec3(0.0f, -0.2f, 0.0f));
-		Transform::SetRotation(glm::vec3(-90.0f, 0.0f, -90.0f));
-		Transform::SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+		//Transform::SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		//Transform::SetRotation(glm::vec3(-90.0f, -90.0f, 0.0f));
+		//Transform::SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+		g_ECSManager = new PhysiXal::ECSManager();
 
 		// Initialize the renderer
 		Renderer::Init();
@@ -125,7 +128,18 @@ namespace PhysiXal {
 			// #### TEMPORARY ####
 			// #### TODO #### Fix so that this is only updated on application initializion
 			// Initialize the model matrix in runtime
-			Transform::InitModelMatrix();
+			//Transform::InitModelMatrix();
+
+			// In your rendering or update function, after beginning the GUI frame:
+			if (g_ECSManager && g_ECSManager->GetSelectedEntity())
+			{
+				// Obtain the view and projection matrices (assume you have them from your camera)
+				glm::mat4 view = Camera::GetView();         // Replace with your actual camera view call
+				glm::mat4 projection = Camera::GetProjection(); // Replace with your actual camera projection call
+				// Manipulate the selected entity’s transform using ImGuizmo
+				ImGuizmoSystem::ManipulateSelectedEntity(view, projection, g_ECSManager);
+			}
+
 
 			if (!m_Minimized)
 			{

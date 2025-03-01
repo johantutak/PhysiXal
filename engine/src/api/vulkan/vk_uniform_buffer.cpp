@@ -14,8 +14,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "scene/camera.h"
-#include "scene/component.h"
-
+#include "scene/transform_component.h"
+#include "scene/model_component.h"
 #include "asset/asset_manager.h"
 
 namespace PhysiXal {
@@ -255,15 +255,15 @@ namespace PhysiXal {
 
     void VulkanUniformBuffer::UpdateUniformBuffer(U32 currentImage)
     {
-        //Transform::InitModelMatrix();
-
-        // Set the position(x,y and z-axis), rotation (x,y and z-axis), and scale
-        //Transform::SetPosition(glm::vec3(0.0f, -0.2f, 0.0f));
-        //Transform::SetRotation(glm::vec3(-90.0f, 0.0f, -90.0f));
-        //Transform::SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
-
         UniformBufferObject ubo{};
-        ubo.model = Transform::GetModelMatrix();
+        if (g_ECSManager && g_ECSManager->GetSelectedEntity() &&
+            g_ECSManager->GetSelectedEntity()->HasComponent<TransformComponent>())
+        {
+            ubo.model = g_ECSManager->GetSelectedEntity()->GetComponent<TransformComponent>()->GetModelMatrix();
+        }
+        else {
+            ubo.model = glm::mat4(1.0f);
+        }
         ubo.view = Camera::GetView();
         ubo.proj = Camera::GetProjection();
         ubo.proj[1][1] *= -1;

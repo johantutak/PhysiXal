@@ -10,6 +10,10 @@
 #include "api/vulkan/vk_initializers.h"
 #include "api/vulkan/vk_utilities.h"
 
+#include "ecs/ecs.h"
+#include "scene/model_component.h"
+#include "scene/transform_component.h"
+
 namespace PhysiXal {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,41 +119,35 @@ namespace PhysiXal {
 
         // Apply mesh
         ImGui::PushID(4);
-        if (ImGui::Button("Apply"))
+        if (ImGui::Button("Apply (Mesh)"))
         {
-            // #### TODO #### Get it to increment instead and do it when i add UUID.
             if (!m_SelectedMeshFile.empty())
             {
-                s_ButtonPressed = true;
-
-                // Destruction of the index buffer
-                m_Buffer->DestroyIndexBuffer(m_Mesh->GetVulkanMesh().indexBuffer, m_Mesh->GetVulkanMesh().indexBufferMemory);
-
-                // Destruction of the vertex buffer
-                m_Buffer->DestroyVertexBuffer(m_Mesh->GetVulkanMesh().vertexBuffer, m_Mesh->GetVulkanMesh().vertexBufferMemory);
-
-                // Unload of the mesh data
-                m_Mesh->UnloadMesh(m_Mesh->GetVulkanMesh().vertices, m_Mesh->GetVulkanMesh().indices);
-
-                // Load mesh (.obj) to renderer
-                m_Mesh->LoadMesh(m_SelectedMeshFile, m_Mesh->GetVulkanMesh().vertices, m_Mesh->GetVulkanMesh().indices);
-
-                // Create vertex buffer
-                m_Buffer->CreateVertexBuffer(m_Mesh->GetVulkanMesh().vertexBuffer, m_Mesh->GetVulkanMesh().vertexBufferMemory, m_Mesh->GetVulkanMesh().vertices);
-
-                // Create index buffer
-                m_Buffer->CreateIndexBuffer(m_Mesh->GetVulkanMesh().indexBuffer, m_Mesh->GetVulkanMesh().indexBufferMemory, m_Mesh->GetVulkanMesh().indices);
-
+                extern PhysiXal::ECSManager* g_ECSManager; // global ECSManager pointer
+                PhysiXal::Entity* entity = g_ECSManager->GetSelectedEntity();
+                if (!entity) {
+                    // No entity is currently selected, so create one.
+                    entity = g_ECSManager->CreateEntity();
+                    entity->AddComponent<PhysiXal::TransformComponent>();
+                    entity->AddComponent<PhysiXal::ModelComponent>();
+                    g_ECSManager->SetSelectedEntity(entity);
+                }
+                // Update the ModelComponent in the selected entity
+                PhysiXal::ModelComponent* model = entity->GetComponent<PhysiXal::ModelComponent>();
+                if (model)
+                {
+                    model->MeshPath = m_SelectedMeshFile;
+                    model->VertexShaderPath = AssetManager::GetVertexShaderPath();
+                    model->FragmentShaderPath = AssetManager::GetFragmentShaderPath();
+                    // (Optional) Trigger your renderer to reload the mesh from model->MeshPath here.
+                }
+                // Clear the selected mesh file so it doesn't reapply
                 m_SelectedMeshFile.clear();
             }
             else
             {
-                if (m_SelectedMeshFile.empty())
-                {
-                    PX_CORE_ERROR("No mesh selected");
-                }
-
-                PX_CORE_WARN("Mesh selection needed to update vertex and index buffer for 3D object loading");
+                PX_CORE_ERROR("No mesh selected");
+                PX_CORE_WARN("Mesh selection needed to update model component");
             }
         }
         ImGui::PopID();
@@ -204,32 +202,29 @@ namespace PhysiXal {
 
         // Apply both vertex and fragment shader
         ImGui::PushID(5);
-        if (ImGui::Button("Apply"))
+        if (ImGui::Button("Apply (Shaders)"))
         {
             if (!m_SelectedVertexShaderFile.empty() && !m_SelectedFragmentShaderFile.empty())
             {
-                // Destruction of the pipeline
-                m_Pipeline->DestroyGraphicsPipeline();
-
-                // Create pipeline
-                m_Pipeline->CreateGraphicsPipeline(m_SelectedVertexShaderFile, m_SelectedFragmentShaderFile);
-
+                // Get the selected entity and update its ModelComponent (if any)
+                extern PhysiXal::ECSManager* g_ECSManager;
+                PhysiXal::Entity* entity = g_ECSManager->GetSelectedEntity();
+                if (entity && entity->HasComponent<PhysiXal::ModelComponent>())
+                {
+                    PhysiXal::ModelComponent* model = entity->GetComponent<PhysiXal::ModelComponent>();
+                    model->VertexShaderPath = m_SelectedVertexShaderFile;
+                    model->FragmentShaderPath = m_SelectedFragmentShaderFile;
+                }
                 m_SelectedVertexShaderFile.clear();
                 m_SelectedFragmentShaderFile.clear();
             }
             else
             {
                 if (m_SelectedVertexShaderFile.empty())
-                {
-                    PX_CORE_ERROR("No shader (vertex) selected");
-                }
-
+                    PX_CORE_ERROR("No vertex shader selected");
                 if (m_SelectedFragmentShaderFile.empty())
-                {
-                    PX_CORE_ERROR("No shader (fragment) selected");
-                }
-
-                PX_CORE_WARN("Vertex and fragment shader selection needed to update pipeline");
+                    PX_CORE_ERROR("No fragment shader selected");
+                PX_CORE_WARN("Shader selection needed to update pipeline");
             }
         }
         ImGui::PopID();

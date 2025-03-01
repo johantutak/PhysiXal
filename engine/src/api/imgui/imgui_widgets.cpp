@@ -27,7 +27,8 @@ namespace PhysiXal {
 
     static Timestep* m_TimeStep = nullptr;
 
-    bool s_IsImGuiLoggingEnabled = true;
+    // #### TEMPORARY #### have it false for now to get performance at start up.
+    bool s_IsImGuiLoggingEnabled = false;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Dear ImGUI widgets

@@ -18,7 +18,10 @@
 #include "asset/asset_manager.h"
 
 #include "scene/camera.h"
-#include "scene/component.h"
+
+#include "ecs/ecs.h"
+
+#include "asset/imguizmo_system.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -218,16 +221,15 @@ namespace PhysiXal {
 		// Inform ImGuizmo about the type of projection (perspective in this case)
 		ImGuizmo::SetOrthographic(false);
 
-		//ImGuizmo::SetDrawlist();
-
-		//float windowWidth = (float)ImGui::GetWindowWidth();
-		//float windowHeight = (float)ImGui::GetWindowHeight();
-
-		// Set the display rectangle for ImGuizmo (covering the entire viewport)
-		//ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
-		Transform::ManipulateModelMatrix(Camera::GetView(), Camera::GetProjection(), Transform::GetModelMatrix());
+		// Obtain view and projection matrices from your camera (adjust as needed)
+		glm::mat4 view = Camera::GetView();
+		glm::mat4 projection = Camera::GetProjection();
+
+		// Call the ImGuizmo system to manipulate the transform of the selected entity.
+		ImGuizmoSystem::ManipulateSelectedEntity(view, projection, g_ECSManager);
+
 
 		// Issues Dear ImGui command for performance stats widget
 		m_Widgets->PerformanceStats();
